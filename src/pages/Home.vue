@@ -1,11 +1,11 @@
 <template>
   <div>
     <h2>home</h2>
-    <button @click="toAboutView">to about</button>
+    <n-button type="warning" @click="toAboutView">to about</n-button>
     <div>
       <h3>store - counter</h3>
       count: {{ counterStore.count }}
-      <button @click="counterStore.increment">increment</button>
+      <n-button type="success" @click="counterStore.increment">increment</n-button>
     </div>
   </div>
 </template>
@@ -13,6 +13,7 @@
 <script setup lang="ts">
 import { useRouter } from "vue-router";
 import { useCounterStore } from "../store/counter";
+import { NButton } from 'naive-ui'
 
 const router = useRouter();
 const toAboutView = () => {
