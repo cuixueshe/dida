@@ -17,5 +17,6 @@
 - [x] cypress-component-test
 - [x] alias
 - [x] ci && cd
+- [x] tailwind css
 - [ ] lint + eslint + prettier
 - [ ] axios
