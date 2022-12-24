@@ -12,7 +12,7 @@ function createTask(title: string): Task {
 }
 
 export const useTaskStore = defineStore("task", () => {
-  const currentActiveTask = ref<Task>();
+  const currentActiveTask = ref<Task | null>();
 
   const taskList = reactive<Task[]>([]);
 
@@ -32,11 +32,19 @@ export const useTaskStore = defineStore("task", () => {
     changeActiveTask(task);
   }
 
+  function removeCurrentActiveTask() {
+    if (currentActiveTask.value) {
+      taskList.splice(taskList.indexOf(currentActiveTask.value), 1);
+      currentActiveTask.value = null;
+    }
+  }
+
   return {
     taskList,
     currentActiveTask,
 
     addTask,
+    removeCurrentActiveTask,
     changeActiveTask,
   };
 });

@@ -1,24 +1,33 @@
 <template>
-  <div @click="handleClick">
-    {{ task.title }}
+  <div @click.right="handleRightClickTask($event, task)" @click="handleClickTask(task)">
+    <div>
+      {{ task.title }}
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { useTaskStore } from '../../store'
 import type { Task } from '../../store/task'
-
-const taskStore = useTaskStore()
+import { useTaskStore } from '../../store'
+import { useTaskRightContextMenu } from '../../composable/taskRightContextMenu'
 
 interface Props {
   task: Task
 }
 
-const props = defineProps<Props>()
+defineProps<Props>()
+
+const taskStore = useTaskStore()
+const { showContextMenu } = useTaskRightContextMenu()
 
 
-function handleClick() {
-  taskStore.changeActiveTask(props.task)
+function handleRightClickTask(e: MouseEvent, task: Task) {
+  taskStore.changeActiveTask(task)
+  showContextMenu(e)
+}
+
+function handleClickTask(task: Task) {
+  taskStore.changeActiveTask(task)
 }
 
 </script>

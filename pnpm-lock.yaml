@@ -1,6 +1,7 @@
 lockfileVersion: 5.4
 
 specifiers:
+  '@imengyu/vue3-context-menu': ^1.1.7
   '@vitejs/plugin-vue': ^3.0.0
   '@vitejs/plugin-vue-jsx': ^2.0.0
   '@vue/test-utils': ^2.0.2
@@ -22,6 +23,7 @@ specifiers:
   vue-tsc: ^0.38.4
 
 dependencies:
+  '@imengyu/vue3-context-menu': registry.npmmirror.com/@imengyu/vue3-context-menu/1.1.7
   naive-ui: registry.npmmirror.com/naive-ui/2.34.2_vue@3.2.37
   pinia: registry.npmmirror.com/pinia/2.0.17_j6bzmzd4ujpabbp5objtwxyjp4
   vue: registry.npmmirror.com/vue/3.2.37
@@ -508,6 +510,12 @@ packages:
     requiresBuild: true
     dev: true
     optional: true
+
+  registry.npmmirror.com/@imengyu/vue3-context-menu/1.1.7:
+    resolution: {integrity: sha512-24/6wCkPwKHn1W2UvpN5d75PUcerCncK0IfWIb0nvcSXqHpmxEhca9R2BXPdAQcUkTK4Zu+XSGsxzCasgxYCFA==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@imengyu/vue3-context-menu/-/vue3-context-menu-1.1.7.tgz}
+    name: '@imengyu/vue3-context-menu'
+    version: 1.1.7
+    dev: false
 
   registry.npmmirror.com/@jridgewell/gen-mapping/0.1.1:
     resolution: {integrity: sha512-sQXCasFk+U8lWYEe66WxRDOE9PjVz4vSM51fTu3Hw+ClTpUSQb718772vH3pyS5pShp6lvQM7SxgIDXXXmOX7w==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@jridgewell/gen-mapping/-/gen-mapping-0.1.1.tgz}

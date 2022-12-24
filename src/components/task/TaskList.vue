@@ -20,12 +20,10 @@ const taskStore = useTaskStore()
 
 const taskTitle = ref("")
 
-function addTask () {
+function addTask() {
   taskStore.addTask(taskTitle.value)
   taskTitle.value = ""
 }
-
-
 
 </script>
 

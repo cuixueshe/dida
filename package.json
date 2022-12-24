@@ -16,6 +16,7 @@
     "test-e2e-run": "cross-env NODE_ENV=developer cypress run --e2e"
   },
   "dependencies": {
+    "@imengyu/vue3-context-menu": "^1.1.7",
     "naive-ui": "^2.34.2",
     "pinia": "^2.0.17",
     "vue": "^3.2.37",
