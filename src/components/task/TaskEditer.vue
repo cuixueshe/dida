@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="taskStore.currentActiveTask">
-      <h1>
+      <h1 contenteditable="true" @input="handleInput">
         {{ taskStore.currentActiveTask.title }}
       </h1>
       <div>
@@ -19,6 +19,10 @@ import { useTaskStore } from '../../store'
 import InkMde from 'ink-mde/vue'
 
 const taskStore = useTaskStore()
+
+function handleInput (e:Event) {
+  taskStore.setCurrentActiveTaskTitle((e.target as HTMLElement).innerText)
+}
 
 </script>
 

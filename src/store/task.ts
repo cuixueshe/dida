@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 import { reactive, ref } from "vue";
 
 export class Task {
-  title: string;
+  public title: string;
   content: string;
   constructor(title: string, content: string) {
     this.title = title;
@@ -19,7 +19,7 @@ class Project {
   }
 
   addTask(task: Task) {
-    this.taskList.push(task);
+    this.taskList.unshift(task);
   }
 
   removeTask(task: Task) {
@@ -30,8 +30,6 @@ class Project {
     }
   }
 }
-
-
 
 // 模拟的后端数据
 const data = {
@@ -115,7 +113,13 @@ export const useTaskStore = defineStore("task", () => {
       currentActiveProject.value = project;
     }
 
-    changeActiveTask(null)
+    changeActiveTask(null);
+  }
+
+  function setCurrentActiveTaskTitle(title: string) {
+    if (currentActiveTask.value) {
+      currentActiveTask.value.title = title;
+    }
   }
 
   return {
@@ -127,6 +131,7 @@ export const useTaskStore = defineStore("task", () => {
     removeCurrentActiveTask,
     changeActiveTask,
 
-    changeCurrentActiveProject
+    changeCurrentActiveProject,
+    setCurrentActiveTaskTitle
   };
 });
