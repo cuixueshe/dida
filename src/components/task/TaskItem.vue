@@ -7,7 +7,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Task } from '../../store/task'
+import { Task } from '../../store/task'
 import { useTaskStore } from '../../store'
 import { useTaskRightContextMenu } from '../../composable/taskRightContextMenu'
 

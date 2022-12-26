@@ -18,7 +18,6 @@
 import { useTaskStore } from '../../store'
 import InkMde from 'ink-mde/vue'
 
-
 const taskStore = useTaskStore()
 
 </script>
