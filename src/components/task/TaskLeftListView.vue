@@ -5,6 +5,7 @@
         block-line
         :data="data"
         :default-expanded-keys="[1]"
+	:default-selected-keys="[2]"
         :node-props="nodeProps"
       />
     </div>
