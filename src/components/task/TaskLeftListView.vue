@@ -9,6 +9,11 @@
         :node-props="nodeProps"
       />
     </div>
+    <div>
+      <ul>
+        <li @click="handleShowCompletedProject">已完成</li>
+      </ul>
+    </div>
   </div>
 </template>
 
@@ -25,10 +30,10 @@ const data = ref<any[]>([
     label: "清单",
     checkboxDisabled: false,
     isLeaf: false,
-    children: taskStore.projectList.map((project, index) => {
+    children: taskStore.projectNames.map((projectName, index) => {
       return {
         key: 2 + index,
-        label: project.name,
+        label: projectName,
         isLeaf: true,
       };
     }),
@@ -43,6 +48,11 @@ const nodeProps = (treeOption: any) => {
     },
   };
 };
+
+
+function handleShowCompletedProject () {
+  taskStore.changeCurrentActiveProject("已完成")
+}
 </script>
 
 <style scoped></style>

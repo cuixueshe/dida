@@ -1,14 +1,13 @@
 <template>
   <div
-    contenteditable="true"
     @click.right="handleRightClickTask($event, task)"
     @click="handleClickTask(task)"
-    @input="handleInput"
   >
-    <div>
-      <span >
+    <div class="flex">
+      <div class="w-4 h-4 bg-blue-400" @click="handleCompleteTodo"></div>
+      <div class="w-full" contenteditable="true" @input="handleInput">
         {{ task.title }}
-      </span>
+      </div>
     </div>
   </div>
 </template>
@@ -36,8 +35,14 @@ function handleClickTask(task: Task) {
   taskStore.changeActiveTask(task);
 }
 
-function handleInput (e:Event) {
-  taskStore.setCurrentActiveTaskTitle((e.target as HTMLElement).innerText)
+function handleInput(e: Event) {
+  taskStore.setCurrentActiveTaskTitle((e.target as HTMLElement).innerText);
+}
+
+function handleCompleteTodo () {
+  // 看看应该是恢复 task  还是完成 task
+  taskStore.completeTask(props.task)
+  
 }
 </script>
 
