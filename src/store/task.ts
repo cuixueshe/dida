@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
-import { reactive, ref, computed } from "vue";
+import { reactive, ref } from "vue";
 
-enum TaskState {
+export enum TaskState {
   ACTIVE = 1,
   COMPLETED = 2,
   GIVE_UP = 3,
@@ -13,6 +13,8 @@ export class Task {
   content: string;
   project: Project;
   state: TaskState = TaskState.ACTIVE;
+  previousProject?: Project | null;
+  previousState?: TaskState | null;
   constructor(title: string, content: string, project: Project) {
     this.title = title;
     this.content = content;
@@ -20,11 +22,26 @@ export class Task {
   }
 
   setState(state: TaskState) {
+    this.previousState = this.state;
     this.state = state;
   }
 
-  removeSelfFromProject() {
+  addToProject(project: Project) {
     this.project.removeTask(this);
+
+    this.previousProject = this.project;
+    this.project = project;
+
+    this.project.addTask(this);
+  }
+
+  restore() {
+    if (this.previousProject) {
+      this.state = this.previousState!;
+      this.addToProject(this.previousProject);
+      this.previousState = null
+      this.previousProject = null
+    }
   }
 }
 
@@ -41,7 +58,6 @@ class Project {
   }
 
   removeTask(task: Task) {
-    console.log("remove task");
     const index = this.taskList.indexOf(task);
     if (index !== -1) {
       this.taskList.splice(index, 1);
@@ -161,8 +177,12 @@ export const useTaskStore = defineStore("task", () => {
   }
 
   function completeTask(task: Task) {
-    task.removeSelfFromProject()
-    completedProject.addTask(task)
+    task.setState(TaskState.COMPLETED);
+    task.addToProject(completedProject);
+  }
+
+  function restoreTask(task: Task) {
+    task.restore();
   }
 
   return {
@@ -172,6 +192,7 @@ export const useTaskStore = defineStore("task", () => {
 
     addTask,
     completeTask,
+    restoreTask,
     removeCurrentActiveTask,
     changeActiveTask,
 

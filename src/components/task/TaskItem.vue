@@ -13,7 +13,7 @@
 </template>
 
 <script setup lang="ts">
-import { Task } from "../../store/task";
+import { Task, TaskState } from "../../store/task";
 import { useTaskStore } from "../../store";
 import { useTaskRightContextMenu } from "../../composable/taskRightContextMenu";
 
@@ -39,10 +39,12 @@ function handleInput(e: Event) {
   taskStore.setCurrentActiveTaskTitle((e.target as HTMLElement).innerText);
 }
 
-function handleCompleteTodo () {
-  // 看看应该是恢复 task  还是完成 task
-  taskStore.completeTask(props.task)
-  
+function handleCompleteTodo() {
+  if (props.task.state === TaskState.ACTIVE) {
+    taskStore.completeTask(props.task);
+  }else{
+    taskStore.restoreTask(props.task);
+  }
 }
 </script>
 
