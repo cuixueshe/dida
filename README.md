@@ -12,7 +12,7 @@
 - [x] vitest
 - [x] vue-router
 - [x] pinia(vuex5)
-- [x] ant design
+- [x] naive-ui
 - [x] cypress
 - [x] cypress-component-test
 - [x] alias
