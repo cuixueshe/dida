@@ -20,7 +20,7 @@ import InkMde from 'ink-mde/vue'
 
 const taskStore = useTaskStore()
 
-function handleInput (e:Event) {
+function handleInput(e: Event) {
   taskStore.setCurrentActiveTaskTitle((e.target as HTMLElement).innerText)
 }
 
