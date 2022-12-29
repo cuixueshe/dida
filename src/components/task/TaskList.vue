@@ -9,17 +9,17 @@
       rounded-6px p-4px pl-12px outline-none
       border-none box-content bg-gray-200 dark:bg-#3B3B3B" />
     </div>
-    <ul class="flex flex-col gap-10px">
-      <li v-for="task in taskStore.currentActiveProject?.taskList">
+    <TransitionGroup name="list" tag="ul" class="flex flex-col gap-10px">
+      <li v-for="task in taskStore.currentActiveProject?.taskList" :key="task.getId()">
         <TaskItem :task="task"></TaskItem>
       </li>
-    </ul>
+    </TransitionGroup>
   </div>
 </template>
 
 <script setup lang="ts">
 import TaskItem from "./TaskItem.vue";
-import { useTaskStore } from "../../store/task";
+import { useTaskStore } from "@/store/task";
 import { ref } from "vue";
 
 const taskStore = useTaskStore();
@@ -33,5 +33,14 @@ function addTask() {
 </script>
 
 <style scoped>
+.list-enter-active,
+.list-leave-active {
+  transition: all 0.5s ease;
+}
 
+.list-enter-from,
+.list-leave-to {
+  opacity: 0;
+  transform: translateX(30px);
+}
 </style>

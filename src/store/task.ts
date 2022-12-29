@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { reactive, ref } from "vue";
+import { nanoid } from 'nanoid'
 
 export enum TaskState {
   ACTIVE = 1,
@@ -14,16 +15,18 @@ export enum SpecialProjectNames {
 
 export class Task {
   public title: string;
+  id: string 
   content: string;
   project: Project;
   state: TaskState = TaskState.ACTIVE;
   previousProject?: Project | null;
   previousState?: TaskState | null;
-  constructor(title: string, content: string, project: Project, state: number = TaskState.ACTIVE) {
+  constructor(title: string, content: string, project: Project, id?: string, state: number = TaskState.ACTIVE) {
     this.title = title;
     this.content = content;
     this.project = project;
     this.state = state
+    this.id = nanoid()
   }
 
   setState(state: TaskState) {
@@ -47,6 +50,10 @@ export class Task {
       this.previousState = null
       this.previousProject = null
     }
+  }
+
+  getId() {
+    return this.id
   }
 }
 
@@ -80,16 +87,19 @@ const data = {
           title: "吃饭",
           content: "## 吃饭 \n 吃什么好呢",
           state: 1,
+          id: nanoid()
         },
         {
           title: "睡觉",
           content: "## 睡觉 \n 早睡早起 身体好",
           state: 1,
+          id: nanoid()
         },
         {
           title: "写代码",
           content: "## 写代码 \n 日常写码2个点",
           state: 2,
+          id: nanoid()
         },
       ],
     },
@@ -100,11 +110,13 @@ const data = {
           title: "哈哈哈",
           content: "hahaha",
           state: 1,
+          id: nanoid()
         },
         {
           title: "嘿嘿嘿",
           content: "heiheihei",
           state: 1,
+          id: nanoid()
         },
       ],
     },
@@ -120,10 +132,10 @@ const completedProject = new Project(SpecialProjectNames.DONE);
 // 基于后端返回的数据做初始化
 data.projectList.forEach((projectListData) => {
   const project = new Project(projectListData.name);
-  projectListData.taskList.forEach(({ title, content, state }) => {
+  projectListData.taskList.forEach(({ title, content, state, id }) => {
     // 一个任务只能属于一个 project
     // 所以我们在构建的时候就需要区分出来 当前的 task 应该属于哪个 project
-    const task = new Task(title, content, project, state);
+    const task = new Task(title, content, project, id, state);
     if (state === TaskState.ACTIVE) {
       project.taskList.push(task);
     } else if (state === TaskState.COMPLETED) {

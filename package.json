@@ -19,6 +19,7 @@
     "@imengyu/vue3-context-menu": "^1.1.7",
     "ink-mde": "^0.18.1",
     "naive-ui": "^2.34.2",
+    "nanoid": "^4.0.0",
     "pinia": "^2.0.17",
     "vue": "^3.2.37",
     "vue-router": "4"
