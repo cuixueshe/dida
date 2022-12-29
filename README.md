@@ -17,6 +17,8 @@
 - [x] cypress-component-test
 - [x] alias
 - [x] ci && cd
-- [x] tailwind css
+- [x] unocss (更好用的 tailwind-css)
+- [x] git hooks (lint-stage + commit-lint)
+- [x] eslint 校验
 - [ ] lint + eslint + prettier
 - [ ] axios
