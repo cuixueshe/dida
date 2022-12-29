@@ -10,7 +10,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { NTree } from "naive-ui";
-import { useTaskStore } from "../../store";
+import { useTaskStore } from "@/store";
 
 const taskStore = useTaskStore();
 
