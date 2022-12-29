@@ -132,13 +132,12 @@ data.projectList.forEach((projectListData) => {
     // 所以我们在构建的时候就需要区分出来 当前的 task 应该属于哪个 project
     const task = new Task(title, content, project);
     if (state === TaskState.ACTIVE) {
-      project.taskList.push(task);
+      task.addToProject(project)
     } else if (state === TaskState.COMPLETED) {
-      task.previousProject = project
       task.previousState = TaskState.ACTIVE
-      task.project = completedProject
       task.setState(TaskState.COMPLETED)
-      completedProject.taskList.push(task);
+
+      task.addToProject(completedProject)
     }
   });
 
@@ -174,8 +173,8 @@ export const useTaskStore = defineStore("task", () => {
   function removeCurrentActiveTask() {
     if (currentActiveTask.value) {
       currentActiveProject.value?.removeTask(currentActiveTask.value);
-
-      changeActiveTask(null);
+      currentActiveTask.value.setState(TaskState.REMOVED)
+      currentActiveTask.value.addToProject(trashProject)
     }
   }
 

@@ -2,6 +2,7 @@
   <div @click.right="handleRightClickTask($event, task)">
     <div class="flex">
       <template v-if="task.state === TaskState.REMOVED">
+        <!-- 临时加的提示 后面要去掉 -->
         <div class="flex">
           <div>
             <n-popover trigger="hover">
@@ -22,7 +23,7 @@
           class="w-full"
           contenteditable="true"
           @input="handleInput"
-          @click="handleClickTask(task)"
+          @focus="handleClickTask(task)"
         >
           {{ task.title }}
         </div>
