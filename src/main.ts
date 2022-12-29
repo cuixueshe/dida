@@ -1,16 +1,16 @@
 import '@imengyu/vue3-context-menu/lib/vue3-context-menu.css'
 import ContextMenu from '@imengyu/vue3-context-menu'
-import { createApp } from "vue";
-import App from "./App.vue";
-import { router } from "./router";
-import { createPinia } from "pinia";
-import "@unocss/reset/tailwind.css"
-import "uno.css"
+import { createApp } from 'vue'
+import { createPinia } from 'pinia'
+import App from './App.vue'
+import { router } from './router'
+import '@unocss/reset/tailwind.css'
+import 'uno.css'
 
-const app = createApp(App);
+const app = createApp(App)
 
-app.use(router);
-app.use(createPinia());
+app.use(router)
+app.use(createPinia())
 app.use(ContextMenu)
 
-app.mount("#app");
+app.mount('#app')

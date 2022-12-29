@@ -1,8 +1,8 @@
 /// <reference types="vitest" />
-import { defineConfig } from "vite";
-import vue from "@vitejs/plugin-vue";
-import vueJsx from "@vitejs/plugin-vue-jsx";
-import path from "path";
+import path from 'path'
+import { defineConfig } from 'vite'
+import vue from '@vitejs/plugin-vue'
+import vueJsx from '@vitejs/plugin-vue-jsx'
 import Unocss from 'unocss/vite'
 
 // https://vitejs.dev/config/
@@ -11,12 +11,12 @@ export default defineConfig({
     transformMode: {
       web: [/\.[jt]sx$/],
     },
-    environment:"jsdom"
+    environment: 'jsdom',
   },
   plugins: [vueJsx(), vue(), Unocss()],
   resolve: {
     alias: {
-      "@/": `${path.resolve(__dirname, "src")}/`,
+      '@/': `${path.resolve(__dirname, 'src')}/`,
     },
   },
-});
+})

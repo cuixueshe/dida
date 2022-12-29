@@ -1,1 +1,1 @@
-export { useTaskStore } from "./task";
+export { useTaskStore } from './task'

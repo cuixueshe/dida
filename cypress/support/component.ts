@@ -14,16 +14,16 @@
 // ***********************************************************
 
 // Import commands.js using ES2015 syntax:
-import "./commands";
-import "cypress-promise/register";
+import './commands'
+import 'cypress-promise/register'
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
 
-import { mount } from "cypress/vue";
-import { createMemoryHistory, createRouter } from "vue-router";
-import { routes } from "../../src/router";
-import { Router } from 'vue-router'
+import { mount } from 'cypress/vue'
+import type { Router } from 'vue-router'
+import { createMemoryHistory, createRouter } from 'vue-router'
+import { routes } from '../../src/router'
 
 type MountParams = Parameters<typeof mount>
 type OptionsParam = MountParams[1] & { router?: Router }
@@ -39,33 +39,33 @@ declare global {
        * @param component Vue Component or JSX Element to mount
        * @param options Options passed to Vue Test Utils
        */
-      mount(component: any, options?: OptionsParam): Chainable<any>;
+      mount(component: any, options?: OptionsParam): Chainable<any>
     }
   }
 }
 
-Cypress.Commands.add("mount", (component: any, options = {}) => {
+Cypress.Commands.add('mount', (component: any, options = {}) => {
   // Setup options object
-  options.global = options.global || {};
-  options.global.plugins = options.global.plugins || [];
+  options.global = options.global || {}
+  options.global.plugins = options.global.plugins || []
 
   // create router if one is not provided
   if (!options.router) {
     options.router = createRouter({
-      routes: routes,
+      routes,
       history: createMemoryHistory(),
-    });
+    })
   }
 
   // Add router plugin
   options.global.plugins.push({
     install(app: any) {
-      app.use(options.router);
+      app.use(options.router)
     },
-  });
+  })
 
-  return mount(component, options);
-});
+  return mount(component, options)
+})
 
 // Example use:
 // cy.mount(MyComponent)
