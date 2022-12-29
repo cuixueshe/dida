@@ -39,8 +39,8 @@ export class Task {
     if (this.previousProject) {
       this.state = this.previousState!;
       this.addToProject(this.previousProject);
-      this.previousState = null
-      this.previousProject = null
+      this.previousState = null;
+      this.previousProject = null;
     }
   }
 }
@@ -104,6 +104,16 @@ const data = {
       ],
     },
   ],
+  trash: {
+    name: "垃圾桶",
+    taskList: [
+      {
+        title: "我是被删除的 task",
+        content: "",
+        state: 4,
+      },
+    ],
+  },
 };
 
 // 构建 Model 层
@@ -111,6 +121,8 @@ const projectList: Project[] = [];
 
 // 完成的任务列表
 const completedProject = new Project("已完成");
+// 删除的任务列表
+const trashProject = new Project("垃圾桶");
 
 // 基于后端返回的数据做初始化
 data.projectList.forEach((projectListData) => {
@@ -122,11 +134,21 @@ data.projectList.forEach((projectListData) => {
     if (state === TaskState.ACTIVE) {
       project.taskList.push(task);
     } else if (state === TaskState.COMPLETED) {
+      task.previousProject = project
+      task.previousState = TaskState.ACTIVE
+      task.project = completedProject
+      task.setState(TaskState.COMPLETED)
       completedProject.taskList.push(task);
     }
   });
 
   projectList.push(project);
+});
+
+data.trash.taskList.forEach(({ title, content }) => {
+  const task = new Task(title, content, trashProject);
+  task.setState(TaskState.REMOVED)
+  trashProject.addTask(task);
 });
 
 export const useTaskStore = defineStore("task", () => {
@@ -165,6 +187,8 @@ export const useTaskStore = defineStore("task", () => {
       currentActiveProject.value = project;
     } else if (projectName === "已完成") {
       currentActiveProject.value = completedProject;
+    } else if (projectName === "垃圾桶") {
+      currentActiveProject.value = trashProject;
     }
 
     changeActiveTask(null);
@@ -183,6 +207,7 @@ export const useTaskStore = defineStore("task", () => {
 
   function restoreTask(task: Task) {
     task.restore();
+    changeActiveTask(null);
   }
 
   return {

@@ -12,6 +12,7 @@
     <div>
       <ul>
         <li @click="handleShowCompletedProject">已完成</li>
+        <li @click="handleShowTrashProject">垃圾桶</li>
       </ul>
     </div>
   </div>
@@ -52,6 +53,10 @@ const nodeProps = (treeOption: any) => {
 
 function handleShowCompletedProject () {
   taskStore.changeCurrentActiveProject("已完成")
+}
+
+function handleShowTrashProject () {
+  taskStore.changeCurrentActiveProject("垃圾桶")
 }
 </script>
 

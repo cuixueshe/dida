@@ -1,18 +1,38 @@
 <template>
-  <div
-    @click.right="handleRightClickTask($event, task)"
-    @click="handleClickTask(task)"
-  >
+  <div @click.right="handleRightClickTask($event, task)">
     <div class="flex">
-      <div class="w-4 h-4 bg-blue-400" @click="handleCompleteTodo"></div>
-      <div class="w-full" contenteditable="true" @input="handleInput">
-        {{ task.title }}
-      </div>
+      <template v-if="task.state === TaskState.REMOVED">
+        <div class="flex">
+          <div>
+            <n-popover trigger="hover">
+              <template #trigger>
+                <div class="w-4 h-4 bg-blue-400"></div>
+              </template>
+              <span>在垃圾桶里面的 Task 是不可以直接被恢复的哦</span>
+            </n-popover>
+          </div>
+          <div class="w-full" @click="handleClickTask(task)">
+            {{ task.title }}
+          </div>
+        </div>
+      </template>
+      <template v-else>
+        <div class="w-4 h-4 bg-blue-400" @click="handleCompleteTodo"></div>
+        <div
+          class="w-full"
+          contenteditable="true"
+          @input="handleInput"
+          @click="handleClickTask(task)"
+        >
+          {{ task.title }}
+        </div>
+      </template>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { NPopover } from "naive-ui";
 import { Task, TaskState } from "../../store/task";
 import { useTaskStore } from "../../store";
 import { useTaskRightContextMenu } from "../../composable/taskRightContextMenu";
@@ -39,11 +59,13 @@ function handleInput(e: Event) {
   taskStore.setCurrentActiveTaskTitle((e.target as HTMLElement).innerText);
 }
 
-function handleCompleteTodo() {
+function handleCompleteTodo(e: Event) {
   if (props.task.state === TaskState.ACTIVE) {
     taskStore.completeTask(props.task);
-  }else{
+  } else if (props.task.state === TaskState.COMPLETED) {
     taskStore.restoreTask(props.task);
+  } else if (props.task.state === TaskState.REMOVED) {
+    console.log("在垃圾桶里面的 task 不可以直接恢复");
   }
 }
 </script>
