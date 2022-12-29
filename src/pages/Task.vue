@@ -7,14 +7,14 @@
 			<TaskList></TaskList>
 		</div>
 		<div class="w-1/4 bg-blue-500">
-			<TaskEditer></TaskEditer>
+			<TaskEditor></TaskEditor>
 		</div>
 	</div>
 </template>
 
 <script setup lang="ts">
 import TaskList from '../components/task/TaskList.vue'
-import TaskEditer from '../components/task/TaskEditer.vue'
+import TaskEditor from '../components/task/TaskEditor.vue'
 import TaskLeftListView from '../components/task/TaskLeftListView.vue'
 
 </script>
