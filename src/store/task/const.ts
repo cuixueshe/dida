@@ -4,3 +4,8 @@ export enum TaskState {
   GIVE_UP = 3,
   REMOVED = 4,
 }
+
+export enum SpecialProjectNames {
+  Complete = '已完成',
+  Trash = '垃圾桶',
+}
