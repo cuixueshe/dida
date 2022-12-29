@@ -51,12 +51,12 @@ function handleShowCompletedProject() {
         :node-props="nodeProps"
       />
     </div>
-    <div>
+    <div class="mt-2px px-6">
       <ul>
-        <li @click="handleShowCompletedProject">
+        <li class="cursor-pointer" @click="handleShowCompletedProject">
           {{ SpecialProjectNames.Complete }}
         </li>
-        <li @click="handleShowTrashProject">
+        <li class="cursor-pointer" @click="handleShowTrashProject">
           {{ SpecialProjectNames.Trash }}
         </li>
       </ul>

@@ -69,7 +69,7 @@ export const useTaskStore = defineStore('task', () => {
 
   function shouldShowTodoAdd() {
     const name = currentActiveProject.value?.name
-    return name !== SpecialProjectNames.Complete as string || name !== SpecialProjectNames.Trash
+    return name !== SpecialProjectNames.Complete as string && name !== SpecialProjectNames.Trash
   }
 
   return {
