@@ -1,11 +1,13 @@
 <template>
-  <div
-    @click.right="handleRightClickTask($event, task)"
-    @click="handleClickTask(task)"
-  >
+  <div @click.right="handleRightClickTask($event, task)">
     <div class="flex">
       <div class="w-4 h-4 bg-blue-400" @click="handleCompleteTodo"></div>
-      <div class="w-full" contenteditable="true" @input="handleInput">
+      <div
+        class="w-full"
+        contenteditable="true"
+        @input="handleInput"
+        @focus="handleClickTask(props.task)"
+      >
         {{ task.title }}
       </div>
     </div>
@@ -24,7 +26,7 @@ interface Props {
 const props = defineProps<Props>();
 
 const taskStore = useTaskStore();
-const { showContextMenu } = useTaskRightContextMenu();
+const { showContextMenu } = useTaskRightContextMenu(); 
 
 function handleRightClickTask(e: MouseEvent, task: Task) {
   taskStore.changeActiveTask(task);
@@ -36,13 +38,14 @@ function handleClickTask(task: Task) {
 }
 
 function handleInput(e: Event) {
+  console.log(e.target, "e.target");
   taskStore.setCurrentActiveTaskTitle((e.target as HTMLElement).innerText);
 }
 
 function handleCompleteTodo() {
   if (props.task.state === TaskState.ACTIVE) {
     taskStore.completeTask(props.task);
-  }else{
+  } else {
     taskStore.restoreTask(props.task);
   }
 }
