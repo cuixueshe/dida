@@ -1,10 +1,7 @@
 <template>
-  <div
-    @click.right="handleRightClickTask($event, task)"
-    @click="handleClickTask(task)"
-  >
-    <div class="flex">
-      <div class="w-4 h-4 bg-blue-400" @click="handleCompleteTodo"></div>
+  <div @click.right="handleRightClickTask($event, task)" @click="handleClickTask(task)">
+    <div class="flex justify-start items-center gap-5px">
+      <div class="w-5 h-5 bg-#ccc rounded-1 cursor-pointer" @click="handleCompleteTodo"></div>
       <div class="w-full" contenteditable="true" @input="handleInput">
         {{ task.title }}
       </div>
@@ -42,10 +39,8 @@ function handleInput(e: Event) {
 function handleCompleteTodo() {
   if (props.task.state === TaskState.ACTIVE) {
     taskStore.completeTask(props.task);
-  }else{
+  } else {
     taskStore.restoreTask(props.task);
   }
 }
 </script>
-
-<style scoped></style>

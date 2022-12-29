@@ -1,11 +1,15 @@
 <template>
   <div>
     <div v-if="taskStore.currentActiveTask">
-      <h1 contenteditable="true" @input="handleInput">
+      <h1 contenteditable="true" @input="handleInput" class="text-3xl">
         {{ taskStore.currentActiveTask.title }}
       </h1>
-      <div>
-        <InkMde v-model="taskStore.currentActiveTask.content" />
+      <div class="mt-2">
+        <InkMde v-model="taskStore.currentActiveTask.content" :options="{
+  interface: {
+    appearance: isDark ? 'dark' : 'light'
+  }
+}" />
       </div>
     </div>
     <div v-else>
@@ -15,8 +19,9 @@
 </template>
 
 <script setup lang="ts">
-import { useTaskStore } from '../../store'
+import { useTaskStore } from '@/store'
 import InkMde from 'ink-mde/vue'
+import { isDark } from '@/composable/dark';
 
 const taskStore = useTaskStore()
 
@@ -25,7 +30,3 @@ function handleInput(e: Event) {
 }
 
 </script>
-
-<style scoped>
-
-</style>
