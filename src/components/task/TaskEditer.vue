@@ -15,7 +15,7 @@
 </template>
 
 <script setup lang="ts">
-import { useTaskStore } from '../../store'
+import { useTaskStore } from '../../store/task'
 import InkMde from 'ink-mde/vue'
 
 const taskStore = useTaskStore()
