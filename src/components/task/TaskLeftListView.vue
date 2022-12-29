@@ -1,18 +1,8 @@
 <template>
   <div>
     <div>
-      <n-tree
-        block-line
-        :data="data"
-        :default-expanded-keys="[1]"
-	:default-selected-keys="[2]"
-        :node-props="nodeProps"
-      />
-    </div>
-    <div>
-      <ul>
-        <li @click="handleShowCompletedProject">已完成</li>
-      </ul>
+      <n-tree block-line :data="data" :default-expanded-keys="[1]" :default-selected-keys="[2]"
+        :node-props="nodeProps" />
     </div>
   </div>
 </template>
@@ -26,18 +16,22 @@ const taskStore = useTaskStore();
 
 const data = ref<any[]>([
   {
-    key: 1,
+    key: 100,
     label: "清单",
     checkboxDisabled: false,
     isLeaf: false,
     children: taskStore.projectNames.map((projectName, index) => {
       return {
-        key: 2 + index,
+        key: 100 + index + 1,
         label: projectName,
         isLeaf: true,
       };
     }),
   },
+  {
+    key: 200,
+    label: "已完成",
+  }
 ]);
 
 const nodeProps = (treeOption: any) => {
@@ -49,10 +43,4 @@ const nodeProps = (treeOption: any) => {
   };
 };
 
-
-function handleShowCompletedProject () {
-  taskStore.changeCurrentActiveProject("已完成")
-}
 </script>
-
-<style scoped></style>
