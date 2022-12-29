@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { NTree } from 'naive-ui'
-import { useTaskStore } from '@/store'
-import { SpecialProjectNames } from '@/store/task'
+import { useTaskStore } from '@/store/task'
+import { SpecialProjectNames } from '@/store/task/const'
 
 const taskStore = useTaskStore()
 
@@ -20,10 +20,6 @@ const data = ref<any[]>([
       }
     }),
   },
-  {
-    key: 200,
-    label: SpecialProjectNames.DONE,
-  },
 ])
 
 const nodeProps = (treeOption: any) => {
@@ -34,15 +30,36 @@ const nodeProps = (treeOption: any) => {
     },
   }
 }
+
+function handleShowTrashProject() {
+  taskStore.changeCurrentActiveProject(SpecialProjectNames.Trash)
+}
+
+function handleShowCompletedProject() {
+  taskStore.changeCurrentActiveProject(SpecialProjectNames.Complete)
+}
 </script>
 
 <template>
   <div>
     <div>
       <NTree
-        block-line :data="data" :default-expanded-keys="[1]" :default-selected-keys="[2]"
+        block-line
+        :data="data"
+        :default-expanded-keys="[1]"
+        :default-selected-keys="[2]"
         :node-props="nodeProps"
       />
+    </div>
+    <div>
+      <ul>
+        <li @click="handleShowCompletedProject">
+          {{ SpecialProjectNames.Complete }}
+        </li>
+        <li @click="handleShowTrashProject">
+          {{ SpecialProjectNames.Trash }}
+        </li>
+      </ul>
     </div>
   </div>
 </template>
