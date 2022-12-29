@@ -1,22 +1,31 @@
 <template>
-  <div @click.right="handleRightClickTask($event, task)" @click="handleClickTask(task)">
-    <div class="flex justify-start items-center gap-5px">
-      <div class="w-5 h-5 bg-#ccc rounded-1 cursor-pointer" @click="handleCompleteTodo"></div>
-      <div class="w-full" contenteditable="true" @input="handleInput">
-        {{ task.title }}
-      </div>
+  <div class="flex justify-start items-center gap-5px">
+    <button :class="[
+  checkboxColors[task.state],
+]" class="w-5 h-5 rounded-1" @click="handleCompleteTodo">
+    </button>
+    <div class="w-full cursor-pointer" contenteditable="true" @input="handleInput" @click="handleClickTask(task)"
+      @click.right="handleRightClickTask($event, task)">
+      {{ task.title }}
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { Task, TaskState } from "../../store/task";
-import { useTaskStore } from "../../store";
-import { useTaskRightContextMenu } from "../../composable/taskRightContextMenu";
+import { Task, TaskState } from "@/store/task";
+import { useTaskStore } from "@/store";
+import { useTaskRightContextMenu } from "@/composable/taskRightContextMenu";
 
 interface Props {
   task: Task;
 }
+
+const checkboxColors: Record<TaskState, string> = {
+  [TaskState.ACTIVE]: "bg-#ccc",
+  [TaskState.COMPLETED]: "bg-#007A78",
+  [TaskState.GIVE_UP]: "bg-#FF2200",
+  [TaskState.REMOVED]: "bg-#ccc",
+};
 
 const props = defineProps<Props>();
 

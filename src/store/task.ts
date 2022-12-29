@@ -8,6 +8,10 @@ export enum TaskState {
   REMOVED = 4,
 }
 
+export enum SpecialProjectNames {
+  DONE = "已完成"
+}
+
 export class Task {
   public title: string;
   content: string;
@@ -15,10 +19,11 @@ export class Task {
   state: TaskState = TaskState.ACTIVE;
   previousProject?: Project | null;
   previousState?: TaskState | null;
-  constructor(title: string, content: string, project: Project) {
+  constructor(title: string, content: string, project: Project, state: number = TaskState.ACTIVE) {
     this.title = title;
     this.content = content;
     this.project = project;
+    this.state = state
   }
 
   setState(state: TaskState) {
@@ -110,7 +115,7 @@ const data = {
 const projectList: Project[] = [];
 
 // 完成的任务列表
-const completedProject = new Project("已完成");
+const completedProject = new Project(SpecialProjectNames.DONE);
 
 // 基于后端返回的数据做初始化
 data.projectList.forEach((projectListData) => {
@@ -118,7 +123,7 @@ data.projectList.forEach((projectListData) => {
   projectListData.taskList.forEach(({ title, content, state }) => {
     // 一个任务只能属于一个 project
     // 所以我们在构建的时候就需要区分出来 当前的 task 应该属于哪个 project
-    const task = new Task(title, content, project);
+    const task = new Task(title, content, project, state);
     if (state === TaskState.ACTIVE) {
       project.taskList.push(task);
     } else if (state === TaskState.COMPLETED) {
@@ -163,7 +168,7 @@ export const useTaskStore = defineStore("task", () => {
     });
     if (project) {
       currentActiveProject.value = project;
-    } else if (projectName === "已完成") {
+    } else if (projectName === SpecialProjectNames.DONE) {
       currentActiveProject.value = completedProject;
     }
 
@@ -185,6 +190,10 @@ export const useTaskStore = defineStore("task", () => {
     task.restore();
   }
 
+  function shouldShowTodoAdd() {
+    return currentActiveProject.value?.name !== SpecialProjectNames.DONE;
+  }
+
   return {
     currentActiveTask,
     currentActiveProject,
@@ -198,5 +207,7 @@ export const useTaskStore = defineStore("task", () => {
 
     changeCurrentActiveProject,
     setCurrentActiveTaskTitle,
+
+    shouldShowTodoAdd
   };
 });

@@ -4,7 +4,8 @@
       <h1 class="text-4xl">{{ taskStore.currentActiveProject?.name }}</h1>
     </div>
     <div>
-      <input type="text" placeholder="添加任务，回车即可创建" @keypress.enter="addTask" v-model="taskTitle" class="w-300px h-30px
+      <input type="text" v-show="taskStore.shouldShowTodoAdd()" placeholder="添加任务，回车即可创建" @keypress.enter="addTask"
+        v-model="taskTitle" class="w-300px h-30px
       rounded-6px p-4px pl-12px outline-none
       border-none box-content bg-gray-200 dark:bg-#3B3B3B" />
     </div>

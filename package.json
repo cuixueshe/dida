@@ -25,6 +25,7 @@
   },
   "devDependencies": {
     "@iconify-json/carbon": "^1.1.11",
+    "@iconify-json/mdi": "^1.1.40",
     "@unocss/reset": "^0.48.0",
     "@vitejs/plugin-vue": "^3.0.0",
     "@vitejs/plugin-vue-jsx": "^2.0.0",

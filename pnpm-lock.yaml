@@ -2,6 +2,7 @@ lockfileVersion: 5.4
 
 specifiers:
   '@iconify-json/carbon': ^1.1.11
+  '@iconify-json/mdi': ^1.1.40
   '@imengyu/vue3-context-menu': ^1.1.7
   '@unocss/reset': ^0.48.0
   '@vitejs/plugin-vue': ^3.0.0
@@ -34,6 +35,7 @@ dependencies:
 
 devDependencies:
   '@iconify-json/carbon': 1.1.11
+  '@iconify-json/mdi': 1.1.40
   '@unocss/reset': 0.48.0
   '@vitejs/plugin-vue': registry.npmmirror.com/@vitejs/plugin-vue/3.0.1_vite@3.0.4+vue@3.2.37
   '@vitejs/plugin-vue-jsx': registry.npmmirror.com/@vitejs/plugin-vue-jsx/2.0.0_vite@3.0.4+vue@3.2.37
@@ -317,6 +319,12 @@ packages:
 
   /@iconify-json/carbon/1.1.11:
     resolution: {integrity: sha512-IHkHSNmTM6q6b8DuKSzd+AEMYPZywSxcb+37kZU7ywtcwsGen3aVEvWFykopIWjjwj3xdZ/5UdwJRqhZDQMlNg==}
+    dependencies:
+      '@iconify/types': 2.0.0
+    dev: true
+
+  /@iconify-json/mdi/1.1.40:
+    resolution: {integrity: sha512-0CeAVzCyKQzBdkDa0hOECVLtXvaTqGYuy9ZR7caM6+HBJYXJW9aDUcYVFv9byrDfZ3lVAfus1CjZlZEa+HBM4A==}
     dependencies:
       '@iconify/types': 2.0.0
     dev: true
