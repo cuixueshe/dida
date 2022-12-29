@@ -1,5 +1,5 @@
 <template>
-  <div bg-gray-500>
+  <div>
     <h2>home</h2>
     <n-button type="warning" @click="toAboutView">to about</n-button>
     <div>
