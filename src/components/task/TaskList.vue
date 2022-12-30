@@ -33,6 +33,8 @@ function addTask() {
         <TaskItem :task="task" />
       </li>
     </TransitionGroup>
+    <!-- 暂时性修复 contenteditable 的 bug #9 -->
+    <div class="w-full h-1px" contenteditable="false" />
   </div>
 </template>
 
