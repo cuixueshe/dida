@@ -30,7 +30,7 @@ function handleClickTask(task: Task) {
 }
 
 function handleInput(e: Event) {
-  taskStore.setCurrentActiveTaskTitle((e.target as HTMLElement).innerText)
+  taskStore.setCurrentActiveTaskTitle((e.target as HTMLInputElement).value)
 }
 
 function handleCompleteTodo(e: Event) {
@@ -49,7 +49,7 @@ function handleCompleteTodo(e: Event) {
     <div class="flex justify-start items-center gap-5px">
       <template v-if="task.state === TaskState.REMOVED">
         <!-- 临时加的提示 后面要去掉 -->
-        <div class="flex justify-start items-center gap-5px">
+        <div class="justify-start items-center gap-5px">
           <div>
             <NPopover trigger="hover">
               <template #trigger>
@@ -71,16 +71,17 @@ function handleCompleteTodo(e: Event) {
         <button
           :class="[
             checkboxColors[task.state],
-          ]" class="w-5 h-5 rounded-1" @click="handleCompleteTodo"
+          ]"
+          class="w-5 h-5 rounded-1"
+          @click="handleCompleteTodo"
         />
-        <div
+        <input
+          type="text"
           class="w-full cursor-pointer"
-          contenteditable="true"
+          :value="task.title"
           @input="handleInput"
           @focus="handleClickTask(task)"
         >
-          {{ task.title }}
-        </div>
       </template>
     </div>
   </div>
