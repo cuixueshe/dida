@@ -77,7 +77,7 @@ function handleCompleteTodo(e: Event) {
         />
         <input
           type="text"
-          class="w-full cursor-pointer"
+          class="w-full cursor-pointer bg-transparent"
           :value="task.title"
           @input="handleInput"
           @focus="handleClickTask(task)"
