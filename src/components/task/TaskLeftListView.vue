@@ -86,6 +86,7 @@ const nodeProps = (treeOption: any) => {
           items-center
           h-8
           hover="bg-[#F6F8FF]"
+          dark="color-white hover:color-white hover:rounded hover:bg-lightblue-700 transition duration-400 ease-in-out"
           @click="
             taskStore.changeCurrentActiveProject(item.title)
           "
@@ -94,16 +95,15 @@ const nodeProps = (treeOption: any) => {
             <Icon
               :icon="item.icon"
               width="20"
-              color="#9D9FA3"
+              class="dark:color-white-b  color-[#9D9FA3]"
             />
             <span class="ml-2">{{ item.title }}</span>
           </div>
 
           <Icon
             icon="material-symbols:more-horiz"
-            color="#9D9FA3"
             width="20"
-            class="isShow"
+            class="isShow dark:color-white color-[#9D9FA3]"
           />
         </li>
       </ul>
@@ -118,4 +118,5 @@ const nodeProps = (treeOption: any) => {
 li:hover .isShow {
   display: block;
 }
+
 </style>
