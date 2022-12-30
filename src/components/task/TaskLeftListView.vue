@@ -8,7 +8,7 @@ import { SpecialProjectNames } from '@/store/task/const'
 interface TaskListType {
   key: string
   icon: string
-  title: SpecialProjectNames
+  title: `${SpecialProjectNames}` 
 }
 
 const taskStore = useTaskStore()
