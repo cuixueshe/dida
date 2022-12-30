@@ -30,7 +30,8 @@ function handleClickTask(task: Task) {
 }
 
 function handleInput(e: Event) {
-  taskStore.setCurrentActiveTaskTitle((e.target as HTMLElement).innerText)
+  if (taskStore.currentActiveTask)
+    taskStore.currentActiveTask.title = (e.target as HTMLElement).innerText
 }
 
 function handleCompleteTodo(e: Event) {

@@ -6,7 +6,8 @@ import { isDark } from '@/composable/dark'
 const taskStore = useTaskStore()
 
 function handleInput(e: Event) {
-  taskStore.setCurrentActiveTaskTitle((e.target as HTMLElement).innerText)
+  if (taskStore.currentActiveTask)
+    taskStore.currentActiveTask.title = (e.target as HTMLElement).innerText
 }
 </script>
 
@@ -18,7 +19,8 @@ function handleInput(e: Event) {
       </h1>
       <div class="mt-2">
         <InkMde
-          v-model="taskStore.currentActiveTask.content" :options="{
+          v-model="taskStore.currentActiveTask.content"
+          :options="{
             interface: {
               appearance: isDark ? 'dark' : 'light',
             },

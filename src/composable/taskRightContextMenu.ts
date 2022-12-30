@@ -12,7 +12,7 @@ export function useTaskRightContextMenu() {
         {
           label: 'remove',
           onClick: () => {
-            taskStore.removeCurrentActiveTask()
+            taskStore.putTaskToTrash(taskStore.currentActiveTask!)
           },
         },
       ],

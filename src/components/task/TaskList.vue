@@ -29,7 +29,7 @@ function addTask() {
       >
     </div>
     <TransitionGroup name="list" tag="ul" class="flex flex-col gap-10px">
-      <li v-for="task in taskStore.currentActiveProject?.taskList" :key="task.getId()">
+      <li v-for="task in taskStore.currentActiveProject?.tasks" :key="task.id">
         <TaskItem :task="task" />
       </li>
     </TransitionGroup>
