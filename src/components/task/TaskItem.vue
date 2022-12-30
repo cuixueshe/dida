@@ -49,7 +49,7 @@ function handleCompleteTodo(e: Event) {
     <div class="flex justify-start items-center gap-5px">
       <template v-if="task.state === TaskState.REMOVED">
         <!-- 临时加的提示 后面要去掉 -->
-        <div class="justify-start items-center gap-5px">
+        <div class="flex justify-start items-center gap-5px">
           <div>
             <NPopover trigger="hover">
               <template #trigger>
