@@ -1,20 +1,25 @@
 // for vue
 // 这个文件就会涉及到 vue 了
 import { defineStore } from 'pinia'
-import { reactive, ref } from 'vue'
+import { computed, reactive, ref } from 'vue'
 import { nanoid } from 'nanoid'
-import { completedProject, projectList, trashProject } from './model'
+import { completedProject, projects as projectsData, trashProject } from './model'
 import type { Project } from './Project'
 import { Task } from './Task'
 import { SpecialProjectNames, TaskState } from './const'
 
 export const useTaskStore = defineStore('task', () => {
+  const projects = reactive(projectsData)
   const currentActiveTask = ref<Task | null>()
   const currentActiveProject = ref<Project>()
-  const projectNames = reactive<string[]>(['快捷', '集草器'])
+  const projectNames = computed(() => {
+    return projects.map((project) => {
+      return project.name
+    })
+  })
 
   // 取第一个 project 作为当前显示的
-  currentActiveProject.value = projectList[0]
+  currentActiveProject.value = projects[0]
 
   function changeActiveTask(task: Task | null) {
     currentActiveTask.value = task
@@ -37,7 +42,7 @@ export const useTaskStore = defineStore('task', () => {
   }
 
   function changeCurrentActiveProject(projectName: string) {
-    const project = projectList.find((project) => {
+    const project = projects.find((project) => {
       return project.name === projectName
     })
     if (project)
