@@ -32,6 +32,7 @@
     "@commitlint/config-conventional": "^17.3.0",
     "@iconify-json/carbon": "^1.1.11",
     "@iconify-json/mdi": "^1.1.40",
+    "@iconify/vue": "^4.0.2",
     "@types/node": "^18.11.18",
     "@unocss/reset": "^0.48.0",
     "@vitejs/plugin-vue": "^3.0.0",
@@ -63,7 +64,9 @@
   },
   "eslintConfig": {
     "extends": "@antfu",
-    "ignorePatterns": ["**/*.cy.js"]
+    "ignorePatterns": [
+      "**/*.cy.js"
+    ]
   },
   "commitlint": {
     "extends": [
