@@ -20,7 +20,8 @@ import TheHeader from '@/components/header/TheHeader.vue'
   <NLayout has-sider class="!h-[calc(100vh-40px)]">
     <NLayoutSider
       collapse-mode="transform" :collapsed-width="0" :width="240" show-trigger="bar"
-      content-style="padding: 24px;" bordered
+      content-style="padding: 10px 0 10px 10px;"
+      bordered
     >
       <TaskLeftListView />
     </NLayoutSider>
