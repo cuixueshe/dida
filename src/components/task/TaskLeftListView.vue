@@ -4,14 +4,17 @@ import { NTree } from 'naive-ui'
 import { Icon } from '@iconify/vue'
 import { useTaskStore } from '@/store/task'
 import { SpecialProjectNames } from '@/store/task/const'
+import { Key } from 'naive-ui/es/cascader/src/interface'
+import { useStatusStore } from '@/store/task/status'
 
 interface TaskListType {
-  key: string
+  key: number
   icon: string
-  title: `${SpecialProjectNames}` 
+  title: `${SpecialProjectNames}`
 }
 
 const taskStore = useTaskStore()
+const statusStore = useStatusStore()
 
 const data = ref<any[]>([
   {
@@ -26,33 +29,48 @@ const data = ref<any[]>([
           label: projectName,
           isLeaf: true,
         }
-      },
+      }
     ),
   },
 ])
 
+const selectedKey = ref<Key[]>(
+  statusStore.$state.selectedKey
+)
+
+const selected = 'bg-[#E7F5EE] dark:bg-[#233633]'
+
 const taskList = reactive<TaskListType[]>([
   {
-    key: 'complete',
+    key: 1,
     icon: 'material-symbols:check-box',
     title: SpecialProjectNames.Complete,
   },
   {
-    key: 'failed',
+    key: 2,
     icon: 'mdi:close-box',
     title: SpecialProjectNames.Failed,
   },
   {
-    key: 'trash',
+    key: 3,
     icon: 'material-symbols:delete',
     title: SpecialProjectNames.Trash,
   },
   {
-    key: 'abstract',
+    key: 4,
     icon: 'material-symbols:text-snippet-rounded',
     title: SpecialProjectNames.Abstract,
   },
 ])
+
+const changeSelectedKeyAndActiveProject = (
+  projectName: string,
+  key: number
+) => {
+  taskStore.changeCurrentActiveProject(projectName)
+  selectedKey.value = [key]
+  statusStore.setSelectedKey([key])
+}
 
 const nodeProps = (treeOption: any) => {
   return {
@@ -62,40 +80,50 @@ const nodeProps = (treeOption: any) => {
     },
   }
 }
+
+const changeSelectedKey = (key: number[]) => {
+  selectedKey.value = key
+  statusStore.setSelectedKey(key)
+}
 </script>
 
 <template>
   <div>
     <div>
       <NTree
+        v-model:selected-keys="selectedKey"
+        :default-selected-keys="selectedKey"
         block-line
         :data="data"
-        :default-expanded-keys="[1]"
-        :default-selected-keys="[2]"
         :node-props="nodeProps"
+        @update:selected-keys="changeSelectedKey"
       />
     </div>
-    <div class="mt-2px pl-6 pr-2">
+    <div class="mt-2px">
       <ul>
         <li
           v-for="item in taskList"
           :key="item.key"
-          cursor-pointer
-          flex
-          justify-between
-          items-center
-          h-8
-          hover="bg-[#F6F8FF]"
-          dark="color-white hover:color-white hover:rounded hover:bg-lightblue-700 transition duration-400 ease-in-out"
+          li_common
+          pl-4
+          pr-2
+          hover="bg-[#F3F3F5] dark:bg-[#2D2D30]"
+          :class="
+            selectedKey[0] === item.key ? selected : ''
+          "
           @click="
-            taskStore.changeCurrentActiveProject(item.title)
+            changeSelectedKeyAndActiveProject(
+              item.title,
+              item.key
+            )
           "
         >
           <div flex>
             <Icon
               :icon="item.icon"
               width="20"
-              class="dark:color-white-b  color-[#9D9FA3]"
+              class="color-[#9D9FA3]"
+              dark="color-white-b"
             />
             <span class="ml-2">{{ item.title }}</span>
           </div>
@@ -103,7 +131,8 @@ const nodeProps = (treeOption: any) => {
           <Icon
             icon="material-symbols:more-horiz"
             width="20"
-            class="isShow dark:color-white color-[#9D9FA3]"
+            class="isShow color-[#9D9FA3]"
+            dark="color-white"
           />
         </li>
       </ul>
@@ -118,5 +147,4 @@ const nodeProps = (treeOption: any) => {
 li:hover .isShow {
   display: block;
 }
-
 </style>
