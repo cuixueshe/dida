@@ -131,7 +131,8 @@ const changeSelectedKey = (key: number[]) => {
           <Icon
             icon="material-symbols:more-horiz"
             width="20"
-            class="isShow color-[#9D9FA3]"
+            v-show="selectedKey[0] === item.key"
+            class="color-[#9D9FA3]"
             dark="color-white"
           />
         </li>
