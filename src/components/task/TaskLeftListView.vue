@@ -2,9 +2,8 @@
 import { reactive, ref } from 'vue'
 import { NTree } from 'naive-ui'
 import { Icon } from '@iconify/vue'
-import { useTaskStore } from '@/store/task'
-import { SpecialProjectNames } from '@/store/task/const'
-import { Key } from 'naive-ui/es/cascader/src/interface'
+import type { Key } from 'naive-ui/es/cascader/src/interface'
+import { SpecialProjectNames, useTaskStore } from '@/store/task'
 import { useStatusStore } from '@/store/task/status'
 
 interface TaskListType {
@@ -29,13 +28,13 @@ const data = ref<any[]>([
           label: projectName,
           isLeaf: true,
         }
-      }
+      },
     ),
   },
 ])
 
 const selectedKey = ref<Key[]>(
-  statusStore.$state.selectedKey
+  statusStore.$state.selectedKey,
 )
 
 const selected = 'bg-[#E7F5EE] dark:bg-[#233633]'
@@ -65,7 +64,7 @@ const taskList = reactive<TaskListType[]>([
 
 const changeSelectedKeyAndActiveProject = (
   projectName: string,
-  key: number
+  key: number,
 ) => {
   taskStore.changeCurrentActiveProject(projectName)
   selectedKey.value = [key]
@@ -114,7 +113,7 @@ const changeSelectedKey = (key: number[]) => {
           @click="
             changeSelectedKeyAndActiveProject(
               item.title,
-              item.key
+              item.key,
             )
           "
         >
@@ -129,9 +128,9 @@ const changeSelectedKey = (key: number[]) => {
           </div>
 
           <Icon
+            v-show="selectedKey[0] === item.key"
             icon="material-symbols:more-horiz"
             width="20"
-            v-show="selectedKey[0] === item.key"
             class="color-[#9D9FA3]"
             dark="color-white"
           />

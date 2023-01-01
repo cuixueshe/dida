@@ -1,27 +1,34 @@
 import { nanoid } from 'nanoid'
-import type { Project } from './Project'
-import { TaskState } from './const'
+import type { Project } from './project'
+import { addTaskToProject, removeTaskFromProject } from './project'
 
-export class Task {
-  public id = ''
-  public title: string
-  public content = ''
-  public state: TaskState = TaskState.ACTIVE
-  public project: Project | undefined
-  public previousProject?: Project | null
+export enum TaskState {
+  ACTIVE = 1,
+  COMPLETED = 2,
+  GIVE_UP = 3,
+  REMOVED = 4,
+}
 
-  constructor(title: string, id: string = nanoid()) {
-    this.title = title
-    this.id = id
+export interface Task {
+  id: string
+  title: string
+  content: string
+  state: TaskState
+  project?: Project
+  previousProject?: Project
+}
+
+export function createTask(title: string, id: string = nanoid()): Task {
+  return {
+    id,
+    title,
+    content: '',
+    state: TaskState.ACTIVE,
   }
+}
 
-  moveToProject(project: Project) {
-    this.project?.removeTask(this)
-    project.addTask(this)
-  }
-
-  restore() {
-    if (this.previousProject)
-      this.moveToProject(this.previousProject)
-  }
+export function restoreTask(task: Task) {
+  const previousProject = task.previousProject!
+  removeTaskFromProject(task, task.project!)
+  addTaskToProject(task, previousProject)
 }

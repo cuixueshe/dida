@@ -1,13 +1,13 @@
-import { defineStore } from "pinia";
+import { defineStore } from 'pinia'
 
-export const useStatusStore =  defineStore('status', {
+export const useStatusStore = defineStore('status', {
   persist: true,
   state: () => ({
-    selectedKey: [101] as number[]
+    selectedKey: [101] as number[],
   }),
   actions: {
-    setSelectedKey(key: number[]) { 
+    setSelectedKey(key: number[]) {
       this.selectedKey = key
-    }
+    },
   },
 })

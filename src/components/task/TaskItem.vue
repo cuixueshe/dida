@@ -55,9 +55,9 @@ function handleCompleteTodo(e: Event) {
             <NPopover trigger="hover">
               <template #trigger>
                 <button
-                  :class="[
-                    checkboxColors[task.state],
-                  ]" class="w-5 h-5 rounded-1" @click="handleCompleteTodo"
+                  :class="[checkboxColors[task.state]]"
+                  class="w-5 h-5 rounded-1"
+                  @click="handleCompleteTodo"
                 />
               </template>
               <div>在垃圾桶里面的 Task 是不可以直接被恢复的哦</div>
@@ -70,9 +70,9 @@ function handleCompleteTodo(e: Event) {
       </template>
       <template v-else>
         <button
-          :class="[
-            checkboxColors[task.state],
-          ]" class="w-5 h-5 rounded-1" @click="handleCompleteTodo"
+          :class="[checkboxColors[task.state]]"
+          class="w-5 h-5 rounded-1"
+          @click="handleCompleteTodo"
         />
         <div
           class="w-full cursor-pointer"
