@@ -141,11 +141,4 @@ const changeSelectedKey = (key: number[]) => {
   </div>
 </template>
 
-<style scoped>
-.isShow {
-  display: none;
-}
-li:hover .isShow {
-  display: block;
-}
-</style>
+<style scoped></style>
