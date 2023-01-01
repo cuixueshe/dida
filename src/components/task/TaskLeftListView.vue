@@ -1,10 +1,20 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { reactive, ref } from 'vue'
 import { NTree } from 'naive-ui'
+import { Icon } from '@iconify/vue'
 import { useTaskStore } from '@/store/task'
 import { SpecialProjectNames } from '@/store/task/const'
+import { Key } from 'naive-ui/es/cascader/src/interface'
+import { useStatusStore } from '@/store/task/status'
+
+interface TaskListType {
+  key: number
+  icon: string
+  title: `${SpecialProjectNames}`
+}
 
 const taskStore = useTaskStore()
+const statusStore = useStatusStore()
 
 const data = ref<any[]>([
   {
@@ -12,15 +22,55 @@ const data = ref<any[]>([
     label: '清单',
     checkboxDisabled: false,
     isLeaf: false,
-    children: taskStore.projectNames.map((projectName, index) => {
-      return {
-        key: 100 + index + 1,
-        label: projectName,
-        isLeaf: true,
+    children: taskStore.projectNames.map(
+      (projectName, index) => {
+        return {
+          key: 100 + index + 1,
+          label: projectName,
+          isLeaf: true,
+        }
       }
-    }),
+    ),
   },
 ])
+
+const selectedKey = ref<Key[]>(
+  statusStore.$state.selectedKey
+)
+
+const selected = 'bg-[#E7F5EE] dark:bg-[#233633]'
+
+const taskList = reactive<TaskListType[]>([
+  {
+    key: 1,
+    icon: 'material-symbols:check-box',
+    title: SpecialProjectNames.Complete,
+  },
+  {
+    key: 2,
+    icon: 'mdi:close-box',
+    title: SpecialProjectNames.Failed,
+  },
+  {
+    key: 3,
+    icon: 'material-symbols:delete',
+    title: SpecialProjectNames.Trash,
+  },
+  {
+    key: 4,
+    icon: 'material-symbols:text-snippet-rounded',
+    title: SpecialProjectNames.Abstract,
+  },
+])
+
+const changeSelectedKeyAndActiveProject = (
+  projectName: string,
+  key: number
+) => {
+  taskStore.changeCurrentActiveProject(projectName)
+  selectedKey.value = [key]
+  statusStore.setSelectedKey([key])
+}
 
 const nodeProps = (treeOption: any) => {
   return {
@@ -31,12 +81,9 @@ const nodeProps = (treeOption: any) => {
   }
 }
 
-function handleShowTrashProject() {
-  taskStore.changeCurrentActiveProject(SpecialProjectNames.Trash)
-}
-
-function handleShowCompletedProject() {
-  taskStore.changeCurrentActiveProject(SpecialProjectNames.Complete)
+const changeSelectedKey = (key: number[]) => {
+  selectedKey.value = key
+  statusStore.setSelectedKey(key)
 }
 </script>
 
@@ -44,22 +91,54 @@ function handleShowCompletedProject() {
   <div>
     <div>
       <NTree
+        v-model:selected-keys="selectedKey"
+        :default-selected-keys="selectedKey"
         block-line
         :data="data"
-        :default-expanded-keys="[1]"
-        :default-selected-keys="[2]"
         :node-props="nodeProps"
+        @update:selected-keys="changeSelectedKey"
       />
     </div>
-    <div class="mt-2px px-6">
+    <div class="mt-2px">
       <ul>
-        <li class="cursor-pointer" @click="handleShowCompletedProject">
-          {{ SpecialProjectNames.Complete }}
-        </li>
-        <li class="cursor-pointer" @click="handleShowTrashProject">
-          {{ SpecialProjectNames.Trash }}
+        <li
+          v-for="item in taskList"
+          :key="item.key"
+          li_common
+          pl-4
+          pr-2
+          hover="bg-[#F3F3F5] dark:bg-[#2D2D30]"
+          :class="
+            selectedKey[0] === item.key ? selected : ''
+          "
+          @click="
+            changeSelectedKeyAndActiveProject(
+              item.title,
+              item.key
+            )
+          "
+        >
+          <div flex>
+            <Icon
+              :icon="item.icon"
+              width="20"
+              class="color-[#9D9FA3]"
+              dark="color-white-b"
+            />
+            <span class="ml-2">{{ item.title }}</span>
+          </div>
+
+          <Icon
+            icon="material-symbols:more-horiz"
+            width="20"
+            v-show="selectedKey[0] === item.key"
+            class="color-[#9D9FA3]"
+            dark="color-white"
+          />
         </li>
       </ul>
     </div>
   </div>
 </template>
+
+<style scoped></style>
