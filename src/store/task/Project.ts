@@ -1,6 +1,6 @@
 import type { Task } from './task'
 import { TaskState, createTask } from './task'
-import { fetchData } from './data'
+import type { fetchData } from './data'
 
 export interface Project {
   state: TaskState
@@ -80,12 +80,6 @@ export function findProjectByName(projectName: string) {
   }
 }
 
-fetchData.trash.tasks.forEach(({ title, content, id }) => {
-  const task = createTask(title, id)
-  task.content = content
-  addTaskToProject(task, trashProject)
-})
-
 export function initProjects(data: typeof fetchData) {
   data.projectList.forEach((projectListData) => {
     const project = createProject(projectListData.name)
@@ -106,5 +100,11 @@ export function initProjects(data: typeof fetchData) {
     })
 
     projects.push(project)
+  })
+
+  data.trash.tasks.forEach(({ title, content, id }) => {
+    const task = createTask(title, id)
+    task.content = content
+    addTaskToProject(task, trashProject)
   })
 }
