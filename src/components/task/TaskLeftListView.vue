@@ -3,7 +3,7 @@ import { reactive, ref } from 'vue'
 import { NTree } from 'naive-ui'
 import { Icon } from '@iconify/vue'
 import type { Key } from 'naive-ui/es/cascader/src/interface'
-import { SpecialProjectNames, useStatusStore, useTaskStore } from '@/store/task'
+import { SpecialProjectNames, useTaskStore } from '@/store/task'
 
 interface TaskListType {
   key: number
@@ -12,7 +12,9 @@ interface TaskListType {
 }
 
 const taskStore = useTaskStore()
-const statusStore = useStatusStore()
+
+const selectedKey = ref([101])
+const listDefaultSelectedKey = ref([100])
 
 const data = ref<any[]>([
   {
@@ -31,10 +33,6 @@ const data = ref<any[]>([
     ),
   },
 ])
-
-const selectedKey = ref<Key[]>(
-  statusStore.$state.selectedKey,
-)
 
 const selected = 'bg-[#E7F5EE] dark:bg-[#233633]'
 
@@ -67,7 +65,6 @@ const changeSelectedKeyAndActiveProject = (
 ) => {
   taskStore.changeCurrentActiveProject(projectName)
   selectedKey.value = [key]
-  statusStore.setSelectedKey([key])
 }
 
 const nodeProps = (treeOption: any) => {
@@ -81,7 +78,6 @@ const nodeProps = (treeOption: any) => {
 
 const changeSelectedKey = (key: number[]) => {
   selectedKey.value = key
-  statusStore.setSelectedKey(key)
 }
 </script>
 
@@ -90,7 +86,7 @@ const changeSelectedKey = (key: number[]) => {
     <div>
       <NTree
         v-model:selected-keys="selectedKey"
-        :default-selected-keys="selectedKey"
+        :default-expanded-keys="listDefaultSelectedKey"
         block-line
         :data="data"
         :node-props="nodeProps"
