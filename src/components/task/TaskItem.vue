@@ -51,21 +51,19 @@ function handleCompleteTodo(e: Event) {
       <template v-if="task.state === TaskState.REMOVED">
         <!-- 临时加的提示 后面要去掉 -->
         <div class="flex justify-start items-center gap-5px">
-          <div>
-            <NPopover trigger="hover">
-              <template #trigger>
-                <button
-                  :class="[checkboxColors[task.state]]"
-                  class="w-5 h-5 rounded-1"
-                  @click="handleCompleteTodo"
-                />
-              </template>
-              <div>在垃圾桶里面的 Task 是不可以直接被恢复的哦</div>
-            </NPopover>
-          </div>
-          <div class="w-full" @click="handleClickTask(task)">
-            {{ task.title }}
-          </div>
+          <NPopover trigger="hover">
+            <template #trigger>
+              <button
+                :class="[checkboxColors[task.state]]"
+                class="w-5 h-5 rounded-1"
+                @click="handleCompleteTodo"
+              />
+            </template>
+            <div>在垃圾桶里面的 Task 是不可以直接被恢复的哦</div>
+          </NPopover>
+        </div>
+        <div class="w-full" @click="handleClickTask(task)">
+          {{ task.title }}
         </div>
       </template>
       <template v-else>
