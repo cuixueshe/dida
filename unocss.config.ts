@@ -12,7 +12,7 @@ export default defineConfig({
   shortcuts: [
     ['btn', ''],
     ['item-hover', ''],
-    ['li_common','cursor-pointer flex justify-between items-center h-7'],
+    ['li_common', 'cursor-pointer flex justify-between items-center h-7'],
   ],
   presets: [
     presetUno(),
