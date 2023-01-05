@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { Icon } from '@iconify/vue'
 import TaskItem from './TaskItem.vue'
 import { useTaskStore } from '@/store/task'
 
@@ -11,6 +12,8 @@ function addTask() {
   taskStore.addTask(taskTitle.value)
   taskTitle.value = ''
 }
+
+const isInputFocus = ref(false)
 </script>
 
 <template>
@@ -20,13 +23,30 @@ function addTask() {
         {{ taskStore.currentActiveProject?.name }}
       </h1>
     </div>
-    <div>
+    <div
+      class="flex rounded-6px border-1 dark:border-[#dcdfe6] relative"
+      :style="{ 'border-color': isInputFocus ? '#409eff' : '#dcdfe6' }"
+    >
       <input
-        v-show="taskStore.shouldShowTodoAdd()" v-model="taskTitle" type="text" placeholder="添加任务，回车即可创建"
-        class="w-300px h-30px
-      rounded-6px p-4px pl-12px outline-none
-      border-none box-content bg-gray-200 dark:bg-#3B3B3B" @keypress.enter="addTask"
+        v-show="taskStore.shouldShowTodoAdd()"
+        v-model="taskTitle"
+        type="text"
+        placeholder="+ 添加任务至&quot;快捷&quot;，回车即可保存"
+        class="w-full h-40px p-4px pl-12px pr-40px outline-none box-border bg-transparent cursor-pointer relative z-1"
+        @keypress.enter="addTask"
+        @focus="isInputFocus = true"
+        @blur="isInputFocus = false"
       >
+      <div
+        class="flex items-center h-[40px] px-[10px] input-icon-wrapper absolute right-0 top-0"
+      >
+        <Icon
+          icon="material-symbols:keyboard-arrow-down"
+          width="20"
+          class="color-[#9D9FA3]"
+          dark="color-white"
+        />
+      </div>
     </div>
     <TransitionGroup name="list" tag="ul" class="flex flex-col gap-10px">
       <li v-for="task in taskStore.currentActiveProject?.tasks" :key="task.id">
@@ -48,5 +68,14 @@ function addTask() {
 .list-leave-to {
   opacity: 0;
   transform: translateX(30px);
+}
+.input-icon-wrapper::after {
+  position: absolute;
+  content: "";
+  width: 1px;
+  background-color: #dcdfe6;
+  top: 12px;
+  bottom: 12px;
+  left: 0;
 }
 </style>
