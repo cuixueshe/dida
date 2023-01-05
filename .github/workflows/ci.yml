@@ -17,6 +17,8 @@ jobs:
 
       - name: Install pnpm
         uses: pnpm/action-setup@v2
+        with:
+          version: 7.17.0
 
       - name: Set node
         uses: actions/setup-node@v3
@@ -26,12 +28,14 @@ jobs:
 
       - name: Install Dependencies
         run: pnpm i --frozen-lockfile
+        with:
+          version: 7.17.0
 
       - name: Lint
-        run: pnpm run lint
+        run: pnpm lint
 
       - name: Build
-        run: pnpm run build
+        run: pnpm build
 
   test:
     runs-on: ${{ matrix.os }}
@@ -47,9 +51,11 @@ jobs:
 
       - name: Install pnpm
         uses: pnpm/action-setup@v2
+        with:
+          version: 7.17.0
 
       - name: Install Dependencies
         run: pnpm i --frozen-lockfile
 
       - name: Test
-        run: pnpm run test
+        run: pnpm test
