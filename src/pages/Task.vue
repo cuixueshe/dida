@@ -6,7 +6,8 @@ import TaskLeftListView from '@/components/task/TaskLeftListView.vue'
 import TaskList from '@/components/task/TaskList.vue'
 
 const AREA_MIN_WIDTH = 240
-const AREA_MAX_WIDTH = 360
+const LEFT_AREA_MAX_WIDTH = 360
+const RIGHT_AREA_MAX_WIDTH = 800
 
 const leftResizeRef = ref()
 const rightResizeRef = ref()
@@ -28,13 +29,14 @@ function handleRightDrag(e: MouseEvent) {
       - 10
       - leftResizeRef.value.offsetWidth
       - rightResizeRef.value.offsetWidth
-
+    // 右侧
     if (moveDistance > space - AREA_MIN_WIDTH)
       moveDistance = space - AREA_MIN_WIDTH
-
-    if (moveDistance < space - AREA_MAX_WIDTH)
-      moveDistance = space - AREA_MAX_WIDTH
-    rightContainerRef.value.style = `flex: 0 0 ${space - moveDistance}px`
+    // 左侧
+    if (moveDistance < space - RIGHT_AREA_MAX_WIDTH)
+      moveDistance = space - RIGHT_AREA_MAX_WIDTH
+    // bugfix: 到最大边界没有计算 padding
+    rightContainerRef.value.style = `flex: 0 0 ${space - moveDistance - 48}px`
   }
   // release
   document.onmouseup = () => {
@@ -55,8 +57,8 @@ function handleLeftDrag(e: MouseEvent) {
 
     if (moveDistance < AREA_MIN_WIDTH)
       moveDistance = AREA_MIN_WIDTH
-    if (moveDistance > AREA_MAX_WIDTH)
-      moveDistance = AREA_MAX_WIDTH
+    if (moveDistance > LEFT_AREA_MAX_WIDTH)
+      moveDistance = LEFT_AREA_MAX_WIDTH
 
     leftContainerRef.value.style = `flex: 0 0 ${moveDistance}px`
   }
