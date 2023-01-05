@@ -15,6 +15,7 @@
     "test-component-run": "cypress run --component",
     "test-e2e-run": "cross-env NODE_ENV=developer cypress run --e2e",
     "prepare": "simple-git-hooks",
+    "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },
   "dependencies": {
