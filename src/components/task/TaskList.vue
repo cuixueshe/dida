@@ -1,58 +1,59 @@
 <script setup lang="ts">
-import { computed, Ref, ref } from "vue";
-import { Icon } from "@iconify/vue";
-import { useEventListener } from "@vueuse/core";
+import type { Ref } from 'vue'
+import { computed, ref } from 'vue'
+import { Icon } from '@iconify/vue'
+import { useEventListener } from '@vueuse/core'
 
-import TaskItem from "./TaskItem.vue";
-import { useTaskStore } from "@/store/task";
+import TaskItem from './TaskItem.vue'
+import { useTaskStore } from '@/store/task'
 
-const taskStore = useTaskStore();
+const taskStore = useTaskStore()
 
-const taskTitle = ref("");
-const inputRef: Ref<HTMLInputElement | null> = ref(null);
+const taskTitle = ref('')
+const inputRef: Ref<HTMLInputElement | null> = ref(null)
 
 const placeholderText = computed(() => {
-  return `添加任务至"${taskStore.currentActiveProject?.name}，回车即可保存`;
-});
+  return `添加任务至"${taskStore.currentActiveProject?.name}，回车即可保存`
+})
 const isPlaceholder = computed(() => {
-  return taskTitle.value.length === 0;
-});
+  return taskTitle.value.length === 0
+})
 
 function addTask() {
-  taskStore.addTask(taskTitle.value);
-  taskTitle.value = "";
+  taskStore.addTask(taskTitle.value)
+  taskTitle.value = ''
 }
 
 function onFocus() {
-  inputRef.value!.focus();
+  inputRef.value!.focus()
 }
 
 useEventListener(
   () => inputRef.value,
-  "focus",
+  'focus',
   () => {
-    const classList = inputRef.value!.classList;
+    const classList = inputRef.value!.classList
 
-    classList.add("border-blue");
-    classList.add("dark:color-black");
-    classList.remove("bg-gray-100");
-    classList.remove("dark:bg-#3B3B3B");
-  }
-);
+    classList.add('border-blue')
+    classList.add('dark:color-black')
+    classList.remove('bg-gray-100')
+    classList.remove('dark:bg-#3B3B3B')
+  },
+)
 
 useEventListener(
   () => inputRef.value,
-  "blur",
+  'blur',
   () => {
-    const classList = inputRef.value!.classList;
+    const classList = inputRef.value!.classList
 
-    classList.add("bg-gray-100");
-    classList.add("dark:bg-#3B3B3B");
+    classList.add('bg-gray-100')
+    classList.add('dark:bg-#3B3B3B')
 
-    classList.remove("border-blue");
-    classList.remove("dark:color-black");
-  }
-);
+    classList.remove('border-blue')
+    classList.remove('dark:color-black')
+  },
+)
 </script>
 
 <template>
@@ -63,9 +64,9 @@ useEventListener(
       </h1>
     </div>
     <div
+      v-show="taskStore.shouldShowTodoAdd()"
       class="relative cursor-text"
       @click="onFocus"
-      v-show="taskStore.shouldShowTodoAdd()"
     >
       <input
         ref="inputRef"
@@ -73,7 +74,7 @@ useEventListener(
         type="text"
         class="w-100% min-w-300px h-38px rounded-6px p-4px pl-12px pr-12px outline-none border-1 b-transparent bg-gray-100 dark:bg-#3B3B3B"
         @keypress.enter="addTask"
-      />
+      >
       <div
         v-show="isPlaceholder"
         class="w-100% min-w-300px absolute top-0 flex items-center h-38px p-4px pl-12px pr-12px border-1 b-transparent select-none color-gray:50"
