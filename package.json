@@ -35,6 +35,7 @@
     "@iconify/vue": "^4.0.2",
     "@types/node": "^18.11.18",
     "@unocss/reset": "^0.48.0",
+    "@vicons/carbon": "^0.12.0",
     "@vitejs/plugin-vue": "^3.0.0",
     "@vitejs/plugin-vue-jsx": "^2.0.0",
     "@vue/test-utils": "^2.0.2",
