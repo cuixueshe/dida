@@ -10,7 +10,7 @@ on:
       - main
 
 jobs:
-  lint:
+  CI:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -34,26 +34,6 @@ jobs:
 
       - name: Build
         run: pnpm build
-
-  test:
-    runs-on: ${{ matrix.os }}
-
-    strategy:
-      matrix:
-        node: [14.x, 16.x]
-        os: [ubuntu-latest]
-      fail-fast: false
-
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 7.17.0
-
-      - name: Install Dependencies
-        run: pnpm i --frozen-lockfile
 
       - name: Test
         run: pnpm test
