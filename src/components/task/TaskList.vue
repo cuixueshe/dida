@@ -11,6 +11,9 @@ const taskStore = useTaskStore();
 const taskTitle = ref("");
 const inputRef: Ref<HTMLInputElement | null> = ref(null);
 
+const placeholderText = computed(() => {
+  return `添加任务至"${taskStore.currentActiveProject?.name}，回车即可保存`;
+});
 const isPlaceholder = computed(() => {
   return taskTitle.value.length === 0;
 });
@@ -80,7 +83,7 @@ useEventListener(
           width="20"
           class="color-gray:50 pr-4px box-content"
         />
-        添加任务至"收集箱"，回车即可保存
+        {{ placeholderText }}
       </div>
     </div>
     <TransitionGroup name="list" tag="ul" class="flex flex-col gap-10px">

@@ -28,6 +28,16 @@ export const trashProject = createProject(
   TaskState.REMOVED,
 )
 
+export const failedProject = createProject(
+  SpecialProjectNames.Failed,
+  TaskState.REMOVED,
+)
+
+export const abstractProject = createProject(
+  SpecialProjectNames.Abstract,
+  TaskState.REMOVED,
+)
+
 function createProject(
   name: string,
   state: TaskState = TaskState.ACTIVE,
@@ -70,6 +80,11 @@ export function findProjectByName(projectName: string) {
       return completedProject
     case SpecialProjectNames.Trash:
       return trashProject
+    case SpecialProjectNames.Failed:
+      return failedProject
+    case SpecialProjectNames.Abstract:
+      return abstractProject
+
     default: {
       const project = projects.find((project) => {
         return project.name === projectName

@@ -50,7 +50,7 @@ export const useTaskStore = defineStore('task', () => {
     const name = currentActiveProject.value?.name
     return (
       name !== (SpecialProjectNames.Complete as string)
-      && name !== SpecialProjectNames.Trash
+      && name !== SpecialProjectNames.Trash && name !== SpecialProjectNames.Failed && name !== SpecialProjectNames.Abstract
     )
   }
 
