@@ -44,27 +44,8 @@ const data = ref<any[]>([
   },
 ])
 
-const nodeProps = (treeOption: any) => {
-  return {
-    onClick() {
-      const projectName = treeOption.option.label
-      taskStore.changeCurrentActiveProject(projectName)
-    },
-  }
-}
-
-const renderPrefix = ({ option }: { option: TreeOption }) => {
-  if (!option.isLeaf)
-    return null
-
-  return h(
-    NIcon,
-    { component: Tag },
-  )
-}
-
 const changeSelectedKey = (key: number[]) => {
-  emit('getCurrentTag', key)
+  emit('getCurrentTag', [key])
 }
 </script>
 
