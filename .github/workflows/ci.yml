@@ -28,8 +28,6 @@ jobs:
 
       - name: Install Dependencies
         run: pnpm i --frozen-lockfile
-        with:
-          version: 7.17.0
 
       - name: Lint
         run: pnpm lint
