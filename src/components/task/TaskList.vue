@@ -5,7 +5,7 @@ import { Icon } from '@iconify/vue'
 import { useEventListener } from '@vueuse/core'
 
 import TaskItem from './TaskItem.vue'
-import { useTaskStore } from '@/store'
+import { SpecialProjectNames, useTaskStore } from '@/store'
 
 const taskStore = useTaskStore()
 
@@ -27,6 +27,16 @@ function addTask() {
 function onFocus() {
   inputRef.value!.focus()
 }
+
+const shouldShowTodoAdd = computed(() => {
+  const name = taskStore.currentActiveProject?.name
+  return (
+    name !== (SpecialProjectNames.Complete as string)
+    && name !== SpecialProjectNames.Trash
+    && name !== SpecialProjectNames.Failed
+    && name !== SpecialProjectNames.Abstract
+  )
+})
 
 useEventListener(
   () => inputRef.value,
@@ -64,7 +74,7 @@ useEventListener(
       </h1>
     </div>
     <div
-      v-show="taskStore.shouldShowTodoAdd()"
+      v-show="shouldShowTodoAdd"
       class="relative cursor-text"
       @click="onFocus"
     >
