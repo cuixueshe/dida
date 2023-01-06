@@ -13,7 +13,7 @@ const taskTitle = ref('')
 const inputRef: Ref<HTMLInputElement | null> = ref(null)
 
 const placeholderText = computed(() => {
-  return `添加任务至"${taskStore.currentActiveProject?.name}，回车即可保存`
+  return `添加任务至“${taskStore.currentActiveProject?.name}”，回车即可保存`
 })
 const isPlaceholder = computed(() => {
   return taskTitle.value.length === 0
