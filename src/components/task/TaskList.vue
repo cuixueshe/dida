@@ -5,7 +5,7 @@ import { Icon } from '@iconify/vue'
 import { useEventListener } from '@vueuse/core'
 
 import TaskItem from './TaskItem.vue'
-import { useTaskStore } from '@/store/task'
+import { useTaskStore } from '@/store'
 
 const taskStore = useTaskStore()
 

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import InkMde from 'ink-mde/vue'
-import { useTaskStore } from '@/store/task'
+import { useTaskStore } from '@/store'
 import { isDark } from '@/composable/dark'
 
 const taskStore = useTaskStore()

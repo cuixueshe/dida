@@ -3,7 +3,7 @@ import { reactive, ref } from 'vue'
 import { NTree } from 'naive-ui'
 import { Icon } from '@iconify/vue'
 import type { Key } from 'naive-ui/es/cascader/src/interface'
-import { SpecialProjectNames, useTaskStore } from '@/store/task'
+import { SpecialProjectNames, useTaskStore } from '@/store'
 
 interface TaskListType {
   key: number

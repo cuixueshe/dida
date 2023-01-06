@@ -1,9 +1,16 @@
 import { computed, reactive, ref } from 'vue'
 import { defineStore } from 'pinia'
-import { SpecialProjectNames, addTaskToCompleteProject, addTaskToProject, findProjectByName, projects as projectListData, removeTaskToTrashProject } from './project'
-import type { Project } from './project'
-import type { Task } from './task'
-import { createTask, restoreTask as restoreTaskHandler } from './task'
+import type { Project, Task } from '../services/task'
+import {
+  SpecialProjectNames,
+  addTaskToCompleteProject,
+  addTaskToProject,
+  createTask,
+  findProjectByName,
+  projects as projectListData,
+  removeTaskToTrashProject,
+  restoreTask as restoreTaskHandler,
+} from '../services/task'
 
 export const useTaskStore = defineStore('task', () => {
   const projects = reactive(projectListData)
@@ -46,11 +53,14 @@ export const useTaskStore = defineStore('task', () => {
     changeActiveTask(undefined)
   }
 
+  // 和 UI 逻辑相关
   function shouldShowTodoAdd() {
     const name = currentActiveProject.value?.name
     return (
       name !== (SpecialProjectNames.Complete as string)
-      && name !== SpecialProjectNames.Trash && name !== SpecialProjectNames.Failed && name !== SpecialProjectNames.Abstract
+      && name !== SpecialProjectNames.Trash
+      && name !== SpecialProjectNames.Failed
+      && name !== SpecialProjectNames.Abstract
     )
   }
 
