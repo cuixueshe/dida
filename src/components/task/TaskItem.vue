@@ -46,8 +46,9 @@ function handleCompleteTodo(e: Event) {
 </script>
 
 <template>
-  <div @click.right="handleRightClickTask($event, task)">
-    <div class="flex justify-start items-center gap-5px">
+  <div class="flex flex-row gap-10px w-full items-center" @click.right="handleRightClickTask($event, task)">
+    <i class="cursor-move text-gray-200 dark:text-#3B3B3B flex-shrink-0 i-mdi-format-align-justify text-sm" />
+    <div class="flex justify-start items-center gap-5px h-40px py-5px flex-1">
       <template v-if="task.state === TaskState.REMOVED">
         <!-- 临时加的提示 后面要去掉 -->
         <div class="flex justify-start items-center gap-5px">

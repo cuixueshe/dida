@@ -25,7 +25,8 @@
     "nanoid": "^4.0.0",
     "pinia": "^2.0.17",
     "vue": "^3.2.37",
-    "vue-router": "4"
+    "vue-router": "4",
+    "vuedraggable": "^4.1.0"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^0.34.0",
@@ -41,7 +42,6 @@
     "@vue/test-utils": "^2.0.2",
     "@vueuse/core": "^9.9.0",
     "cross-env": "^7.0.3",
-    "cypress": "^10.4.0",
     "cypress-promise": "^1.1.0",
     "eslint": "^8.30.0",
     "jsdom": "^20.0.0",
