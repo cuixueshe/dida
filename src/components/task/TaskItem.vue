@@ -1,12 +1,20 @@
 <script setup lang="ts">
-import { NPopover } from 'naive-ui'
-import type { Task } from '@/store'
+import { MessageReactive, NPopover } from 'naive-ui'
+import { SpecialProjectNames, Task } from '@/store'
 import { TaskState, useTaskStore } from '@/store'
 import { useTaskRightContextMenu } from '@/composable/taskRightContextMenu'
+import { createDiscreteApi } from 'naive-ui'
+import { h } from 'vue'
 
 interface Props {
   task: Task
 }
+
+const { message} = createDiscreteApi(
+  ['message']
+)
+
+let messageReactive: MessageReactive | null = null
 
 const props = defineProps<Props>()
 
@@ -35,13 +43,41 @@ function handleInput(e: Event) {
 }
 
 function handleCompleteTodo(e: Event) {
-  if (props.task.state === TaskState.ACTIVE)
+  if (props.task.state === TaskState.ACTIVE){
     taskStore.completeTask(props.task)
+    completeMessage(props.task)
+  }
   else if (props.task.state === TaskState.COMPLETED)
     taskStore.restoreTask(props.task)
   else if (props.task.state === TaskState.REMOVED)
     // eslint-disable-next-line no-console
     console.log('在垃圾桶里面的 task 不可以直接恢复')
+}
+
+function completeMessage(task: Task) {
+  messageReactive = message.info(
+    () => h('p', null, [
+      h('span', null, `${task.title} ${SpecialProjectNames.Complete}`),
+      h('i', {
+        style: 'color: teal;font-style:unset;cursor:pointer;margin-left: 20px',
+        onClick: () => {
+          taskStore.restoreTask(task)
+          removeMessage()
+        }
+      }, '撤销'),
+    ]),
+    {
+      icon: () => null,
+      duration: 1000,
+    }
+  )
+}
+
+function removeMessage() {
+  if (messageReactive) {
+    messageReactive.destroy()
+    messageReactive = null
+  }
 }
 </script>
 
