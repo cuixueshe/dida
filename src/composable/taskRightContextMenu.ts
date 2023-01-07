@@ -1,5 +1,5 @@
 import ContextMenu from '@imengyu/vue3-context-menu'
-import { useTaskStore } from '@/store/task'
+import { useTaskStore } from '@/store'
 
 export function useTaskRightContextMenu() {
   const taskStore = useTaskStore()

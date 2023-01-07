@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { NPopover } from 'naive-ui'
-import type { Task } from '@/store/task'
-import { TaskState, useTaskStore } from '@/store/task'
+import type { Task } from '@/store'
+import { TaskState, useTaskStore } from '@/store'
 import { useTaskRightContextMenu } from '@/composable/taskRightContextMenu'
 
 interface Props {

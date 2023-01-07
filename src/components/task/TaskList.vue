@@ -5,12 +5,11 @@ import { Icon } from '@iconify/vue'
 import { useEventListener } from '@vueuse/core'
 
 import TaskItem from './TaskItem.vue'
-import { useTaskStore } from '@/store/task'
+import { SpecialProjectNames, useTaskStore } from '@/store'
 
 const taskStore = useTaskStore()
 
 const taskTitle = ref('')
-const inputRef: Ref<HTMLInputElement | null> = ref(null)
 
 const placeholderText = computed(() => {
   return `添加任务至“${taskStore.currentActiveProject?.name}”，回车即可保存`
@@ -24,36 +23,56 @@ function addTask() {
   taskTitle.value = ''
 }
 
-function onFocus() {
-  inputRef.value!.focus()
+const shouldShowTodoAdd = computed(() => {
+  const name = taskStore.currentActiveProject?.name
+  return (
+    name !== (SpecialProjectNames.Complete as string)
+    && name !== SpecialProjectNames.Trash
+    && name !== SpecialProjectNames.Failed
+    && name !== SpecialProjectNames.Abstract
+  )
+})
+
+function useInput() {
+  const inputRef: Ref<HTMLInputElement | null> = ref(null)
+  useEventListener(
+    () => inputRef.value,
+    'blur',
+    () => {
+      const classList = inputRef.value!.classList
+
+      classList.add('bg-gray-100')
+      classList.add('dark:bg-#3B3B3B')
+
+      classList.remove('border-blue')
+      classList.remove('dark:color-black')
+    },
+  )
+
+  useEventListener(
+    () => inputRef.value,
+    'focus',
+    () => {
+      const classList = inputRef.value!.classList
+
+      classList.add('border-blue')
+      classList.add('dark:color-black')
+      classList.remove('bg-gray-100')
+      classList.remove('dark:bg-#3B3B3B')
+    },
+  )
+
+  function onFocus() {
+    inputRef.value!.focus()
+  }
+
+  return {
+    inputRef,
+    onFocus,
+  }
 }
 
-useEventListener(
-  () => inputRef.value,
-  'focus',
-  () => {
-    const classList = inputRef.value!.classList
-
-    classList.add('border-blue')
-    classList.add('dark:color-black')
-    classList.remove('bg-gray-100')
-    classList.remove('dark:bg-#3B3B3B')
-  },
-)
-
-useEventListener(
-  () => inputRef.value,
-  'blur',
-  () => {
-    const classList = inputRef.value!.classList
-
-    classList.add('bg-gray-100')
-    classList.add('dark:bg-#3B3B3B')
-
-    classList.remove('border-blue')
-    classList.remove('dark:color-black')
-  },
-)
+const { inputRef, onFocus } = useInput()
 </script>
 
 <template>
@@ -64,7 +83,7 @@ useEventListener(
       </h1>
     </div>
     <div
-      v-show="taskStore.shouldShowTodoAdd()"
+      v-show="shouldShowTodoAdd"
       class="relative cursor-text"
       @click="onFocus"
     >
