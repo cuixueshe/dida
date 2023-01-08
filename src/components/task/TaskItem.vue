@@ -3,8 +3,9 @@ import type { MessageReactive } from 'naive-ui'
 import { NPopover, createDiscreteApi } from 'naive-ui'
 import { h } from 'vue'
 import type { Task } from '@/store'
-import { SpecialProjectNames, TaskState, useTaskStore } from '@/store'
+import { TaskState, useTaskStore } from '@/store'
 import { useTaskRightContextMenu } from '@/composable/taskRightContextMenu'
+import { useTaskOperationMessage } from '@/composable/taskOperationMessage'
 
 interface Props {
   task: Task
@@ -13,52 +14,7 @@ interface Props {
 const props = defineProps<Props>()
 const taskStore = useTaskStore()
 
-function useMessage() {
-  const { message } = createDiscreteApi(['message'])
-
-  let messageReactive: MessageReactive | null = null
-
-  function createMessageView(title: string, onClick: () => void) {
-    return () =>
-      h('p', null, [
-        h('span', null, `${title} ${SpecialProjectNames.Complete}`),
-        h(
-          'i',
-          {
-            style:
-              'color: teal;font-style:unset;cursor:pointer;margin-left: 20px',
-            onClick,
-          },
-          '撤销',
-        ),
-      ])
-  }
-
-  function removeMessage() {
-    if (messageReactive) {
-      messageReactive.destroy()
-      messageReactive = null
-    }
-  }
-
-  function showCompleteMessage(task: Task) {
-    const onClick = () => {
-      taskStore.restoreTask(task)
-      removeMessage()
-    }
-
-    messageReactive = message.info(createMessageView(task.title, onClick), {
-      icon: () => null,
-      duration: 1000,
-    })
-  }
-
-  return {
-    showCompleteMessage,
-  }
-}
-
-const { showCompleteMessage } = useMessage()
+const { showCompleteMessage } = useTaskOperationMessage()
 const checkboxColors: Record<TaskState, string> = {
   [TaskState.ACTIVE]: 'bg-#ccc',
   [TaskState.COMPLETED]: 'bg-#007A78',
