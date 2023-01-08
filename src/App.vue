@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { NConfigProvider } from "naive-ui";
-import { naiveTheme } from "@/composable";
+import { NConfigProvider } from 'naive-ui'
+import { naiveTheme } from '@/composable'
 </script>
 
 <template>

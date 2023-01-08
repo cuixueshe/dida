@@ -1,50 +1,51 @@
 <script setup lang="ts">
-import { NPopover } from "naive-ui";
-import { useTaskRightContextMenu } from "@/composable";
-import { useTaskOperationMessage } from "@/composable";
-import { TaskState, useTaskStore } from "@/store";
-import type { Task } from "@/store";
+import { NPopover } from 'naive-ui'
+import { useTaskOperationMessage, useTaskRightContextMenu } from '@/composable'
+import { TaskState, useTaskStore } from '@/store'
+import type { Task } from '@/store'
 
 interface Props {
-  task: Task;
+  task: Task
 }
 
-const props = defineProps<Props>();
-const taskStore = useTaskStore();
+const props = defineProps<Props>()
+const taskStore = useTaskStore()
 
-const { showCompleteMessage } = useTaskOperationMessage();
+const { showCompleteMessage } = useTaskOperationMessage()
 const checkboxColors: Record<TaskState, string> = {
-  [TaskState.ACTIVE]: "bg-#ccc",
-  [TaskState.COMPLETED]: "bg-#007A78",
-  [TaskState.GIVE_UP]: "bg-#FF2200",
-  [TaskState.REMOVED]: "bg-#ccc",
-};
+  [TaskState.ACTIVE]: 'bg-#ccc',
+  [TaskState.COMPLETED]: 'bg-#007A78',
+  [TaskState.GIVE_UP]: 'bg-#FF2200',
+  [TaskState.REMOVED]: 'bg-#ccc',
+}
 
-const { showContextMenu } = useTaskRightContextMenu();
+const { showContextMenu } = useTaskRightContextMenu()
 
 function handleRightClickTask(e: MouseEvent, task: Task) {
-  taskStore.changeActiveTask(task);
-  showContextMenu(e);
+  taskStore.changeActiveTask(task)
+  showContextMenu(e)
 }
 
 function handleClickTask(task: Task) {
-  taskStore.changeActiveTask(task);
+  taskStore.changeActiveTask(task)
 }
 
 function handleInput(e: Event) {
   if (taskStore.currentActiveTask)
-    taskStore.currentActiveTask.title = (e.target as HTMLElement).innerText;
+    taskStore.currentActiveTask.title = (e.target as HTMLElement).innerText
 }
 
 function handleCompleteTodo(e: Event) {
   if (props.task.state === TaskState.ACTIVE) {
-    taskStore.completeTask(props.task);
-    showCompleteMessage(props.task);
-  } else if (props.task.state === TaskState.COMPLETED) {
-    taskStore.restoreTask(props.task);
-  } else if (props.task.state === TaskState.REMOVED) {
+    taskStore.completeTask(props.task)
+    showCompleteMessage(props.task)
+  }
+  else if (props.task.state === TaskState.COMPLETED) {
+    taskStore.restoreTask(props.task)
+  }
+  else if (props.task.state === TaskState.REMOVED) {
     // eslint-disable-next-line no-console
-    console.log("在垃圾桶里面的 task 不可以直接恢复");
+    console.log('在垃圾桶里面的 task 不可以直接恢复')
   }
 }
 </script>

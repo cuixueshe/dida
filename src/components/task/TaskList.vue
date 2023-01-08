@@ -1,40 +1,39 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
-import { Icon } from "@iconify/vue";
-import draggable from "vuedraggable";
-import TaskItem from "./TaskItem.vue";
-import { SpecialProjectNames, useTaskStore } from "@/store";
-import { isDark } from "@/composable";
-import { useTaskListInput } from "@/composable";
+import { computed, ref } from 'vue'
+import { Icon } from '@iconify/vue'
+import draggable from 'vuedraggable'
+import TaskItem from './TaskItem.vue'
+import { SpecialProjectNames, useTaskStore } from '@/store'
+import { isDark, useTaskListInput } from '@/composable'
 
-const taskStore = useTaskStore();
+const taskStore = useTaskStore()
 
-const taskTitle = ref("");
-const dragging = ref<boolean>(false);
+const taskTitle = ref('')
+const dragging = ref<boolean>(false)
 
 const placeholderText = computed(() => {
-  return `添加任务至“${taskStore.currentActiveProject?.name}”，回车即可保存`;
-});
+  return `添加任务至“${taskStore.currentActiveProject?.name}”，回车即可保存`
+})
 const isPlaceholder = computed(() => {
-  return taskTitle.value.length === 0;
-});
+  return taskTitle.value.length === 0
+})
 
 function addTask() {
-  taskStore.addTask(taskTitle.value);
-  taskTitle.value = "";
+  taskStore.addTask(taskTitle.value)
+  taskTitle.value = ''
 }
 
 const shouldShowTodoAdd = computed(() => {
-  const name = taskStore.currentActiveProject?.name;
+  const name = taskStore.currentActiveProject?.name
   return (
-    name !== (SpecialProjectNames.Complete as string) &&
-    name !== SpecialProjectNames.Trash &&
-    name !== SpecialProjectNames.Failed &&
-    name !== SpecialProjectNames.Abstract
-  );
-});
+    name !== (SpecialProjectNames.Complete as string)
+    && name !== SpecialProjectNames.Trash
+    && name !== SpecialProjectNames.Failed
+    && name !== SpecialProjectNames.Abstract
+  )
+})
 
-const { inputRef, onFocus } = useTaskListInput();
+const { inputRef, onFocus } = useTaskListInput()
 </script>
 
 <template>
@@ -55,7 +54,7 @@ const { inputRef, onFocus } = useTaskListInput();
         type="text"
         class="w-100% min-w-300px h-38px rounded-6px p-4px pl-12px pr-12px outline-none border-1 b-transparent bg-gray-100 dark:bg-#3B3B3B"
         @keypress.enter="addTask"
-      />
+      >
       <div
         v-show="isPlaceholder"
         class="w-100% min-w-300px absolute top-0 flex items-center h-38px p-4px pl-12px pr-12px border-1 b-transparent select-none color-gray:50"
