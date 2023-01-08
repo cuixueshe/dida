@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { NPopover } from 'naive-ui'
-import { TaskState, useTaskStore } from '@/store'
+import type { MessageReactive } from 'naive-ui'
+import { NPopover, createDiscreteApi } from 'naive-ui'
+import { h } from 'vue'
 import { useTaskRightContextMenu } from '@/composable/taskRightContextMenu'
+import { SpecialProjectNames, TaskState, useTaskStore } from '@/store'
 import type { Task } from '@/store'
 
 interface Props {
@@ -9,7 +11,54 @@ interface Props {
 }
 
 const props = defineProps<Props>()
+const taskStore = useTaskStore()
 
+function useMessage() {
+  const { message } = createDiscreteApi(['message'])
+
+  let messageReactive: MessageReactive | null = null
+
+  function createMessageView(title: string, onClick: () => void) {
+    return () =>
+      h('p', null, [
+        h('span', null, `${title} ${SpecialProjectNames.Complete}`),
+        h(
+          'i',
+          {
+            style:
+              'color: teal;font-style:unset;cursor:pointer;margin-left: 20px',
+            onClick,
+          },
+          '撤销',
+        ),
+      ])
+  }
+
+  function removeMessage() {
+    if (messageReactive) {
+      messageReactive.destroy()
+      messageReactive = null
+    }
+  }
+
+  function showCompleteMessage(task: Task) {
+    const onClick = () => {
+      taskStore.restoreTask(task)
+      removeMessage()
+    }
+
+    messageReactive = message.info(createMessageView(task.title, onClick), {
+      icon: () => null,
+      duration: 1000,
+    })
+  }
+
+  return {
+    showCompleteMessage,
+  }
+}
+
+const { showCompleteMessage } = useMessage()
 const checkboxColors: Record<TaskState, string> = {
   [TaskState.ACTIVE]: 'bg-#ccc',
   [TaskState.COMPLETED]: 'bg-#007A78',
@@ -17,7 +66,6 @@ const checkboxColors: Record<TaskState, string> = {
   [TaskState.REMOVED]: 'bg-#ccc',
 }
 
-const taskStore = useTaskStore()
 const { showContextMenu } = useTaskRightContextMenu()
 
 function handleRightClickTask(e: MouseEvent, task: Task) {
@@ -35,19 +83,28 @@ function handleInput(e: Event) {
 }
 
 function handleCompleteTodo(e: Event) {
-  if (props.task.state === TaskState.ACTIVE)
+  if (props.task.state === TaskState.ACTIVE) {
     taskStore.completeTask(props.task)
-  else if (props.task.state === TaskState.COMPLETED)
+    showCompleteMessage(props.task)
+  }
+  else if (props.task.state === TaskState.COMPLETED) {
     taskStore.restoreTask(props.task)
-  else if (props.task.state === TaskState.REMOVED)
+  }
+  else if (props.task.state === TaskState.REMOVED) {
     // eslint-disable-next-line no-console
     console.log('在垃圾桶里面的 task 不可以直接恢复')
+  }
 }
 </script>
 
 <template>
-  <div class="flex flex-row gap-10px w-full items-center" @click.right="handleRightClickTask($event, task)">
-    <i class="cursor-move text-gray-200 dark:text-#3B3B3B flex-shrink-0 i-mdi-format-align-justify text-sm" />
+  <div
+    class="flex flex-row gap-10px w-full items-center"
+    @click.right="handleRightClickTask($event, task)"
+  >
+    <i
+      class="cursor-move text-gray-200 dark:text-#3B3B3B flex-shrink-0 i-mdi-format-align-justify text-sm"
+    />
     <div class="flex justify-start items-center gap-5px h-40px py-5px flex-1">
       <template v-if="task.state === TaskState.REMOVED">
         <!-- 临时加的提示 后面要去掉 -->
