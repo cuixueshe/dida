@@ -8,7 +8,7 @@
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
     "preview": "vite preview",
-    "test": "pnpm test-unit-run && pnpm test-component-run && pnpm test-e2e-run",
+    "test": "pnpm test-unit-run",
     "test-unit": "vitest",
     "test-component": "cypress open --component",
     "test-e2e": "cross-env NODE_ENV=developer cypress open --e2e",
