@@ -2,7 +2,6 @@
 import { reactive, ref } from 'vue'
 import { NTree } from 'naive-ui'
 import { Icon } from '@iconify/vue'
-import type { Key } from 'naive-ui/es/cascader/src/interface'
 import { SpecialProjectNames, useTaskStore } from '@/store'
 
 interface TaskListType {
@@ -10,6 +9,7 @@ interface TaskListType {
   icon: string
   title: `${SpecialProjectNames}`
 }
+const selected = 'bg-[#E7F5EE] dark:bg-[#233633]'
 
 const taskStore = useTaskStore()
 
@@ -33,8 +33,6 @@ const data = ref<any[]>([
     ),
   },
 ])
-
-const selected = 'bg-[#E7F5EE] dark:bg-[#233633]'
 
 const taskList = reactive<TaskListType[]>([
   {
