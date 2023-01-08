@@ -1,18 +1,7 @@
-<template>
-  <NTree
-    v-model:selected-keys="taskStatusStore.selectedKey"
-    :default-expanded-keys="taskStatusStore.listDefaultSelectedKey"
-    block-line
-    :data="data"
-    :node-props="nodeProps"
-    @update:selected-keys="changeSelectedKey"
-  />
-</template>
-
 <script setup lang="ts">
-import { useTaskStatusStore, useTaskStore } from '@/store'
 import { NTree } from 'naive-ui'
 import { ref } from 'vue'
+import { useTaskStatusStore, useTaskStore } from '@/store'
 
 const taskStatusStore = useTaskStatusStore()
 const taskStore = useTaskStore()
@@ -30,7 +19,7 @@ const data = ref<any[]>([
           label: projectName,
           isLeaf: true,
         }
-      }
+      },
     ),
   },
 ])
@@ -47,6 +36,17 @@ const changeSelectedKey = (key: number[]) => {
   taskStatusStore.changeSelectedKey(key)
 }
 </script>
+
+<template>
+  <NTree
+    v-model:selected-keys="taskStatusStore.selectedKey"
+    :default-expanded-keys="taskStatusStore.listDefaultSelectedKey"
+    block-line
+    :data="data"
+    :node-props="nodeProps"
+    @update:selected-keys="changeSelectedKey"
+  />
+</template>
 
 <style>
 .n-tree.n-tree--block-line .n-tree-node:not(.n-tree-node--disabled).n-tree-node--pending {

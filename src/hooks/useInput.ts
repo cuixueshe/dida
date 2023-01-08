@@ -1,5 +1,6 @@
-import { useEventListener } from "@vueuse/core"
-import { Ref, ref } from "vue"
+import { useEventListener } from '@vueuse/core'
+import type { Ref } from 'vue'
+import { ref } from 'vue'
 
 export default function useInput() {
   const inputRef: Ref<HTMLInputElement | null> = ref(null)

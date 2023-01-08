@@ -1,53 +1,11 @@
-<template>
-  <ul>
-    <li
-      v-for="item in taskList"
-      :key="item.key"
-      li_common
-      pl-4
-      pr-2
-      hover="bg-[#F3F3F5] dark:bg-[#2D2D30]"
-      :class="
-        taskStatusStore.selectedKey[0] === item.key
-          ? selected
-          : ''
-      "
-      @click="
-        changeSelectedKeyAndActiveProject(
-          item.title,
-          item.key
-        )
-      "
-    >
-      <div flex>
-        <Icon
-          :icon="item.icon"
-          width="20"
-          class="color-[#9D9FA3]"
-          dark="color-white-b"
-        />
-        <span class="ml-2">{{ item.title }}</span>
-      </div>
-
-      <Icon
-        v-show="taskStatusStore.selectedKey[0] === item.key"
-        icon="material-symbols:more-horiz"
-        width="20"
-        class="color-[#9D9FA3]"
-        dark="color-white"
-      />
-    </li>
-  </ul>
-</template>
-
 <script setup lang="ts">
+import { Icon } from '@iconify/vue'
+import { reactive } from 'vue'
 import {
   SpecialProjectNames,
   useTaskStatusStore,
   useTaskStore,
 } from '@/store'
-import { Icon } from '@iconify/vue'
-import { reactive } from 'vue'
 
 interface TaskListType {
   key: number
@@ -84,12 +42,54 @@ const taskStatusStore = useTaskStatusStore()
 
 const changeSelectedKeyAndActiveProject = (
   projectName: string,
-  key: number
+  key: number,
 ) => {
   taskStore.changeCurrentActiveProject(projectName)
   console.log(key)
   taskStatusStore.changeSelectedKey([key])
 }
 </script>
+
+<template>
+  <ul>
+    <li
+      v-for="item in taskList"
+      :key="item.key"
+      li_common
+      pl-4
+      pr-2
+      hover="bg-[#F3F3F5] dark:bg-[#2D2D30]"
+      :class="
+        taskStatusStore.selectedKey[0] === item.key
+          ? selected
+          : ''
+      "
+      @click="
+        changeSelectedKeyAndActiveProject(
+          item.title,
+          item.key,
+        )
+      "
+    >
+      <div flex>
+        <Icon
+          :icon="item.icon"
+          width="20"
+          class="color-[#9D9FA3]"
+          dark="color-white-b"
+        />
+        <span class="ml-2">{{ item.title }}</span>
+      </div>
+
+      <Icon
+        v-show="taskStatusStore.selectedKey[0] === item.key"
+        icon="material-symbols:more-horiz"
+        width="20"
+        class="color-[#9D9FA3]"
+        dark="color-white"
+      />
+    </li>
+  </ul>
+</template>
 
 <style scoped></style>

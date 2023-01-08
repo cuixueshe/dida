@@ -17,5 +17,5 @@ export const useTaskStatusStore = defineStore(
       listDefaultSelectedKey,
       changeSelectedKey,
     }
-  }
+  },
 )

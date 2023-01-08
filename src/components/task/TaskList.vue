@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { Icon } from '@iconify/vue'
-import { SpecialProjectNames, useTaskStore } from '@/store'
-import { isDark } from '@/composable/dark'
 import draggable from 'vuedraggable'
 import TaskItem from './TaskItem.vue'
+import { SpecialProjectNames, useTaskStore } from '@/store'
+import { isDark } from '@/composable/dark'
 import { useInput } from '@/hooks'
 
 const taskStore = useTaskStore()
@@ -27,10 +27,10 @@ function addTask() {
 const shouldShowTodoAdd = computed(() => {
   const name = taskStore.currentActiveProject?.name
   return (
-    name !== (SpecialProjectNames.Complete as string) &&
-    name !== SpecialProjectNames.Trash &&
-    name !== SpecialProjectNames.Failed &&
-    name !== SpecialProjectNames.Abstract
+    name !== (SpecialProjectNames.Complete as string)
+    && name !== SpecialProjectNames.Trash
+    && name !== SpecialProjectNames.Failed
+    && name !== SpecialProjectNames.Abstract
   )
 })
 
@@ -55,7 +55,7 @@ const { inputRef, onFocus } = useInput()
         type="text"
         class="w-100% min-w-300px h-38px rounded-6px p-4px pl-12px pr-12px outline-none border-1 b-transparent bg-gray-100 dark:bg-#3B3B3B"
         @keypress.enter="addTask"
-      />
+      >
       <div
         v-show="isPlaceholder"
         class="w-100% min-w-300px absolute top-0 flex items-center h-38px p-4px pl-12px pr-12px border-1 b-transparent select-none color-gray:50"
