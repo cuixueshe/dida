@@ -11,6 +11,7 @@ import { isDark } from '@/composable/dark'
 const taskStore = useTaskStore()
 
 const taskTitle = ref('')
+const dragging = ref<boolean>(false)
 
 const placeholderText = computed(() => {
   return `添加任务至“${taskStore.currentActiveProject?.name}”，回车即可保存`
@@ -74,15 +75,6 @@ function useInput() {
 }
 
 const { inputRef, onFocus } = useInput()
-
-const dragging = ref<boolean>(false)
-const checkMove = (e: any) => {
-  const currentIndex = e.draggedContext.index
-  const futureIndex = e.draggedContext.futureIndex
-  // 貌似vue3的响应机制太牛了，taskstore的task顺序(currentActiveProject和projects中对应的部分)，直接就变了，不需要再手动去改变了
-  // 如果后端要改，这个位置调用接口就行了
-  // taskStore.exchangeTwoTaskByIndex(currentIndex, futureIndex)
-}
 </script>
 
 <template>
@@ -128,7 +120,6 @@ const checkMove = (e: any) => {
         name: !dragging ? 'flip-list' : null,
       }"
       class="flex flex-col gap-10px"
-      :move="checkMove"
       @start="dragging = true"
       @end="dragging = false"
     >
