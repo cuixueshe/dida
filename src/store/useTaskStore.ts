@@ -52,15 +52,6 @@ export const useTaskStore = defineStore('task', () => {
     changeActiveTask(undefined)
   }
 
-  function exchangeTwoTaskByIndex(index1: number, index2: number) {
-    const task1 = currentActiveProject.value?.tasks[index1]
-    const task2 = currentActiveProject.value?.tasks[index2]
-    if (currentActiveProject.value && task1 && task2) {
-      currentActiveProject.value.tasks[index1] = task2
-      currentActiveProject.value.tasks[index2] = task1
-    }
-  }
-
   return {
     projects,
     currentActiveProject,
@@ -73,6 +64,5 @@ export const useTaskStore = defineStore('task', () => {
     restoreTask,
     changeActiveTask,
     changeCurrentActiveProject,
-    exchangeTwoTaskByIndex,
   }
 })
