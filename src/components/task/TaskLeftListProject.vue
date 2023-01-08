@@ -3,7 +3,7 @@ import { Icon } from '@iconify/vue'
 import { reactive } from 'vue'
 import {
   SpecialProjectNames,
-  useTaskStatusStore,
+  useProjectSelectedStatusStore,
   useTaskStore,
 } from '@/store'
 
@@ -38,14 +38,14 @@ const taskList = reactive<TaskListType[]>([
 const selected = 'bg-[#E7F5EE] dark:bg-[#233633]'
 
 const taskStore = useTaskStore()
-const taskStatusStore = useTaskStatusStore()
+const projectSelectedStatusStore = useProjectSelectedStatusStore()
 
 const changeSelectedKeyAndActiveProject = (
   projectName: string,
   key: number,
 ) => {
   taskStore.changeCurrentActiveProject(projectName)
-  taskStatusStore.changeSelectedKey([key])
+  projectSelectedStatusStore.changeSelectedKey([key])
 }
 </script>
 
@@ -59,7 +59,7 @@ const changeSelectedKeyAndActiveProject = (
       pr-2
       hover="bg-[#F3F3F5] dark:bg-[#2D2D30]"
       :class="
-        taskStatusStore.selectedKey[0] === item.key
+        projectSelectedStatusStore.selectedKey[0] === item.key
           ? selected
           : ''
       "
@@ -81,7 +81,7 @@ const changeSelectedKeyAndActiveProject = (
       </div>
 
       <Icon
-        v-show="taskStatusStore.selectedKey[0] === item.key"
+        v-show="projectSelectedStatusStore.selectedKey[0] === item.key"
         icon="material-symbols:more-horiz"
         width="20"
         class="color-[#9D9FA3]"

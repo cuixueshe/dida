@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { NTree } from 'naive-ui'
 import { ref } from 'vue'
-import { useTaskStatusStore, useTaskStore } from '@/store'
+import { useProjectSelectedStatusStore, useTaskStore } from '@/store'
 
-const taskStatusStore = useTaskStatusStore()
+const projectSelectedStatusStore = useProjectSelectedStatusStore()
 const taskStore = useTaskStore()
 
 const data = ref<any[]>([
@@ -33,14 +33,14 @@ const nodeProps = (treeOption: any) => {
 }
 
 const changeSelectedKey = (key: number[]) => {
-  taskStatusStore.changeSelectedKey(key)
+  projectSelectedStatusStore.changeSelectedKey(key)
 }
 </script>
 
 <template>
   <NTree
-    v-model:selected-keys="taskStatusStore.selectedKey"
-    :default-expanded-keys="taskStatusStore.listDefaultSelectedKey"
+    v-model:selected-keys="projectSelectedStatusStore.selectedKey"
+    :default-expanded-keys="projectSelectedStatusStore.listDefaultSelectedKey"
     block-line
     :data="data"
     :node-props="nodeProps"

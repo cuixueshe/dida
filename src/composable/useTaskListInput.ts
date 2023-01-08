@@ -2,7 +2,7 @@ import { useEventListener } from '@vueuse/core'
 import type { Ref } from 'vue'
 import { ref } from 'vue'
 
-export default function useInput() {
+export function useTaskListInput() {
   const inputRef: Ref<HTMLInputElement | null> = ref(null)
   useEventListener(
     () => inputRef.value,

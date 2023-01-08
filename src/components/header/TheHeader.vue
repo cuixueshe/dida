@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { toggleDark } from '@/composable/dark'
+import { toggleDark } from '@/composable'
 
 const goToGithub = () => {
   window.open('https://github.com/cuixiaorui/vue3-todo-list')

@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
-export const useTaskStatusStore = defineStore(
+export const useProjectSelectedStatusStore = defineStore(
   'taskStatus',
   () => {
     const selectedKey = ref([101])

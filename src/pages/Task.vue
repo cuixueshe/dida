@@ -4,7 +4,7 @@ import TheHeader from '@/components/header/TheHeader.vue'
 import TaskEditor from '@/components/task/TaskEditor.vue'
 import TaskLeftListView from '@/components/task/TaskLeftListView.vue'
 import TaskList from '@/components/task/TaskList.vue'
-import { useTaskSidebarDrag } from '@/composable/useTaskSidebarDrag'
+import { useTaskSidebarDrag } from '@/composable'
 
 const AREA_MIN_WIDTH = 240
 

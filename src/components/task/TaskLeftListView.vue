@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import TaskLeftListNTree from '@/views/task/TaskLeftListNTree.vue'
-import TaskLeftListProject from '@/views/task/TaskLeftListProject.vue'
+import TaskLeftListNTree from '@/components/task/TaskLeftListNTree.vue'
+import TaskLeftListProject from '@/components/task/TaskLeftListProject.vue'
 </script>
 
 <template>
