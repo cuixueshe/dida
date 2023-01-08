@@ -4,6 +4,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+    "bootstrap": "CYPRESS_INSTALL_BINARY=0 pnpm i",
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
     "preview": "vite preview",

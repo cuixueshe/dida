@@ -41,6 +41,15 @@
 - [ ] lint + eslint + prettier
 - [ ] axios
 
+## 安装
+执行下面的命令即可
+```
+pnpm bootstrap
+```
+
+执行这个命令安装依赖的话 会跳过 cypress 的安装
+> 因为有很多同学反馈在安装 cypress 的时候超时
+
 
 ## 如何参与进来
 
