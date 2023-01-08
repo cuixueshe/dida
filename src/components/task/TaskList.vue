@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import type { Ref } from 'vue'
 import { computed, ref } from 'vue'
 import { Icon } from '@iconify/vue'
-import { useEventListener } from '@vueuse/core'
 import draggable from 'vuedraggable'
 import TaskItem from './TaskItem.vue'
 import { SpecialProjectNames, useTaskStore } from '@/store'
 import { isDark } from '@/composable/dark'
+import { useInput } from '@/hooks'
 
 const taskStore = useTaskStore()
 
@@ -34,45 +33,6 @@ const shouldShowTodoAdd = computed(() => {
     && name !== SpecialProjectNames.Abstract
   )
 })
-
-function useInput() {
-  const inputRef: Ref<HTMLInputElement | null> = ref(null)
-  useEventListener(
-    () => inputRef.value,
-    'blur',
-    () => {
-      const classList = inputRef.value!.classList
-
-      classList.add('bg-gray-100')
-      classList.add('dark:bg-#3B3B3B')
-
-      classList.remove('border-blue')
-      classList.remove('dark:color-black')
-    },
-  )
-
-  useEventListener(
-    () => inputRef.value,
-    'focus',
-    () => {
-      const classList = inputRef.value!.classList
-
-      classList.add('border-blue')
-      classList.add('dark:color-black')
-      classList.remove('bg-gray-100')
-      classList.remove('dark:bg-#3B3B3B')
-    },
-  )
-
-  function onFocus() {
-    inputRef.value!.focus()
-  }
-
-  return {
-    inputRef,
-    onFocus,
-  }
-}
 
 const { inputRef, onFocus } = useInput()
 </script>
@@ -124,7 +84,11 @@ const { inputRef, onFocus } = useInput()
       @end="dragging = false"
     >
       <template #item="{ element, index }">
-        <TaskItem :task="element" :index="index" class="item" />
+        <TaskItem
+          :task="element"
+          :index="index"
+          class="item"
+        />
       </template>
     </draggable>
     <!-- 暂时性修复 contenteditable 的 bug #9 -->

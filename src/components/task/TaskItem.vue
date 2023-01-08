@@ -2,10 +2,11 @@
 import type { MessageReactive } from 'naive-ui'
 import { NPopover, createDiscreteApi } from 'naive-ui'
 import { h } from 'vue'
-import type { Task } from '@/store'
-import { TaskState, useTaskStore } from '@/store'
 import { useTaskRightContextMenu } from '@/composable/taskRightContextMenu'
 import { useTaskOperationMessage } from '@/composable/taskOperationMessage'
+import { SpecialProjectNames, TaskState, useTaskStore } from '@/store'
+import type { Task } from '@/store'
+
 
 interface Props {
   task: Task
