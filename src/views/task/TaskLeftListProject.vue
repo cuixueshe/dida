@@ -45,7 +45,6 @@ const changeSelectedKeyAndActiveProject = (
   key: number,
 ) => {
   taskStore.changeCurrentActiveProject(projectName)
-  console.log(key)
   taskStatusStore.changeSelectedKey([key])
 }
 </script>
