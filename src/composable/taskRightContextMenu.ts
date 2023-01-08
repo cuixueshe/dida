@@ -1,8 +1,11 @@
 import ContextMenu from '@imengyu/vue3-context-menu'
+import { useTaskOperationMessage } from './taskOperationMessage'
 import { useTaskStore } from '@/store'
 
 export function useTaskRightContextMenu() {
   const taskStore = useTaskStore()
+  const { showRemoveMessage } = useTaskOperationMessage()
+
   function showContextMenu(e: MouseEvent) {
     e.preventDefault()
     ContextMenu.showContextMenu({
@@ -12,6 +15,7 @@ export function useTaskRightContextMenu() {
         {
           label: 'remove',
           onClick: () => {
+            showRemoveMessage(taskStore.currentActiveTask!)
             taskStore.removeTask(taskStore.currentActiveTask!)
           },
         },
