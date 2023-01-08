@@ -10,7 +10,7 @@ import { useInput } from '@/hooks'
 const taskStore = useTaskStore()
 
 const taskTitle = ref('')
-const dragging = ref(false)
+const dragging = ref<boolean>(false)
 
 const placeholderText = computed(() => {
   return `添加任务至“${taskStore.currentActiveProject?.name}”，回车即可保存`
