@@ -1,16 +1,18 @@
 import { fetchData } from './data'
 import { initProjects } from './project'
-export { TaskState, createTask, restoreTask } from './task'
+export { SmartProjectNames } from './smartProject'
+export { projects, findProjectByName } from './project'
 export {
-  projects,
-  addTaskToCompleteProject,
-  addTaskToProject,
-  findProjectByName,
-  removeTaskToTrashProject,
-} from './project'
-
-export { SpecialProjectNames } from './specialProject'
+  TaskState,
+  addTask,
+  removeTask,
+  restoreTask,
+  completeTask,
+  createTask,
+} from './task'
 export type { Task } from './task'
 export type { Project } from './project'
 
-initProjects(fetchData)
+initProjects(fetchData.projects)
+// TODO
+// 初始化 smartProjects  现在是直接初始化了
