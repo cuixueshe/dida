@@ -1,9 +1,6 @@
 <script setup lang="ts">
 import { NSpace } from 'naive-ui'
-import { useRoute, useRouter } from 'vue-router'
-
-const route = useRoute()
-const routeName = route.meta?.title
+import { useRouter } from 'vue-router'
 
 const router = useRouter()
 
@@ -17,7 +14,7 @@ const goToHome = () => {
 <template>
   <NSpace justify="space-between" item-style="center">
     <h1 class="text-3xl">
-      {{ routeName }}
+      设置
     </h1>
     <button
       class="
