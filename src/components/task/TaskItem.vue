@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { NPopover } from 'naive-ui'
-import {  isDark, useTaskOperationMessage, useTaskRightContextMenu } from '@/composable'
+import { isDark, useTaskOperationMessage, useTaskRightContextMenu } from '@/composable'
 import { TaskState, useTaskStore } from '@/store'
 import type { Task } from '@/store'
 
@@ -58,16 +58,17 @@ function handleCompleteTodo(e: Event) {
     <i
       class="cursor-move text-gray-200 dark:text-#3B3B3B flex-shrink-0 i-mdi-format-align-justify text-sm"
     />
-    <div 
-      flex 
-      justify-start 
-      items-center 
-      gap-5px 
-      h-40px 
-      py-5px 
-      flex-1 
-      pl-10px 
-      :class="[isDark ? 'hover:bg-[#474747]/50' : 'hover:bg-[#ECF1FF]/50', taskStore.currentActiveTask?.id === task.id ? isDark ? '!bg-[#474747]' : '!bg-[#ECF1FF]' : '']">
+    <div
+      flex
+      justify-start
+      items-center
+      gap-5px
+      h-40px
+      py-5px
+      flex-1
+      pl-10px
+      :class="[isDark ? 'hover:bg-[#474747]/50' : 'hover:bg-[#ECF1FF]/50', taskStore.currentActiveTask?.id === task.id ? isDark ? '!bg-[#474747]' : '!bg-[#ECF1FF]' : '']"
+    >
       <template v-if="task.state === TaskState.REMOVED">
         <!-- 临时加的提示 后面要去掉 -->
         <div class="flex justify-start items-center gap-5px">
