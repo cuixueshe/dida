@@ -50,6 +50,9 @@ pnpm bootstrap
 执行这个命令安装依赖的话 会跳过 cypress 的安装
 > 因为有很多同学反馈在安装 cypress 的时候超时
 
+## 代码贡献指南
+- 一个 pr 只处理一件事，不要把无关代码提交上来，这样最好 review 以及 merged
+- issue 以 pr 为准，留言不算
 
 ## 如何参与进来
 
