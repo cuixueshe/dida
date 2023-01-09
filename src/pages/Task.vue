@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import TheHeader from '@/components/header/TheHeader.vue'
 import TaskEditor from '@/components/task/TaskEditor.vue'
 import TaskLeftListView from '@/components/task/TaskLeftListView.vue'
 import TaskList from '@/components/task/TaskList.vue'
@@ -25,14 +24,8 @@ const { useDividerLeftDrag, useDividerRightDrag } = useTaskSidebarDrag(
 
 <template>
   <div
-    class="w-full bg-gray-100 text-black dark:bg-#18181c dark:text-white h-40px px-1% flex justify-between items-center text-16px"
-  >
-    <div>Vue3 Todo App Real-World</div>
-    <TheHeader />
-  </div>
-  <div
     ref="boxContainerElement"
-    class="!h-[calc(100vh-40px)] flex p-10px pt-0 overflow-hidden dark:bg-#18181c dark:text-white"
+    class="!h-[calc(100vh-40px)] flex p-10px pt-0 overflow-hidden base-color"
   >
     <div
       ref="leftContainerElement"
