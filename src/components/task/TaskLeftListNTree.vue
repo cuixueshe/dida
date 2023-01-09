@@ -42,6 +42,7 @@ const changeSelectedKey = (key: number[]) => {
     v-model:selected-keys="projectSelectedStatusStore.selectedKey"
     :default-expanded-keys="projectSelectedStatusStore.listDefaultSelectedKey"
     block-line
+    expand-on-click
     :data="data"
     :node-props="nodeProps"
     @update:selected-keys="changeSelectedKey"
