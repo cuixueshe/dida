@@ -65,7 +65,7 @@
     "commit-msg": "pnpm exec commitlint --edit \"${1}\""
   },
   "lint-staged": {
-    "*.{js,ts,json,md,jsx,tsx,vue}": [
+    "*.{js,ts,json,md,jsx,tsx,vue,yml,yaml}": [
       "eslint --fix"
     ]
   },
