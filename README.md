@@ -61,11 +61,11 @@ pnpm bootstrap
 
 ### 2. pnpm 版本
 
-由于目前大部分的贡献中存在更新 `pnpm-lock.yaml` 文件，因此为了保障 pnpm 版本一致性来提高协作的 review pr 的效率，请详细阅读以下文档：
+由于目前大部分的贡献中存在更新 `pnpm-lock.yaml` 文件，因此为了保障 pnpm 版本一致性来提高协作和 review pr 的效率，请详细阅读以下文档：
 
-- `node.js >= 16`
+- `node.js 版本 >= 16.14.0`
 - 卸载当前安装的 `pnpm` 并在命令行执行 `corepack enable`
-- 在 `package.json` 中已经指定了 `pnpm@7.17.0` 版本作为当前项目的使用版本
+- 在 `package.json` 中已经指定了 `pnpm@7.17.0` 版本作为当前项目使用的 pnpm 版本
 - 由于开启 `corepack`，其他项目中依然可以继续使用 pnpm，没有任何差别
 
 ## 如何参与进来
