@@ -3,6 +3,10 @@
   "type": "module",
   "version": "0.0.0",
   "private": true,
+  "packageManager": "pnpm@7.17.0",
+  "engines": {
+    "node": ">=16.14.0"
+  },
   "scripts": {
     "bootstrap": "cross-env CYPRESS_INSTALL_BINARY=0 pnpm i",
     "dev": "vite",
@@ -61,7 +65,7 @@
     "commit-msg": "pnpm exec commitlint --edit \"${1}\""
   },
   "lint-staged": {
-    "*.{js,ts,json,md}": [
+    "*.{js,ts,json,md,jsx,tsx,vue}": [
       "eslint --fix"
     ]
   },
