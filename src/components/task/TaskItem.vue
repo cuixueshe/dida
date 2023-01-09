@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { NPopover } from 'naive-ui'
-import { useTaskOperationMessage, useTaskRightContextMenu } from '@/composable'
+import { isDark, useTaskOperationMessage, useTaskRightContextMenu } from '@/composable'
 import { TaskState, useTaskStore } from '@/store'
 import type { Task } from '@/store'
 
@@ -52,13 +52,23 @@ function handleCompleteTodo(e: Event) {
 
 <template>
   <div
-    class="flex flex-row gap-10px w-full items-center"
+    class="flex flex-row w-full items-center"
     @click.right="handleRightClickTask($event, task)"
   >
     <i
       class="cursor-move text-gray-200 dark:text-#3B3B3B flex-shrink-0 i-mdi-format-align-justify text-sm"
     />
-    <div class="flex justify-start items-center gap-5px h-40px py-5px flex-1">
+    <div
+      flex
+      justify-start
+      items-center
+      gap-5px
+      h-40px
+      py-5px
+      flex-1
+      pl-10px
+      :class="[isDark ? 'hover:bg-[#474747]/50' : 'hover:bg-[#ECF1FF]/50', taskStore.currentActiveTask?.id === task.id ? isDark ? '!bg-[#474747]' : '!bg-[#ECF1FF]' : '']"
+    >
       <template v-if="task.state === TaskState.REMOVED">
         <!-- 临时加的提示 后面要去掉 -->
         <div class="flex justify-start items-center gap-5px">
@@ -84,7 +94,7 @@ function handleCompleteTodo(e: Event) {
           @click="handleCompleteTodo"
         />
         <div
-          class="w-full cursor-pointer"
+          class="w-full cursor-pointer focus:outline-0"
           contenteditable="true"
           @input="handleInput"
           @focus="handleClickTask(task)"
