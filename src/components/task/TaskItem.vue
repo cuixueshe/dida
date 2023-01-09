@@ -27,9 +27,7 @@ function handleRightClickTask(e: MouseEvent, task: Task) {
 }
 
 function handleClickTask(task: Task) {
-  console.log(task)
   taskStore.changeActiveTask(task)
-  console.log(taskStore.currentActiveTask)
 }
 
 function handleInput(e: Event) {
