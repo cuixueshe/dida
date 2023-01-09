@@ -4,23 +4,21 @@ enum Sidebars {
 }
 
 interface SidebarItem {
-  id: number
   title: Sidebars
   name: string
   path: string
 }
 
+// 如何添加一个新的 sidebar？请详细阅读 https://github.com/cuixiaorui/vue3-dida/pull/52
 export const sidebars: SidebarItem[] = [
   {
-    id: 0,
-    title: Sidebars.Smart,
-    name: 'Smart',
-    path: '/smart',
-  },
-  {
-    id: 1,
     title: Sidebars.Theme,
     name: 'Theme',
     path: '/theme',
+  },
+  {
+    title: Sidebars.Smart,
+    name: 'Smart',
+    path: '/smart',
   },
 ]

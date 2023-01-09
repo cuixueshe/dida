@@ -22,4 +22,5 @@ export default {
   name: 'Settings',
   meta: { title: '设置' },
   children: subRoutes,
+  redirect: subRoutes[0].path,
 } as RouteRecordRaw
