@@ -3,7 +3,9 @@
 </script>
 
 <template>
-  Settings here
+  <div class="base-color">
+    Settings here
+  </div>
 </template>
 
 <style scoped></style>
