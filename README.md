@@ -42,8 +42,10 @@
 - [ ] axios
 
 ## 安装
+
 执行下面的命令即可
-```
+
+```bash
 pnpm bootstrap
 ```
 
