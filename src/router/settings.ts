@@ -5,12 +5,12 @@ import { sidebars } from '@/services/settings'
 
 const SETTINGS_PATH = 'settings'
 
-const subComponents = import.meta.glob(['/src/components/settings/Sub/*.vue'])
+const subComponents = import.meta.glob(['/src/components/settings/Sub/**/**.vue'])
 
 const subRoutes: RouteRecordRaw[] = sidebars.map(sidebar => ({
   path: `/settings${sidebar.path}`,
   name: `Settings${sidebar.name}`,
-  component: subComponents[`/src/components/settings/Sub/${sidebar.name}.vue`] as () => Promise<Component>,
+  component: subComponents[`/src/components/settings/Sub/${sidebar.name}/index.vue`] as () => Promise<Component>,
   meta: {
     title: sidebar.title,
   },
