@@ -5,7 +5,7 @@ import { Themes } from '@/services/settings/sub'
 
 <template>
   <div class="p-8">
-    <div class="text-14px text-white/70 font-light">
+    <div class="text-14px text-dark/70 dark:text-white/70 font-light">
       当前可选择的皮肤
     </div>
     <div class="flex justify-start items-center gap-18px mt-20px">
