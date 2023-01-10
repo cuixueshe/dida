@@ -1,1 +1,1 @@
-export { Themes } from './theme'
+export { Themes, Theme } from './theme'

@@ -1,6 +1,6 @@
 import { getGlobalThemeStore } from '@/store'
 
-enum Theme {
+export enum Theme {
   Dark = 'Dark',
   Light = 'Light',
 }
