@@ -144,11 +144,11 @@ function changeSelectedKey(key: number[]) {
 
       <template #footer>
         <div class="flex justify-end">
+          <NButton class="mr-3" @click="handleCannel">
+            关闭
+          </NButton>
           <NButton type="success" :disabled="!isSavable" @click="handleSave">
             保存
-          </NButton>
-          <NButton class="ml-3" @click="handleCannel">
-            取消
           </NButton>
         </div>
       </template>
