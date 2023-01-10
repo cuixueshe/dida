@@ -54,20 +54,15 @@ pnpm bootstrap
 
 ## 代码贡献指南
 
+你需要安装 Node.js 16+ 版本和 PNPM 7+ 版本。
+
+推荐使用 [ corepack ](https://nodejs.org/api/corepack.html) ，这样的话可以基于项目配置的包管理器版本来安装依赖。
+
 ### 1. 说明
 
-- 一个 pr 只处理一件事，不要把无关代码提交上来，这样最好 review 以及 merged
-- issue 以 pr 为准，留言不算
-- PR的标题尽量使用英文（可以借助翻译软件，这是做开源贡献的必备技能）
-
-### 2. pnpm 版本
-
-由于目前大部分的贡献中存在更新 `pnpm-lock.yaml` 文件，因此为了保障 pnpm 版本一致性来提高协作和 review pr 的效率，请详细阅读以下文档：
-
-- `node.js 版本 >= 16.14.0`
-- 卸载当前安装的 `pnpm` 并在命令行执行 `corepack enable`
-- 在 `package.json` 中已经指定了 `pnpm@7.17.0` 版本作为当前项目使用的 pnpm 版本
-- 由于开启 `corepack`，其他项目中依然可以继续使用 pnpm，没有任何差别
+- 一个 PR 只处理一件事，不要把无关代码提交上来，这样最好 Review 以及 Merged
+- Issue 以 PR 为准，留言不算
+- PR 的标题要使用英文
 
 ## 如何参与进来
 
