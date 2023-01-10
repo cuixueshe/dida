@@ -8,7 +8,7 @@ let discreteApi: DiscreteApi
 const discreteConfigure = computed<ConfigProviderProps>(() => ({
   // TODO theme follow themeStore
   // Cannot use getGlobalThemeStore here, cause pinia will call `onMounted` hook when using it.
-  // But we use this api in `RouterGuard`, at that time there has no active component
+  // We use this api in `RouterGuard`, at that time there has no active component
   // then vue throws a warning.
   // To avoid the warning, just fixed theme here.
   theme: darkTheme,
