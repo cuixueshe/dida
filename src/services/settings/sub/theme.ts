@@ -1,11 +1,11 @@
 import { getGlobalThemeStore } from '@/store'
 
-export enum Theme {
+enum Theme {
   Dark = 'Dark',
   Light = 'Light',
 }
 
-export interface ThemeItem {
+interface ThemeItem {
   label: string
   name: Theme
   color: string
