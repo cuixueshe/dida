@@ -50,25 +50,12 @@ i 是你当前的能力 在这个难度基础上再 +1 就是适合你的项目
 而测试就是这个问题的解
 
 ## Features
-
-集成了以下技术栈
-
-- [x] vite
-- [x] vue3
-- [x] typescript
-- [x] vitest
-- [x] vue-router
-- [x] pinia(vuex5)
-- [x] naive-ui
-- [x] cypress
-- [x] cypress-component-test
-- [x] alias
-- [x] ci && cd
-- [x] unocss (更好用的 tailwind-css)
-- [x] git hooks (lint-stage + commit-lint)
-- [x] eslint 校验
-- [ ] lint + eslint + prettier
-- [ ] axios
+- 最前沿的技术栈 是的 不新不潮流不用
+- 只专注技术
+  - 代码的实现是不是优雅 
+  - 架构是不是整洁
+  - 分层是不是清晰 
+  - 功能？样式？能 run 就行
 
 ## 安装
 
