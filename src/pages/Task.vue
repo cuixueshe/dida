@@ -44,6 +44,7 @@ const taskLeftMenuStatusStore = useTaskLeftMenuStatusStore()
       <TaskLeftListView />
     </div>
     <div
+      v-if="taskLeftMenuStatusStore.visible"
       ref="leftResizeElement"
       class="border-solid cursor-w-resize h-screen border-1 opacity-60 hover-opacity-100"
       style="flex: 0 0 1px"
