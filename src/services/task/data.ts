@@ -1,7 +1,7 @@
 import { nanoid } from 'nanoid'
 // 暂时模拟后端返回的数据格式
 export const fetchData = {
-  projectList: [
+  projects: [
     {
       name: '快捷',
       tasks: [
