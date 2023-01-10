@@ -1,4 +1,3 @@
-import { nanoid } from 'nanoid'
 import type { Project } from './project'
 import { completedProject, trashProject } from './smartProject'
 
@@ -20,7 +19,7 @@ export interface Task {
 
 export function createTask(
   title: string,
-  id: string = nanoid(),
+  id: string = crypto.randomUUID(),
   content = '',
 ): Task {
   return {
