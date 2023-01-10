@@ -5,6 +5,7 @@ import TaskEditor from '@/components/task/TaskEditor.vue'
 import TaskLeftListView from '@/components/task/TaskLeftListView.vue'
 import TaskList from '@/components/task/TaskList.vue'
 import { useTaskSidebarDrag } from '@/composable'
+import { useTaskLeftMenuStatusStore } from '@/store'
 
 const AREA_MIN_WIDTH = 240
 
@@ -21,6 +22,7 @@ const { useDividerLeftDrag, useDividerRightDrag } = useTaskSidebarDrag(
   leftContainerElement,
   rightContainerElement,
 )
+const taskLeftMenuStatusStore = useTaskLeftMenuStatusStore()
 </script>
 
 <template>
@@ -35,12 +37,14 @@ const { useDividerLeftDrag, useDividerRightDrag } = useTaskSidebarDrag(
     class="!h-[calc(100vh-40px)] flex p-10px pt-0 overflow-hidden dark:bg-#18181c dark:text-white"
   >
     <div
+      v-if="taskLeftMenuStatusStore.visible"
       ref="leftContainerElement"
       :style="{ flex: `0 0 ${AREA_MIN_WIDTH}px` }"
     >
       <TaskLeftListView />
     </div>
     <div
+      v-if="taskLeftMenuStatusStore.visible"
       ref="leftResizeElement"
       class="border-solid cursor-w-resize h-screen border-1 opacity-60 hover-opacity-100"
       style="flex: 0 0 1px"

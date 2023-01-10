@@ -3,10 +3,11 @@ import { computed, ref } from 'vue'
 import { Icon } from '@iconify/vue'
 import draggable from 'vuedraggable'
 import TaskItem from './TaskItem.vue'
-import { SmartProjectNames, useTaskStore } from '@/store'
+import { SmartProjectNames, useTaskLeftMenuStatusStore, useTaskStore } from '@/store'
 import { isDark, useTaskListInput } from '@/composable'
 
 const taskStore = useTaskStore()
+const taskLeftMenuStatusStore = useTaskLeftMenuStatusStore()
 
 const taskTitle = ref('')
 const dragging = ref<boolean>(false)
@@ -21,6 +22,10 @@ const isPlaceholder = computed(() => {
 function addTask() {
   taskStore.addTask(taskTitle.value)
   taskTitle.value = ''
+}
+
+function troggleLeftMenu() {
+  taskLeftMenuStatusStore.troggle()
 }
 
 const shouldShowTodoAdd = computed(() => {
@@ -38,8 +43,9 @@ const { inputRef, onFocus } = useTaskListInput()
 
 <template>
   <div class="flex flex-col gap-20px px-4 text-16px">
-    <div>
-      <h1 class="text-4xl">
+    <div flex items-center>
+      <Icon :icon="taskLeftMenuStatusStore.visible ? 'tabler:layout-sidebar-left-collapse' : 'tabler:layout-sidebar-right-collapse'" width="30" @click="troggleLeftMenu()" />
+      <h1 class="text-4xl ml-5px">
         {{ taskStore.currentActiveProject?.name }}
       </h1>
     </div>
