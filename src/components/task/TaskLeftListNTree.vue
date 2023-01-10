@@ -63,8 +63,9 @@ const {
   cleanupInput,
 } = useTaskLeftListCreateProject(inputElement)
 
-function handleSave() {
+function handleConfirm() {
   // @todo add project
+  isShowModal.value = false
   cleanupInput()
 }
 
@@ -147,7 +148,7 @@ function changeSelectedKey(key: number[]) {
           <NButton class="mr-3" @click="handleCannel">
             关闭
           </NButton>
-          <NButton type="success" :disabled="!isSavable" @click="handleSave">
+          <NButton type="success" :disabled="!isSavable" @click="handleConfirm">
             保存
           </NButton>
         </div>
