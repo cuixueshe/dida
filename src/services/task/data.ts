@@ -42,6 +42,23 @@ export const fetchData = {
       ],
     },
   ],
+  completed: {
+    name: '已完成',
+    tasks: [
+      {
+        title: '完成1',
+        content: '',
+        id: crypto.randomUUID(),
+        previousProjectName: '快捷',
+      },
+      {
+        title: '完成2',
+        content: '',
+        id: crypto.randomUUID(),
+        previousProjectName: '快捷',
+      },
+    ],
+  },
   trash: {
     name: '垃圾桶',
     tasks: [

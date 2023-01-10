@@ -1,5 +1,5 @@
 import type { Project } from './project'
-import { completedProject, trashProject } from './smartProject'
+import { completedSmartProject, trashProject } from './smartProject'
 
 export enum TaskState {
   ACTIVE = 1,
@@ -44,7 +44,7 @@ export function removeTask(task: Task) {
 
 export function completeTask(task: Task) {
   _removeTaskFromProject(task)
-  addTask(task, completedProject)
+  addTask(task, completedSmartProject)
   task.state = TaskState.COMPLETED
 }
 
