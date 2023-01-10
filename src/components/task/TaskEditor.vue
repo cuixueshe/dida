@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import InkMde from 'ink-mde/vue'
-import { useTaskStore } from '@/store'
-import { isDark } from '@/composable'
+import { useTaskStore, useThemeStore } from '@/store'
 
 const taskStore = useTaskStore()
+const themeStore = useThemeStore()
 
 function handleInput(e: Event) {
   if (taskStore.currentActiveTask)
@@ -22,7 +22,7 @@ function handleInput(e: Event) {
           v-model="taskStore.currentActiveTask.content"
           :options="{
             interface: {
-              appearance: isDark ? 'dark' : 'light',
+              appearance: themeStore.isDark ? 'dark' : 'light',
             },
           }"
         />
