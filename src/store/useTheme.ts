@@ -33,3 +33,13 @@ export const useThemeStore = defineStore(
     }
   },
 )
+
+let globalThemeStore: ReturnType<typeof useThemeStore>
+
+// To avoid using store before initializing Pinia.
+export const getGlobalThemeStore = () => {
+  if (!globalThemeStore)
+    globalThemeStore = useThemeStore()
+
+  return globalThemeStore
+}

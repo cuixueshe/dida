@@ -1,4 +1,4 @@
-export { useThemeStore } from './useTheme'
+export { useThemeStore, getGlobalThemeStore } from './useTheme'
 export { useTaskStore } from './useTaskStore'
 export { useProjectSelectedStatusStore } from './useTaskStatus'
 export { SpecialProjectNames, TaskState } from '../services/task'
