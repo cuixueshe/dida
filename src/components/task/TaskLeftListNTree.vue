@@ -13,7 +13,7 @@ import {
 import { ref } from 'vue'
 import EmojiPicker from 'vue3-emoji-picker'
 import { useProjectSelectedStatusStore, useTaskStore } from '@/store'
-import { useTaskLeftListAddProject } from '@/composable'
+import { useTaskLeftListCreateProject } from '@/composable'
 import 'vue3-emoji-picker/css'
 
 const projectSelectedStatusStore = useProjectSelectedStatusStore()
@@ -61,7 +61,7 @@ const {
   isShowPopover,
   renderCreateProjectButton,
   cleanupInput,
-} = useTaskLeftListAddProject(inputElement)
+} = useTaskLeftListCreateProject(inputElement)
 
 function handleSave() {
   // @todo add project
