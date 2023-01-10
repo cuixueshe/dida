@@ -12,7 +12,6 @@ const options: MenuOption[] = sidebars.map(sidebar => ({
 
 const route = useRoute()
 
-// 根据当前的 path 的到最后一位，由于 path 在 options 中是 key，因此得到当前选中的 menu
 const getCurrentMenu = () => {
   const path = route.path
   const pathArr = path.split('/')
