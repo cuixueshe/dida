@@ -16,7 +16,7 @@ const subRoutes: RouteRecordRaw[] = sidebars.map(sidebar => ({
   },
 }))
 
-export default {
+export const SettingsRoute = {
   path: `/${SETTINGS_PATH}`,
   component: Settings,
   name: 'Settings',
