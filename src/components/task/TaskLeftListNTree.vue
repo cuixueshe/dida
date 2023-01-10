@@ -6,6 +6,8 @@ import { useProjectSelectedStatusStore, useTaskStore } from '@/store'
 const projectSelectedStatusStore = useProjectSelectedStatusStore()
 const taskStore = useTaskStore()
 
+const FITTERTREECODE = 100
+
 const data = ref<any[]>([
   {
     key: 100,
@@ -23,10 +25,11 @@ const data = ref<any[]>([
     ),
   },
 ])
+
 const nodeProps = (treeOption: any) => {
   return {
     onClick() {
-      if (treeOption.option.key === 100)
+      if (treeOption.option.key === FITTERTREECODE)
         return
       const projectName = treeOption.option.label
       taskStore.changeCurrentActiveProject(projectName)
@@ -35,7 +38,15 @@ const nodeProps = (treeOption: any) => {
 }
 
 const changeSelectedKey = (key: number[]) => {
+  if (key[0] === FITTERTREECODE)
+    projectSelectedStatusStore.changePreSelectKey(projectSelectedStatusStore.selectedKey)
+
   projectSelectedStatusStore.changeSelectedKey(key)
+}
+
+const onExpandedKey = (key: number[]) => {
+  if (key[0] === FITTERTREECODE)
+    projectSelectedStatusStore.changeSelectedKey(projectSelectedStatusStore.preSelectKey)
 }
 </script>
 
@@ -47,6 +58,7 @@ const changeSelectedKey = (key: number[]) => {
     expand-on-click
     :data="data"
     :node-props="nodeProps"
+    @update:expanded-keys="onExpandedKey"
     @update:selected-keys="changeSelectedKey"
   />
 </template>
