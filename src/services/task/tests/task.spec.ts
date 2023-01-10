@@ -1,12 +1,18 @@
 import { describe, expect, it } from 'vitest'
 import {
-  addTask,
   createProject,
-  removeTask,
+  resetCompletedProject,
   resetTrashProject,
-  trashProject,
-} from './project'
-import { createTask } from './task'
+} from '../project'
+import {
+  TaskState,
+  addTask,
+  completeTask,
+  createTask,
+  removeTask,
+  restoreTask,
+} from '../task'
+import { completedProject, trashProject } from '../smartProject'
 
 describe('task', () => {
   it('should edit title of task', () => {
@@ -24,12 +30,13 @@ describe('task', () => {
   })
   it('add task to project ', () => {
     const project = createProject('one')
-    const taskTitle = 'coding'
-    const task = createTask(taskTitle)
+    const firstTask = createTask('coding')
+    addTask(firstTask, project)
+    expect(project.tasks[0].title).toEqual('coding')
 
-    addTask(task, project)
-
-    expect(project.tasks[0].title).toEqual(taskTitle)
+    const secondTask = createTask('play game')
+    addTask(secondTask, project)
+    expect(project.tasks[0].title).toEqual('play game')
   })
 
   it('remove task', () => {
@@ -43,5 +50,45 @@ describe('task', () => {
     expect(trashProject!.tasks[0].title).toBe('coding')
 
     resetTrashProject()
+  })
+
+  it('complete task', () => {
+    const project = createProject('one')
+    const task = createTask('coding')
+    addTask(task, project)
+
+    completeTask(task)
+
+    expect(project.tasks.length).toBe(0)
+    expect(completedProject!.tasks[0].title).toBe('coding')
+
+    resetCompletedProject()
+  })
+
+  it('restore task', () => {
+    const project = createProject('one')
+    const task = createTask('coding')
+    addTask(task, project)
+    completeTask(task)
+
+    restoreTask(task)
+
+    expect(completedProject.tasks.length).toBe(0)
+    expect(project!.tasks[0].title).toBe('coding')
+  })
+
+  it('task state', () => {
+    const task = createTask('coding')
+    expect(task.state).toEqual(TaskState.ACTIVE)
+
+    const project = createProject('one')
+    addTask(task, project)
+    expect(task.state).toEqual(TaskState.ACTIVE)
+
+    completeTask(task)
+    expect(task.state).toEqual(TaskState.COMPLETED)
+
+    removeTask(task)
+    expect(task.state).toEqual(TaskState.REMOVED)
   })
 })
