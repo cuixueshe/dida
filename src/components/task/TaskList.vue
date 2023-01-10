@@ -3,10 +3,11 @@ import { computed, ref } from 'vue'
 import { Icon } from '@iconify/vue'
 import draggable from 'vuedraggable'
 import TaskItem from './TaskItem.vue'
-import { SpecialProjectNames, useTaskStore } from '@/store'
-import { isDark, useTaskListInput } from '@/composable'
+import { SpecialProjectNames, useTaskStore, useThemeStore } from '@/store'
+import { useTaskListInput } from '@/composable'
 
 const taskStore = useTaskStore()
+const themeStore = useThemeStore()
 
 const taskTitle = ref('')
 const dragging = ref<boolean>(false)
@@ -69,8 +70,8 @@ const { inputRef, onFocus } = useTaskListInput()
     </div>
     <draggable
       :list="taskStore.currentActiveProject?.tasks ?? []"
-      :ghost-class="isDark ? 'dark-ghost' : 'ghost'"
-      :drag-class="isDark ? 'dark-drag' : 'drag'"
+      :ghost-class="themeStore.isDark ? 'dark-ghost' : 'ghost'"
+      :drag-class="themeStore.isDark ? 'dark-drag' : 'drag'"
       item-key="id"
       :animation="200"
       :component-data="{

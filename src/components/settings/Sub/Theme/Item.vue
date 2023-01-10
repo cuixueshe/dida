@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import Selected from './Selected.vue'
-import { useThemeStore } from '@/store/useTheme'
+import { useThemeStore } from '@/store'
 import type { Theme } from '@/services/settings/sub'
 
 const props = defineProps<{

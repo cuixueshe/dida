@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
-import { toggleDark } from '@/composable'
+import { useThemeStore } from '@/store'
 
 const router = useRouter()
+
+const themeStore = useThemeStore()
 
 const goTo = {
   home: () => router.push({
@@ -24,7 +26,7 @@ const goTo = {
       <button class="mx-2 !outline-none" @click="goTo.settings()">
         <div i="carbon-settings" />
       </button>
-      <button class="mx-2 !outline-none" @click="toggleDark()">
+      <button class="mx-2 !outline-none" @click="themeStore.toggleDark()">
         <div i="carbon-sun dark:carbon-moon" />
       </button>
       <button class="mx-2 !outline-none" @click="goTo.github()">

@@ -1,4 +1,13 @@
-import { toggleDark } from '@/composable'
+import { useThemeStore } from '@/store'
+
+let store: ReturnType<typeof useThemeStore>
+
+// To avoid using store before initializing Pinia.
+const getThemeStore = () => {
+  if (!store)
+    store = useThemeStore()
+  return store
+}
 
 export enum Theme {
   Dark = 'Dark',
@@ -17,12 +26,12 @@ export const Themes: ThemeItem[] = [
     label: '亮色',
     name: Theme.Light,
     color: '#f3f4f6',
-    handler: () => toggleDark(false),
+    handler: () => getThemeStore().toggleDark(false),
   },
   {
     label: '暗色',
     name: Theme.Dark,
     color: '#18181c',
-    handler: () => toggleDark(true),
+    handler: () => getThemeStore().toggleDark(true),
   },
 ]
