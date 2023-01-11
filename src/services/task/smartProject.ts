@@ -11,52 +11,38 @@ export enum SmartProjectNames {
 
 // 智能列表
 interface CompletedSmartProject extends Project {
-  name: '已完成'
+  name: SmartProjectNames.Complete
 }
 
 interface TrashProject extends Project {
-  name: '垃圾桶'
+  name: SmartProjectNames.Trash
 }
 
 interface FailedSmartProject extends Project {
-  name: '已放弃'
+  name: SmartProjectNames.Failed
 }
 
 interface AbstractSmartProject extends Project {
-  name: '摘要'
+  name: SmartProjectNames.Abstract
 }
 
-export const trashProject = createTrashProject()
-export const failedSmartProject = createFailedSmartProject()
-export const abstractSmartProject = createAbstractSmartProject()
-export const completedSmartProject = createCompletedSmartProject()
-
-export function createCompletedSmartProject(): CompletedSmartProject {
+export function createSmartProject(smartProjectName: string) {
   return {
-    name: '已完成',
+    name: smartProjectName,
     tasks: [],
   }
 }
 
-export function createTrashProject(): TrashProject {
-  return {
-    name: '垃圾桶',
-    tasks: [],
-  }
-}
+export const trashProject = createSmartProject(SmartProjectNames.Trash) as TrashProject
+export const failedSmartProject = createSmartProject(SmartProjectNames.Failed) as FailedSmartProject
+export const abstractSmartProject = createSmartProject(SmartProjectNames.Abstract) as AbstractSmartProject
+export const completedSmartProject = createSmartProject(SmartProjectNames.Complete) as CompletedSmartProject
 
-export function createFailedSmartProject(): FailedSmartProject {
-  return {
-    name: '已放弃',
-    tasks: [],
-  }
-}
-
-export function createAbstractSmartProject(): AbstractSmartProject {
-  return {
-    name: '摘要',
-    tasks: [],
-  }
+export const smartProjects = {
+  [SmartProjectNames.Complete]: completedSmartProject,
+  [SmartProjectNames.Trash]: trashProject,
+  [SmartProjectNames.Failed]: failedSmartProject,
+  [SmartProjectNames.Abstract]: abstractSmartProject,
 }
 
 export function initCompletedSmartProject({ tasks }: FetchProjectData) {
