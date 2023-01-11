@@ -1,18 +1,18 @@
 <script setup lang="ts">
 import { NButton, NModal } from 'naive-ui'
 import { ref } from 'vue'
-import SearchBody from './SearchBody.vue'
+import CommandBody from './CommandBody.vue'
 
-const showSearch = ref(false)
+const showCommand = ref(false)
 </script>
 
 <template>
   <div>
-    <NButton @click="showSearch = !showSearch">
+    <NButton @click="showCommand = !showCommand">
       CLick me
     </NButton>
-    <NModal v-model:show="showSearch">
-      <SearchBody />
+    <NModal v-model:show="showCommand">
+      <CommandBody />
     </NModal>
   </div>
 </template>

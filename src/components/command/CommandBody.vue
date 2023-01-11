@@ -7,13 +7,9 @@ const searchWord = ref('')
 
 <template>
   <div class="base-color w-200 h-120 rounded p-sm">
-    <NInput v-model:value="searchWord" placeholder="搜索" clearable>
-      <template #prefix>
-        <div i="carbon-search" />
-      </template>
-    </NInput>
+    <NInput v-model:value="searchWord" placeholder="通过关键字搜索，或添加 '>' 前缀开启命令模式" clearable />
     <div>
-      <NEmpty description="搜索任务，标签，设置">
+      <NEmpty description="搜索任务，标签或查看命令。">
         <template #icon />
       </NEmpty>
     </div>
