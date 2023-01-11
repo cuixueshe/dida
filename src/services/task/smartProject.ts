@@ -11,26 +11,37 @@ export enum SmartProjectNames {
 
 // 智能列表
 interface CompletedSmartProject extends Project {
-  name: '已完成'
+  name: SmartProjectNames.Complete
 }
 
 interface TrashProject extends Project {
-  name: '垃圾桶'
+  name: SmartProjectNames.Trash
 }
 
-export const trashProject = createTrashProject()
-export const completedSmartProject = createCompletedSmartProject()
-
-export function createCompletedSmartProject(): CompletedSmartProject {
-  return {
-    name: '已完成',
-    tasks: [],
-  }
+interface FailedProject extends Project {
+  name: SmartProjectNames.Failed
 }
 
-export function createTrashProject(): TrashProject {
+interface AbstractProject extends Project {
+  name: SmartProjectNames.Abstract
+}
+
+export const trashProject = createSmartProject(SmartProjectNames.Trash) as TrashProject
+export const completedSmartProject = createSmartProject(SmartProjectNames.Complete) as CompletedSmartProject
+export const failedProject = createSmartProject(SmartProjectNames.Failed) as FailedProject
+export const abstractProject = createSmartProject(SmartProjectNames.Abstract) as AbstractProject
+
+export const smartProjects = {
+  [SmartProjectNames.Complete]: completedSmartProject,
+  [SmartProjectNames.Trash]: trashProject,
+  [SmartProjectNames.Failed]: failedProject,
+  [SmartProjectNames.Abstract]: abstractProject,
+
+}
+
+export function createSmartProject(smartProjectName: string) {
   return {
-    name: '垃圾桶',
+    name: smartProjectName,
     tasks: [],
   }
 }
