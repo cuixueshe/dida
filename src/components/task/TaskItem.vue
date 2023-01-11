@@ -13,14 +13,14 @@ const taskStore = useTaskStore()
 const themeStore = useThemeStore()
 
 const { showCompleteMessage } = useTaskOperationMessage()
+const { showContextMenu } = useTaskRightContextMenu()
+
 const checkboxColors: Record<TaskState, string> = {
   [TaskState.ACTIVE]: 'bg-#ccc',
   [TaskState.COMPLETED]: 'bg-#007A78',
   [TaskState.GIVE_UP]: 'bg-#FF2200',
   [TaskState.REMOVED]: 'bg-#ccc',
 }
-
-const { showContextMenu } = useTaskRightContextMenu()
 
 function handleRightClickTask(e: MouseEvent, task: Task) {
   taskStore.changeActiveTask(task)
@@ -68,7 +68,14 @@ function handleCompleteTodo(e: Event) {
       py-5px
       flex-1
       pl-10px
-      :class="[themeStore.isDark ? 'hover:bg-[#474747]/50' : 'hover:bg-[#ECF1FF]/50', taskStore.currentActiveTask?.id === task.id ? themeStore.isDark ? '!bg-[#474747]' : '!bg-[#ECF1FF]' : '']"
+      :class="[
+        themeStore.isDark ? 'hover:bg-[#474747]/50' : 'hover:bg-[#ECF1FF]/50',
+        taskStore.currentActiveTask?.id === task.id
+          ? themeStore.isDark
+            ? '!bg-[#474747]'
+            : '!bg-[#ECF1FF]'
+          : '',
+      ]"
     >
       <template v-if="task.state === TaskState.REMOVED">
         <!-- 临时加的提示 后面要去掉 -->

@@ -13,6 +13,8 @@ const rightResizeElement = ref<HTMLDivElement>()
 const boxContainerElement = ref<HTMLDivElement>()
 const leftContainerElement = ref<HTMLDivElement>()
 const rightContainerElement = ref<HTMLDivElement>()
+const leftWidthFlex = ref<string>(`flex: 0 0 ${AREA_MIN_WIDTH}px`)
+const rightWidthFlex = ref<string>(`flex: 0 0 ${AREA_MIN_WIDTH}px`)
 const { useDividerLeftDrag, useDividerRightDrag } = useTaskSidebarDrag(
   AREA_MIN_WIDTH,
   leftResizeElement,
@@ -20,6 +22,8 @@ const { useDividerLeftDrag, useDividerRightDrag } = useTaskSidebarDrag(
   boxContainerElement,
   leftContainerElement,
   rightContainerElement,
+  leftWidthFlex,
+  rightWidthFlex,
 )
 const taskLeftMenuStatusStore = useTaskLeftMenuStatusStore()
 </script>
@@ -32,7 +36,7 @@ const taskLeftMenuStatusStore = useTaskLeftMenuStatusStore()
     <div
       v-if="taskLeftMenuStatusStore.visible"
       ref="leftContainerElement"
-      :style="{ flex: `0 0 ${AREA_MIN_WIDTH}px` }"
+      :style="leftWidthFlex"
     >
       <TaskLeftListView />
     </div>
@@ -57,9 +61,9 @@ const taskLeftMenuStatusStore = useTaskLeftMenuStatusStore()
     <div
       ref="rightContainerElement"
       class="flex w-full h-full p-24px"
-      :style="{ flex: `0 0 ${AREA_MIN_WIDTH}px` }"
+      :style="rightWidthFlex"
     >
-      <TaskEditor class="w-full" />
+      <TaskEditor class="w-full h-full" />
     </div>
   </div>
 </template>

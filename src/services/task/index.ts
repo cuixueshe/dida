@@ -1,5 +1,6 @@
 import { fetchData } from './data'
 import { initProjects } from './project'
+import { initCompletedSmartProject } from './smartProject'
 export { SmartProjectNames } from './smartProject'
 export { projects, findProjectByName } from './project'
 export {
@@ -14,5 +15,4 @@ export type { Task } from './task'
 export type { Project } from './project'
 
 initProjects(fetchData.projects)
-// TODO
-// 初始化 smartProjects  现在是直接初始化了
+initCompletedSmartProject(fetchData.completed)

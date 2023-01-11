@@ -16,6 +16,8 @@ export function useTaskSidebarDrag(
   boxContainerElement: Ref<HTMLDivElement | undefined>,
   leftContainerElement: Ref<HTMLDivElement | undefined>,
   rightContainerElement: Ref<HTMLDivElement | undefined>,
+  leftWidthFlex: Ref<string>,
+  rightWidthFlex: Ref<string>,
 ) {
   function getContainerHorizontalPadding(
     containerRef: Ref<HTMLDivElement | undefined>,
@@ -78,9 +80,14 @@ export function useTaskSidebarDrag(
         )
         const expression = `flex: 0 0 ${moveDistance}px`
 
-        direction === Direction.LEFT
-          ? leftContainerElement.value!.setAttribute('style', expression)
-          : rightContainerElement.value!.setAttribute('style', expression)
+        if (direction === Direction.LEFT) {
+          leftWidthFlex.value = expression
+          leftContainerElement.value!.setAttribute('style', leftWidthFlex.value)
+        }
+        if (direction === Direction.RIGHT) {
+          rightWidthFlex.value = expression
+          rightContainerElement.value!.setAttribute('style', rightWidthFlex.value)
+        }
       },
     )
     const cleanupMouseUp = useEventListener(document, 'mouseup', () => {
