@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { NButton, NModal } from 'naive-ui'
 import { ref } from 'vue'
+import SearchBody from './SearchBody.vue'
 
 const showSearch = ref(false)
 </script>
@@ -11,9 +12,7 @@ const showSearch = ref(false)
       CLick me
     </NButton>
     <NModal v-model:show="showSearch">
-      <div class="base-color w-200px h-200px">
-        hello world
-      </div>
+      <SearchBody />
     </NModal>
   </div>
 </template>
