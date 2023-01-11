@@ -1,19 +1,17 @@
 <script setup lang="ts">
-import { NConfigProvider, darkTheme } from 'naive-ui'
-import { computed } from 'vue'
-import { isDark } from './composable/dark'
+import { NConfigProvider } from 'naive-ui'
+import BaseLayout from './layout/BaseLayout.vue'
+import { useThemeStore } from '@/store'
 
-const naiveTheme = computed(() => isDark.value ? darkTheme : null)
+const themeStore = useThemeStore()
 </script>
 
 <template>
-  <NConfigProvider :theme="naiveTheme">
-    <div>
+  <NConfigProvider :theme="themeStore.naiveTheme">
+    <BaseLayout>
       <RouterView />
-    </div>
+    </BaseLayout>
   </NConfigProvider>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

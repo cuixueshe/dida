@@ -13,6 +13,7 @@ export default defineConfig({
     ['btn', ''],
     ['item-hover', ''],
     ['li_common', 'cursor-pointer flex justify-between items-center h-7'],
+    ['base-color', 'bg-gray-100 dark:bg-#18181c dark:text-white text-black'],
   ],
   presets: [
     presetUno(),

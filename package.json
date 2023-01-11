@@ -3,11 +3,16 @@
   "type": "module",
   "version": "0.0.0",
   "private": true,
+  "packageManager": "pnpm@7.17.0",
+  "engines": {
+    "node": ">=16.14.0"
+  },
   "scripts": {
+    "bootstrap": "cross-env CYPRESS_INSTALL_BINARY=0 pnpm i",
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
     "preview": "vite preview",
-    "test": "pnpm test-unit-run && pnpm test-component-run && pnpm test-e2e-run",
+    "test": "pnpm test-unit-run",
     "test-unit": "vitest",
     "test-component": "cypress open --component",
     "test-e2e": "cross-env NODE_ENV=developer cypress open --e2e",
@@ -22,10 +27,10 @@
     "@imengyu/vue3-context-menu": "^1.1.7",
     "ink-mde": "^0.18.1",
     "naive-ui": "^2.34.2",
-    "nanoid": "^4.0.0",
     "pinia": "^2.0.17",
     "vue": "^3.2.37",
-    "vue-router": "4"
+    "vue-router": "4",
+    "vuedraggable": "^4.1.0"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^0.34.0",
@@ -34,6 +39,7 @@
     "@iconify-json/carbon": "^1.1.11",
     "@iconify-json/mdi": "^1.1.40",
     "@iconify/vue": "^4.0.2",
+    "@peculiar/webcrypto": "^1.4.1",
     "@types/node": "^18.11.18",
     "@unocss/reset": "^0.48.0",
     "@vitejs/plugin-vue": "^3.0.0",
@@ -41,7 +47,7 @@
     "@vue/test-utils": "^2.0.2",
     "@vueuse/core": "^9.9.0",
     "cross-env": "^7.0.3",
-    "cypress": "^10.4.0",
+    "cypress": "^12.3.0",
     "cypress-promise": "^1.1.0",
     "eslint": "^8.30.0",
     "jsdom": "^20.0.0",
@@ -59,7 +65,7 @@
     "commit-msg": "pnpm exec commitlint --edit \"${1}\""
   },
   "lint-staged": {
-    "*.{js,ts,json,md}": [
+    "*.{js,ts,json,md,jsx,tsx,vue,yml,yaml}": [
       "eslint --fix"
     ]
   },
