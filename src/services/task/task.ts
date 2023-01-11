@@ -1,6 +1,6 @@
 import { nanoid } from 'nanoid'
 import type { Project } from './project'
-import { completedProject, trashProject } from './smartProject'
+import { SmartProjectNames, smartProjects } from './smartProject'
 
 export enum TaskState {
   ACTIVE = 1,
@@ -39,13 +39,13 @@ export function addTask(task: Task, project: Project) {
 
 export function removeTask(task: Task) {
   _removeTaskFromProject(task)
-  addTask(task, trashProject)
+  addTask(task, smartProjects[SmartProjectNames.Trash])
   task.state = TaskState.REMOVED
 }
 
 export function completeTask(task: Task) {
   _removeTaskFromProject(task)
-  addTask(task, completedProject)
+  addTask(task, smartProjects[SmartProjectNames.Complete])
   task.state = TaskState.COMPLETED
 }
 

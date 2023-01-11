@@ -1,5 +1,6 @@
 import type { Task } from './task'
-import { completedProject, trashProject } from './smartProject'
+import type { SmartProjectNames } from './smartProject'
+import { smartProjectKeys, smartProjects } from './smartProject'
 import { addTask, createTask } from './task'
 
 interface FetchTaskData {
@@ -31,10 +32,8 @@ export function addProject(project: Project) {
 }
 
 export function findProjectByName(name: string) {
-  if (name === completedProject.name)
-    return completedProject
-  else if (name === trashProject.name)
-    return trashProject
+  if (smartProjectKeys.includes(name))
+    return smartProjects[name as SmartProjectNames]
 
   return projects.find((project) => {
     return project.name === name
@@ -54,14 +53,4 @@ export function initProjects(projectsData: FetchProjectData[]) {
       addTask(task, project)
     })
   })
-}
-
-// TODO 后面重构成基于配置来初始化 这个就可以干掉了
-export function resetTrashProject() {
-  trashProject.tasks = []
-}
-
-// TODO 后面重构成基于配置来初始化 这个就可以干掉了
-export function resetCompletedProject() {
-  completedProject.tasks = []
 }

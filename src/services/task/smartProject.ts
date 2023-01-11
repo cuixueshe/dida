@@ -7,28 +7,64 @@ export enum SmartProjectNames {
   Abstract = '摘要',
 }
 
+// Cause every smart list might have different logic,
+// we can't initialize them uniformly
+interface SmartProjectComplete {
+  name: SmartProjectNames.Complete
+  tasks: []
+}
+
+interface SmartProjectTrash {
+  name: SmartProjectNames.Trash
+  tasks: []
+}
+
+interface SmartProjectFailed {
+  name: SmartProjectNames.Failed
+  tasks: []
+}
+
+interface SmartProjectAbstract {
+  name: SmartProjectNames.Abstract
+  tasks: []
+}
+
+const createSmartProject = (name: SmartProjectNames) => {
+  // and in this function, we can use other factory function to create different smart project if needed.
+  switch (name) {
+    case SmartProjectNames.Complete:
+      return {
+        name,
+        tasks: [],
+      } as SmartProjectComplete
+    case SmartProjectNames.Trash:
+      return {
+        name,
+        tasks: [],
+      } as SmartProjectTrash
+    case SmartProjectNames.Failed:
+      return {
+        name,
+        tasks: [],
+      } as SmartProjectFailed
+    case SmartProjectNames.Abstract:
+      return {
+        name,
+        tasks: [],
+      } as SmartProjectAbstract
+  }
+}
+
 // 智能列表
-interface CompletedProject extends Project {
-  name: '已完成'
+export const smartProjects: Record<SmartProjectNames, Project> = {
+  [SmartProjectNames.Complete]: createSmartProject(SmartProjectNames.Complete),
+  [SmartProjectNames.Trash]: createSmartProject(SmartProjectNames.Trash),
+  [SmartProjectNames.Failed]: createSmartProject(SmartProjectNames.Failed),
+  [SmartProjectNames.Abstract]: createSmartProject(SmartProjectNames.Abstract),
 }
 
-interface TrashProject extends Project {
-  name: '垃圾桶'
-}
+export const smartProjectKeys = Object.keys(smartProjects)
 
-export const trashProject = createTrashProject()
-export const completedProject = createCompletedProject()
-
-export function createCompletedProject(): CompletedProject {
-  return {
-    name: '已完成',
-    tasks: [],
-  }
-}
-
-export function createTrashProject(): TrashProject {
-  return {
-    name: '垃圾桶',
-    tasks: [],
-  }
+export const resetSmartProjectByName = (name: SmartProjectNames) => {
+  smartProjects[name].tasks = []
 }

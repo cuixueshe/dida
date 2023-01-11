@@ -1,9 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import {
   createProject,
-  resetCompletedProject,
-  resetTrashProject,
 } from '../project'
+import { SmartProjectNames, resetSmartProjectByName, smartProjects } from '../smartProject'
 import {
   TaskState,
   addTask,
@@ -12,7 +11,6 @@ import {
   removeTask,
   restoreTask,
 } from '../task'
-import { completedProject, trashProject } from '../smartProject'
 
 describe('task', () => {
   it('should edit title of task', () => {
@@ -47,9 +45,9 @@ describe('task', () => {
     removeTask(task)
 
     expect(project.tasks.length).toBe(0)
-    expect(trashProject!.tasks[0].title).toBe('coding')
+    expect(smartProjects[SmartProjectNames.Trash].tasks[0].title).toBe('coding')
 
-    resetTrashProject()
+    resetSmartProjectByName(SmartProjectNames.Trash)
   })
 
   it('complete task', () => {
@@ -60,9 +58,9 @@ describe('task', () => {
     completeTask(task)
 
     expect(project.tasks.length).toBe(0)
-    expect(completedProject!.tasks[0].title).toBe('coding')
+    expect(smartProjects[SmartProjectNames.Complete].tasks[0].title).toBe('coding')
 
-    resetCompletedProject()
+    resetSmartProjectByName(SmartProjectNames.Complete)
   })
 
   it('restore task', () => {
@@ -73,7 +71,7 @@ describe('task', () => {
 
     restoreTask(task)
 
-    expect(completedProject.tasks.length).toBe(0)
+    expect(smartProjects[SmartProjectNames.Complete].tasks.length).toBe(0)
     expect(project!.tasks[0].title).toBe('coding')
   })
 

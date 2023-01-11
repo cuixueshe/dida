@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { nanoid } from 'nanoid'
 import { findProjectByName, initProjects, projects } from '../project'
-import { completedProject, trashProject } from '../smartProject'
+import { SmartProjectNames } from '../smartProject'
 
 describe('project', () => {
   it('initProjects ', () => {
@@ -56,8 +56,8 @@ describe('project', () => {
     const project = findProjectByName('first')
 
     expect(project?.name).toBe('first')
-    expect(findProjectByName(completedProject.name)).toBeTruthy()
-    expect(findProjectByName(trashProject.name)).toBeTruthy()
+    expect(findProjectByName(SmartProjectNames.Complete)).toBeTruthy()
+    expect(findProjectByName(SmartProjectNames.Trash)).toBeTruthy()
   })
 
   it.todo('should exist when project is created', () => {})
