@@ -1,5 +1,5 @@
 import type { Task } from './task'
-import { completedSmartProject, trashProject } from './smartProject'
+import { abstractSmartProject, completedSmartProject, failedSmartProject, trashProject } from './smartProject'
 import { addTask, createTask } from './task'
 
 export interface FetchTaskData {
@@ -34,10 +34,18 @@ export function addProject(project: Project) {
 export function findProjectByName(name: string | undefined) {
   if (!name)
     return
-  if (name === completedSmartProject.name)
-    return completedSmartProject
-  else if (name === trashProject.name)
-    return trashProject
+
+  const targetMap = {
+    [completedSmartProject.name]: completedSmartProject,
+    [trashProject.name]: trashProject,
+    [failedSmartProject.name]: failedSmartProject,
+    [abstractSmartProject.name]: abstractSmartProject,
+  }
+
+  const target = targetMap[name as keyof typeof targetMap]
+
+  if (target)
+    return target
 
   return projects.find((project) => {
     return project.name === name
