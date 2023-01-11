@@ -1,20 +1,11 @@
-<script setup lang="tsx">
-import { Icon } from '@iconify/vue'
+<script setup lang="ts">
 import {
-  NButton,
-  NCard,
-  NForm,
-  NFormItem,
-  NInput,
-  NModal,
-  NPopover,
   NTree,
 } from 'naive-ui'
-import { ref } from 'vue'
-import EmojiPicker from 'vue3-emoji-picker'
-import { useProjectSelectedStatusStore, useTaskStore } from '@/store'
-import { useTaskLeftListCreateProject } from '@/composable'
+import { onMounted, ref } from 'vue'
 import 'vue3-emoji-picker/css'
+import ProjectCreateView from '@/components/task/ProjectCreatedView.vue'
+import { useProjectSelectedStatusStore, useTaskStore } from '@/store'
 
 const projectSelectedStatusStore = useProjectSelectedStatusStore()
 const taskStore = useTaskStore()
@@ -43,31 +34,12 @@ const nodeProps = (treeOption: any) => {
   }
 }
 
-const inputElement = ref<HTMLInputElement>()
-const {
-  EMOJI_GROUPS_NAMES,
-  EMOJI_STATIC_TEXTS,
-  emojiValue,
-  formRules,
-  formValue,
-  handleCannel,
-  handleMouseLeave,
-  handleMouseOver,
-  handleSelectEmoji,
-  handleUpdateShow,
-  isHover,
-  isSavable,
-  isShowModal,
-  isShowPopover,
-  renderCreateProjectButton,
-  cleanupInput,
-} = useTaskLeftListCreateProject(inputElement)
+const projectViewRef = ref()
+const projectRender = ref(undefined)
 
-function handleConfirm() {
-  // @todo add project
-  isShowModal.value = false
-  cleanupInput()
-}
+onMounted(() => {
+  projectRender.value = projectViewRef.value.renderCreateProjectButton
+})
 
 function changeSelectedKey(key: number[]) {
   projectSelectedStatusStore.changeSelectedKey(key)
@@ -80,81 +52,12 @@ function changeSelectedKey(key: number[]) {
     block-line
     expand-on-click
     :default-expanded-keys="projectSelectedStatusStore.listDefaultSelectedKey"
-    :render-suffix="renderCreateProjectButton"
+    :render-suffix="projectRender"
     :data="data"
     :node-props="nodeProps"
     @update:selected-keys="changeSelectedKey"
   />
-  <NModal v-model:show="isShowModal" transform-origin="center" :mask-closable="!isSavable" @esc="cleanupInput">
-    <NCard
-      style="width: 600px"
-      size="huge"
-      role="dialog"
-      aria-modal="true"
-      :bordered="false"
-    >
-      <template #header>
-        <div class="flex font-bold justify-center">
-          添加清单
-        </div>
-      </template>
-
-      <div @mouseover="handleMouseOver" @mouseleave="handleMouseLeave">
-        <NForm :model="formValue" :rules="formRules">
-          <NFormItem path="projectName">
-            <NInput
-              ref="inputElement"
-              v-model:value="formValue.projectName"
-              placeholder="名称"
-            >
-              <template #prefix>
-                <NPopover
-                  v-if="isHover"
-                  placement="bottom"
-                  trigger="click"
-                  :show="isShowPopover"
-                  :show-arrow="false"
-                  @update:show="handleUpdateShow"
-                >
-                  <template #trigger>
-                    <NButton text @click="isShowPopover = !isShowPopover">
-                      <template #icon>
-                        <span v-if="emojiValue">{{ emojiValue }}</span>
-                        <Icon v-else icon="fa-solid:smile-wink" />
-                      </template>
-                    </NButton>
-                  </template>
-                  <EmojiPicker
-                    picker-type="inputValue"
-                    :native="true"
-                    :static-texts="EMOJI_STATIC_TEXTS"
-                    :group-names="EMOJI_GROUPS_NAMES"
-                    @select="handleSelectEmoji"
-                  />
-                </NPopover>
-                <NButton v-else text>
-                  <template #icon>
-                    <Icon icon="ic:outline-menu" />
-                  </template>
-                </NButton>
-              </template>
-            </NInput>
-          </NFormItem>
-        </NForm>
-      </div>
-
-      <template #footer>
-        <div class="flex justify-end">
-          <NButton class="mr-3" @click="handleCannel">
-            关闭
-          </NButton>
-          <NButton type="success" :disabled="!isSavable" @click="handleConfirm">
-            保存
-          </NButton>
-        </div>
-      </template>
-    </NCard>
-  </NModal>
+  <ProjectCreateView ref="projectViewRef" />
 </template>
 
 <style>

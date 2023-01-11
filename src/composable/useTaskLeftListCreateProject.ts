@@ -2,7 +2,7 @@ import { Icon } from '@iconify/vue'
 import type { FormRules, TreeOption } from 'naive-ui'
 import { NButton } from 'naive-ui'
 import type { Ref } from 'vue'
-import { computed, ref, withModifiers } from 'vue'
+import { computed, h, ref, withModifiers } from 'vue'
 
 enum SkinStone {
   NEUTRAL = 'neutral',
@@ -24,25 +24,31 @@ interface EMoji {
 export function useTaskLeftListCreateProject(
   inputElement: Ref<HTMLInputElement | undefined>,
 ) {
-  const formValue = ref({
-    projectName: '',
-  })
-  const isSavable = computed(() => formValue.value.projectName?.trim() !== '')
   const {
     EMOJI_GROUPS_NAMES,
     EMOJI_STATIC_TEXTS,
     emojiValue,
     handleSelectEmoji,
   } = useEmoji()
+  const { handleMouseOver, handleMouseLeave, isHover } = useMouse()
+  const { formValue, formRules } = useForm()
+  const { cleanupInput, handleUpdateShow, handleClose } = useInput()
+  const isSavable = computed(() => formValue.value.projectName?.trim() !== '')
   const isShowPopover = ref(false)
   const isShowModal = ref(false)
-  const isHover = ref(false)
-  const formRules: FormRules = {
-    projectName: {
-      validator: () => isSavable.value,
-      message: '清单名称不能为空',
-      trigger: ['input', 'blur'],
-    },
+
+  function useForm() {
+    const formValue = ref({
+      projectName: '',
+    })
+    const formRules: FormRules = {
+      projectName: {
+        validator: () => isSavable.value,
+        message: '清单名称不能为空',
+        trigger: ['input', 'blur'],
+      },
+    }
+    return { formValue, formRules }
   }
 
   function useEmoji() {
@@ -72,43 +78,60 @@ export function useTaskLeftListCreateProject(
     }
   }
 
-  function handleCannel() {
-    isShowModal.value = false
-    cleanupInput()
+  function useMouse() {
+    const isHover = ref(false)
+    function handleMouseOver() {
+      isHover.value = true
+    }
+    function handleMouseLeave() {
+      return (
+        !isShowPopover.value && !emojiValue.value && (isHover.value = false)
+      )
+    }
+    return { handleMouseOver, handleMouseLeave, isHover }
   }
 
-  function cleanupInput() {
-    formValue.value.projectName = ''
-    emojiValue.value = null
+  function useInput() {
+    function cleanupInput() {
+      formValue.value.projectName = ''
+      emojiValue.value = null
+    }
+    function handleUpdateShow(show: boolean) {
+      isShowPopover.value = show
+      !show && inputElement.value?.focus()
+    }
+    function handleClose() {
+      isShowModal.value = false
+      cleanupInput()
+    }
+    return {
+      cleanupInput,
+      handleUpdateShow,
+      handleClose,
+    }
   }
 
-  function handleMouseOver() {
-    isHover.value = true
-  }
-  function handleMouseLeave() {
-    return !isShowPopover.value && !emojiValue.value && (isHover.value = false)
-  }
-
-  function handleCreateProject() {
+  function handleProjectButtonClick() {
     isShowModal.value = true
   }
 
-  function handleUpdateShow(show: boolean) {
-    isShowPopover.value = show
-    !show && inputElement.value?.focus()
-  }
   function renderCreateProjectButton({ option }: { option: TreeOption }) {
     if (option.isLeaf)
       return
 
-    return (
-      <NButton
-        size="small"
-        type="tertiary"
-        onClick={withModifiers(handleCreateProject, ['stop'])}
-      >
-        <Icon icon="ic:baseline-plus"></Icon>
-      </NButton>
+    return h(
+      NButton,
+      {
+        size: 'small',
+        type: 'tertiary',
+        onClick: withModifiers(handleProjectButtonClick, ['stop']),
+      },
+      {
+        default: () =>
+          h(Icon, {
+            icon: 'ic:baseline-plus',
+          }),
+      },
     )
   }
 
@@ -119,7 +142,7 @@ export function useTaskLeftListCreateProject(
     emojiValue,
     formRules,
     formValue,
-    handleCannel,
+    handleClose,
     handleMouseLeave,
     handleMouseOver,
     handleSelectEmoji,
