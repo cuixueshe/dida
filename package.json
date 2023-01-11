@@ -31,6 +31,7 @@
     "pinia": "^2.0.28",
     "vue": "^3.2.45",
     "vue-router": "4.1.6",
+    "vue3-emoji-picker": "^1.1.7",
     "vuedraggable": "^4.1.0"
   },
   "devDependencies": {
