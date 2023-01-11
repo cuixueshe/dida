@@ -18,7 +18,8 @@
     "skipLibCheck": true,
     "paths": {
       "@/*": ["src/*"]
-    }
+    },
+    "types": ["unplugin-vue-macros/macros-global"]
   },
   "include": [
     "src/**/*.ts",
@@ -31,5 +32,11 @@
     {
       "path": "./tsconfig.node.json"
     }
-  ]
+  ],
+  "vueCompilerOptions": {
+    "target": 3,
+    "plugins": [
+      "@vue-macros/volar/define-model"
+    ]
+  }
 }
