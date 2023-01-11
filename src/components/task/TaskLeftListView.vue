@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
-import { NTree } from 'naive-ui'
+import { reactive, ref, computed } from 'vue'
+import { NTree, NPopover } from 'naive-ui'
 import { Icon } from '@iconify/vue'
 import type { Key } from 'naive-ui/es/cascader/src/interface'
 import { SpecialProjectNames, useTaskStore } from '@/store/task'
@@ -59,6 +59,11 @@ const taskList = reactive<TaskListType[]>([
   },
 ])
 
+const showMoreIconIndex = ref<number>(-1)
+const showWitchPopover = ref<number>(-1)
+// 通过修改此数组来展示或隐藏taskList里的某一项,以后在设置页面通过修改此数组来控制
+const canShowTaskList = ref<number[]>([1, 2, 3, 4])
+
 const changeSelectedKeyAndActiveProject = (
   projectName: string,
   key: number,
@@ -79,6 +84,19 @@ const nodeProps = (treeOption: any) => {
 const changeSelectedKey = (key: number[]) => {
   selectedKey.value = key
 }
+
+const openPopover = (key: number) => {
+  showWitchPopover.value = key
+}
+
+const hideTaskItem = (key: number) => {
+  if (canShowTaskList.value.includes(key)) {
+    canShowTaskList.value = canShowTaskList.value.filter(
+      (item) => item !== key,
+    )
+  }
+  showWitchPopover.value = -1
+}
 </script>
 
 <template>
@@ -98,6 +116,7 @@ const changeSelectedKey = (key: number[]) => {
         <li
           v-for="item in taskList"
           :key="item.key"
+          v-show="canShowTaskList.includes(item.key)"
           li_common
           pl-4
           pr-2
@@ -111,6 +130,8 @@ const changeSelectedKey = (key: number[]) => {
               item.key,
             )
           "
+          @mouseenter="showMoreIconIndex = item.key"
+          @mouseleave="showMoreIconIndex = -1"
         >
           <div flex>
             <Icon
@@ -121,14 +142,24 @@ const changeSelectedKey = (key: number[]) => {
             />
             <span class="ml-2">{{ item.title }}</span>
           </div>
-
-          <Icon
-            v-show="selectedKey[0] === item.key"
-            icon="material-symbols:more-horiz"
-            width="20"
-            class="color-[#9D9FA3]"
-            dark="color-white"
-          />
+          
+          <NPopover trigger="click" style="padding: 5px 0 5px 0" @clickoutside="showWitchPopover = -1" :show="showWitchPopover === item.key"
+           :show-arrow="false" placement="bottom-start">
+            <template #trigger>
+              <Icon
+                v-show="selectedKey[0] === item.key || showMoreIconIndex === item.key"
+                icon="material-symbols:more-horiz"
+                width="20"
+                class="color-[#9D9FA3]"
+                dark="color-white"
+                @click="($event) => {$event.stopPropagation(); openPopover(item.key)}"
+              />
+            </template>
+            <ul w-180px cursor-pointer>
+              <li hover="bg-[#F3F3F5] dark:bg-[#2D2D30]" pl-4 text-14px h-20px lh-20px
+              @click="hideTaskItem(item.key)">隐藏</li>
+            </ul>
+          </NPopover>
         </li>
       </ul>
     </div>
