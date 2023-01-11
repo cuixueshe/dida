@@ -13,7 +13,19 @@ async function setupApp() {
   app.use(pinia)
   await setupRouter(app)
   app.use(ContextMenu)
+  // This must be placed at bottom of app initialization, before mount.
+  resolveNaiveAndTailwindConflict()
   app.mount('#app')
+}
+
+// https://www.naiveui.com/zh-CN/os-theme/docs/style-conflict
+function resolveNaiveAndTailwindConflict() {
+  // We use tailwind reset as Unocss reset
+  // But some of reset style will replaced some of naive-ui style
+  // To following the docs, we need to do this.
+  const meta = document.createElement('meta')
+  meta.name = 'naive-ui-style'
+  document.head.appendChild(meta)
 }
 
 setupApp()
