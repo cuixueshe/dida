@@ -59,7 +59,7 @@ const taskLeftMenuStatusStore = useTaskLeftMenuStatusStore()
       class="flex w-full h-full p-24px"
       :style="{ flex: `0 0 ${AREA_MIN_WIDTH}px` }"
     >
-      <TaskEditor class="w-full" />
+      <TaskEditor class="w-full h-full" />
     </div>
   </div>
 </template>
