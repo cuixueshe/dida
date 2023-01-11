@@ -3,6 +3,7 @@ import type { Ref } from 'vue'
 import { computed, ref } from 'vue'
 import { Icon } from '@iconify/vue'
 import draggable from 'vuedraggable'
+import Search from '../search/Search.vue'
 import TaskItem from './TaskItem.vue'
 import {
   SmartProjectNames,
@@ -128,6 +129,7 @@ const { inputRef, onFocus } = useInput()
     </draggable>
     <!-- 暂时性修复 contenteditable 的 bug #9 -->
     <div class="w-full h-1px" contenteditable="false" />
+    <Search />
   </div>
 </template>
 

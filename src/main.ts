@@ -6,6 +6,7 @@ import App from './App.vue'
 import { setupRouter } from './router'
 import '@unocss/reset/tailwind.css'
 import 'uno.css'
+import './style/overrides.css'
 
 async function setupApp() {
   const app = createApp(App)
