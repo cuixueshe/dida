@@ -1,13 +1,16 @@
 <script setup lang="ts">
 import { NConfigProvider } from 'naive-ui'
-import { naiveTheme } from '@/composable'
+import BaseLayout from './layout/BaseLayout.vue'
+import { useThemeStore } from '@/store'
+
+const themeStore = useThemeStore()
 </script>
 
 <template>
-  <NConfigProvider :theme="naiveTheme">
-    <div>
+  <NConfigProvider :theme="themeStore.naiveTheme">
+    <BaseLayout>
       <RouterView />
-    </div>
+    </BaseLayout>
   </NConfigProvider>
 </template>
 

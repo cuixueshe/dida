@@ -12,6 +12,7 @@ export default defineConfig({
       web: [/\.[jt]sx$/],
     },
     environment: 'jsdom',
+    setupFiles: path.resolve(__dirname, './scripts/vitest.setup.ts'),
   },
   plugins: [vueJsx(), vue(), Unocss()],
   resolve: {

@@ -49,7 +49,6 @@ export const useTaskStore = defineStore('task', () => {
     currentActiveProject,
     projectNames,
     currentActiveTask,
-
     addTask,
     removeTask,
     completeTask,

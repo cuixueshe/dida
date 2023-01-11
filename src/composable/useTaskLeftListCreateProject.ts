@@ -2,7 +2,7 @@ import { Icon } from '@iconify/vue'
 import type { FormRules, TreeOption } from 'naive-ui'
 import { NButton } from 'naive-ui'
 import type { Ref } from 'vue'
-import { computed, h, ref, withModifiers } from 'vue'
+import { computed, h, ref, toRaw, withModifiers } from 'vue'
 
 enum SkinStone {
   NEUTRAL = 'neutral',
@@ -116,7 +116,8 @@ export function useTaskLeftListCreateProject(
   }
 
   function renderCreateProjectButton({ option }: { option: TreeOption }) {
-    if (option.isLeaf)
+    const optionRaw = toRaw(option)
+    if (optionRaw.isLeaf || optionRaw.isLeaf === undefined || optionRaw.label === '标签')
       return
 
     return h(

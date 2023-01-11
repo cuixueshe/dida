@@ -1,12 +1,32 @@
 <script setup lang="ts">
+import type { Ref } from 'vue'
 import { computed, ref } from 'vue'
 import { Icon } from '@iconify/vue'
 import draggable from 'vuedraggable'
 import TaskItem from './TaskItem.vue'
-import { SmartProjectNames, useTaskStore } from '@/store'
-import { isDark, useTaskListInput } from '@/composable'
+import {
+  SmartProjectNames,
+  useTaskLeftMenuStatusStore,
+  useTaskStore,
+  useThemeStore,
+} from '@/store'
 
 const taskStore = useTaskStore()
+const themeStore = useThemeStore()
+const taskLeftMenuStatusStore = useTaskLeftMenuStatusStore()
+
+function useInput() {
+  const inputRef: Ref<HTMLInputElement | null> = ref(null)
+
+  function onFocus() {
+    inputRef.value!.focus()
+  }
+
+  return {
+    inputRef,
+    onFocus,
+  }
+}
 
 const taskTitle = ref('')
 const dragging = ref<boolean>(false)
@@ -19,8 +39,14 @@ const isPlaceholder = computed(() => {
 })
 
 function addTask() {
-  taskStore.addTask(taskTitle.value)
+  if (taskTitle.value)
+    taskStore.addTask(taskTitle.value)
+
   taskTitle.value = ''
+}
+
+function toggleLeftMenu() {
+  taskLeftMenuStatusStore.toggle()
 }
 
 const shouldShowTodoAdd = computed(() => {
@@ -33,13 +59,22 @@ const shouldShowTodoAdd = computed(() => {
   )
 })
 
-const { inputRef, onFocus } = useTaskListInput()
+const { inputRef, onFocus } = useInput()
 </script>
 
 <template>
   <div class="flex flex-col gap-20px px-4 text-16px">
-    <div>
-      <h1 class="text-4xl">
+    <div flex items-center>
+      <Icon
+        :icon="
+          taskLeftMenuStatusStore.visible
+            ? 'tabler:layout-sidebar-left-collapse'
+            : 'tabler:layout-sidebar-right-collapse'
+        "
+        width="30"
+        @click="toggleLeftMenu()"
+      />
+      <h1 class="text-4xl ml-5px">
         {{ taskStore.currentActiveProject?.name }}
       </h1>
     </div>
@@ -69,8 +104,8 @@ const { inputRef, onFocus } = useTaskListInput()
     </div>
     <draggable
       :list="taskStore.currentActiveProject?.tasks ?? []"
-      :ghost-class="isDark ? 'dark-ghost' : 'ghost'"
-      :drag-class="isDark ? 'dark-drag' : 'drag'"
+      :ghost-class="themeStore.isDark ? 'dark-ghost' : 'ghost'"
+      :drag-class="themeStore.isDark ? 'dark-drag' : 'drag'"
       item-key="id"
       :animation="200"
       :component-data="{
