@@ -5,7 +5,7 @@ export enum Theme {
   Light = 'Light',
 }
 
-export interface ThemeItem {
+interface ThemeItem {
   label: string
   name: Theme
   color: string
