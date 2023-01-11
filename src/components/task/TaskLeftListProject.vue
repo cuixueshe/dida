@@ -56,7 +56,7 @@ const data = ref<any[]>([
 const nodeProps = ({ option }: { option: TreeOption }) => {
   return {
     onClick() {
-      if (option.key === 100)
+      if (option.key === TreeRootKeys.PROJECT)
         return
       const projectName = option.label
       projectName && taskStore.changeCurrentActiveProject(projectName)
@@ -66,7 +66,15 @@ const nodeProps = ({ option }: { option: TreeOption }) => {
 }
 
 const changeSelectedKey = (key: number[]) => {
+  if (key[0] === TreeRootKeys.PROJECT)
+    projectSelectedStatusStore.changePreSelectKey(projectSelectedStatusStore.selectedKey)
+
   projectSelectedStatusStore.changeSelectedKey(key)
+}
+
+const onExpandedKey = (key: number[]) => {
+  if (key.includes(TreeRootKeys.PROJECT))
+    projectSelectedStatusStore.changeSelectedKey(projectSelectedStatusStore.preSelectKey)
 }
 </script>
 
@@ -78,6 +86,7 @@ const changeSelectedKey = (key: number[]) => {
     expand-on-click
     :data="data"
     :node-props="nodeProps"
+    @update:expanded-keys="onExpandedKey"
     @update:selected-keys="changeSelectedKey"
   />
 </template>
