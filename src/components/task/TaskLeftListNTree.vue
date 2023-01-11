@@ -1,40 +1,52 @@
 <script setup lang="ts">
 import type { TreeOption } from 'naive-ui'
 import { NTree } from 'naive-ui'
-import { computed, ref } from 'vue'
+import { computed, ref, watchEffect } from 'vue'
 import { useProjectSelectedStatusStore, useTaskStore } from '@/store'
+
+enum TreeRootKeys {
+  PROJECT = 100,
+  TAG = 200,
+}
 
 const projectSelectedStatusStore = useProjectSelectedStatusStore()
 const taskStore = useTaskStore()
 
-const treeProjectChildren = computed(() => {
-  if (taskStore.projectNames.length) {
-    return taskStore.projectNames.map((projectname, index) => ({
-      key: 100 + index + 1,
-      label: projectname,
-      isleaf: true,
-    }))
-  }
-  return [{
-    label: '用清单来分类收集、组织和管理你的任务和笔记',
-  }]
+// fake data to simulate tags render
+const fakeTagsNamesData = ref<string[]>([])
+
+const defautExpandedKeys = ref<TreeRootKeys[]>([])
+
+const treeProjectChildren = ref<TreeOption[]>([])
+
+watchEffect(() => {
+  treeProjectChildren.value = taskStore.projectNames.map((projectname, index) => ({
+    key: TreeRootKeys.PROJECT + index + 1,
+    label: projectname,
+    isleaf: true,
+  }))
+  defautExpandedKeys.value = [...new Set([
+    ...(taskStore.projectNames.length ? [] : [TreeRootKeys.PROJECT]),
+    ...(fakeTagsNamesData.value.length ? [] : [TreeRootKeys.TAG]),
+    ...projectSelectedStatusStore.listDefaultSelectedKey,
+  ])]
 })
 
 const data = ref<any[]>([
   {
-    key: 100,
+    key: TreeRootKeys.PROJECT,
     label: '清单',
     checkboxDisabled: false,
     isLeaf: false,
     children: treeProjectChildren,
   },
   {
-    key: 200,
+    key: TreeRootKeys.TAG,
     label: '标签',
     checkboxDisabled: false,
     isLeaf: false,
-    children: [].length
-      ? []
+    children: fakeTagsNamesData.value.length
+      ? fakeTagsNamesData.value
       : [{
           label: '以标签的维度展示不同清单的任务。在添加任务时输入“#”可快速选择标签',
           placeholder: true,
@@ -61,7 +73,7 @@ const changeSelectedKey = (key: number[]) => {
 <template>
   <NTree
     v-model:selected-keys="projectSelectedStatusStore.selectedKey"
-    :default-expanded-keys="projectSelectedStatusStore.listDefaultSelectedKey"
+    :default-expanded-keys="defautExpandedKeys"
     block-line
     expand-on-click
     :data="data"
