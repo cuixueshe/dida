@@ -107,3 +107,7 @@ pnpm bootstrap
 5. 暂时想不到了  想到了在说 - -#  
 
 总之参与进来会对你技术提高有很大的帮助，而且开源合作方式就比较的自由，有时间了就来领个任务做做涨涨经验值 没时间了就该忙啥忙啥去
+
+## Roadmap
+1. 支持 Vim 的方式通过快捷键来操作 类似于 [vimium](https://chrome.google.com/webstore/detail/vimium/dbepggeogbaibhgnhhndojpepiihcmeb?hl=en)
+2. 支持可以通过 github 账号登录，数据直接保存在自己的 github 上

@@ -4,14 +4,14 @@ import { h } from 'vue'
 import type { Task } from '@/store'
 import { useTaskStore } from '@/store'
 
+enum TaskOperationStatus {
+  Complete = '已完成',
+  Remove = '删除完成',
+}
+
 export function useTaskOperationMessage() {
   const taskStore = useTaskStore()
   const { message } = createDiscreteApi(['message'])
-
-  const enum TaskOperationStatus {
-    Complete = '已完成',
-    Remove = '删除完成',
-  }
 
   let messageReactive: MessageReactive | null = null
 
@@ -24,7 +24,7 @@ export function useTaskOperationMessage() {
             'i',
             {
               style:
-              'color: teal;font-style:unset;cursor:pointer;margin-left: 20px',
+                  'color: teal;font-style:unset;cursor:pointer;margin-left: 20px',
               onClick,
             },
             '撤销',

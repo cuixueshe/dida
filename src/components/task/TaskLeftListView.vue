@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import TaskLeftListNTree from '@/components/task/TaskLeftListNTree.vue'
 import TaskLeftListProject from '@/components/task/TaskLeftListProject.vue'
+import TaskLeftListSmartProject from '@/components/task/TaskLeftListSmartProject.vue'
 </script>
 
 <template>
   <div>
     <div>
-      <TaskLeftListNTree />
+      <TaskLeftListProject />
     </div>
     <div class="mt-2px">
-      <TaskLeftListProject />
+      <TaskLeftListSmartProject />
     </div>
   </div>
 </template>

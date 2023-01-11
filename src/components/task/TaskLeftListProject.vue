@@ -1,94 +1,130 @@
 <script setup lang="ts">
-import { Icon } from '@iconify/vue'
-import { reactive } from 'vue'
-import {
-  SmartProjectNames,
-  useProjectSelectedStatusStore,
-  useTaskStore,
-} from '@/store'
+import type { TreeOption } from 'naive-ui'
+import { NTree } from 'naive-ui'
+import { ref, watchEffect } from 'vue'
+import { useProjectSelectedStatusStore, useTaskStore } from '@/store'
 
-interface TaskListType {
-  key: number
-  icon: string
-  title: `${SmartProjectNames}`
+enum TreeRootKeys {
+  PROJECT = 100,
+  TAG = 200,
 }
 
-const taskList = reactive<TaskListType[]>([
+const projectSelectedStatusStore = useProjectSelectedStatusStore()
+const taskStore = useTaskStore()
+
+// fake data to simulate tags render
+const fakeTagsNamesData = ref<string[]>([])
+
+const defautExpandedKeys = ref<TreeRootKeys[]>([])
+
+const treeProjectChildren = ref<TreeOption[]>([])
+
+watchEffect(() => {
+  treeProjectChildren.value = taskStore.projectNames.map((projectname, index) => ({
+    key: TreeRootKeys.PROJECT + index + 1,
+    label: projectname,
+    isleaf: true,
+  }))
+  defautExpandedKeys.value = [...new Set([
+    ...(taskStore.projectNames.length ? [] : [TreeRootKeys.PROJECT]),
+    ...(fakeTagsNamesData.value.length ? [] : [TreeRootKeys.TAG]),
+    ...projectSelectedStatusStore.listDefaultSelectedKey,
+  ])]
+})
+
+const data = ref<any[]>([
   {
-    key: 1,
-    icon: 'material-symbols:check-box',
-    title: SmartProjectNames.Complete,
+    key: TreeRootKeys.PROJECT,
+    label: '清单',
+    checkboxDisabled: false,
+    isLeaf: false,
+    children: treeProjectChildren,
   },
   {
-    key: 2,
-    icon: 'mdi:close-box',
-    title: SmartProjectNames.Failed,
-  },
-  {
-    key: 3,
-    icon: 'material-symbols:delete',
-    title: SmartProjectNames.Trash,
-  },
-  {
-    key: 4,
-    icon: 'material-symbols:text-snippet-rounded',
-    title: SmartProjectNames.Abstract,
+    key: TreeRootKeys.TAG,
+    label: '标签',
+    checkboxDisabled: false,
+    isLeaf: false,
+    children: fakeTagsNamesData.value.length
+      ? fakeTagsNamesData.value
+      : [{
+          label: '以标签的维度展示不同清单的任务。在添加任务时输入“#”可快速选择标签',
+          placeholder: true,
+        }],
   },
 ])
-const selected = 'bg-[#E7F5EE] dark:bg-[#233633]'
+const nodeProps = ({ option }: { option: TreeOption }) => {
+  return {
+    onClick() {
+      if (option.key === TreeRootKeys.PROJECT)
+        return
+      const projectName = option.label
+      projectName && taskStore.changeCurrentActiveProject(projectName)
+    },
+    class: option.placeholder ? 'placeholder' : '',
+  }
+}
 
-const taskStore = useTaskStore()
-const projectSelectedStatusStore = useProjectSelectedStatusStore()
+const changeSelectedKey = (key: number[]) => {
+  if (key[0] === TreeRootKeys.PROJECT)
+    projectSelectedStatusStore.changePreSelectKey(projectSelectedStatusStore.selectedKey)
 
-const changeSelectedKeyAndActiveProject = (
-  projectName: string,
-  key: number,
-) => {
-  taskStore.changeCurrentActiveProject(projectName)
-  projectSelectedStatusStore.changeSelectedKey([key])
+  projectSelectedStatusStore.changeSelectedKey(key)
+}
+
+const onExpandedKey = (key: number[]) => {
+  if (key.includes(TreeRootKeys.PROJECT))
+    projectSelectedStatusStore.changeSelectedKey(projectSelectedStatusStore.preSelectKey)
 }
 </script>
 
 <template>
-  <ul>
-    <li
-      v-for="item in taskList"
-      :key="item.key"
-      li_common
-      pl-4
-      pr-2
-      hover="bg-[#F3F3F5] dark:bg-[#2D2D30]"
-      :class="
-        projectSelectedStatusStore.selectedKey[0] === item.key
-          ? selected
-          : ''
-      "
-      @click="
-        changeSelectedKeyAndActiveProject(
-          item.title,
-          item.key,
-        )
-      "
-    >
-      <div flex>
-        <Icon
-          :icon="item.icon"
-          width="20"
-          class="color-[#9D9FA3]"
-          dark="color-white-b"
-        />
-        <span class="ml-2">{{ item.title }}</span>
-      </div>
-
-      <Icon
-        v-show="projectSelectedStatusStore.selectedKey[0] === item.key"
-        icon="material-symbols:more-horiz"
-        width="20"
-        class="color-[#9D9FA3]"
-        dark="color-white"
-      />
-    </li>
-  </ul>
+  <NTree
+    v-model:selected-keys="projectSelectedStatusStore.selectedKey"
+    :default-expanded-keys="defautExpandedKeys"
+    block-line
+    expand-on-click
+    :data="data"
+    :node-props="nodeProps"
+    @update:expanded-keys="onExpandedKey"
+    @update:selected-keys="changeSelectedKey"
+  />
 </template>
 
-<style scoped></style>
+<style>
+.n-tree.n-tree--block-line .n-tree-node:not(.n-tree-node--disabled).n-tree-node--pending {
+  background-color: transparent;
+}
+.n-tree.n-tree--block-line .n-tree-node:not(.n-tree-node--disabled).n-tree-node--selected {
+  background-color: var(--n-node-color-active)
+}
+
+.n-tree-node-wrapper .placeholder .n-tree-node-indent {
+  display: none;
+}
+
+.n-tree-node-wrapper .placeholder .n-tree-node-switcher {
+  display: none;
+}
+
+.n-tree-node-wrapper .placeholder {
+  pointer-events: none;
+  padding: 6px 8px;
+  margin: 0 8px 0 20px;
+  background-color: rgb(25, 25, 25, 0.03);
+  border-radius: 4px;
+}
+
+.n-tree-node-wrapper .placeholder .n-tree-node-content__text {
+  color: rgb(25, 25, 25, 0.4);
+  font-size: 12px;
+}
+
+.dark .n-tree-node-wrapper .placeholder {
+  background-color: rgb(59,59,59, 1);
+}
+
+.dark .placeholder .n-tree-node-content__text {
+  color: rgba(156,163,175,0.5);
+}
+</style>
