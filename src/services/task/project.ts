@@ -1,14 +1,15 @@
 import type { Task } from './task'
-import { completedProject, trashProject } from './smartProject'
+import { completedSmartProject, trashProject } from './smartProject'
 import { addTask, createTask } from './task'
 
-interface FetchTaskData {
+export interface FetchTaskData {
   title: string
   content: string
   id: string
+  previousProjectName?: string
 }
 
-interface FetchProjectData {
+export interface FetchProjectData {
   name: string
   tasks: FetchTaskData[]
 }
@@ -30,9 +31,11 @@ export function addProject(project: Project) {
   projects.push(project)
 }
 
-export function findProjectByName(name: string) {
-  if (name === completedProject.name)
-    return completedProject
+export function findProjectByName(name: string | undefined) {
+  if (!name)
+    return
+  if (name === completedSmartProject.name)
+    return completedSmartProject
   else if (name === trashProject.name)
     return trashProject
 
@@ -59,9 +62,4 @@ export function initProjects(projectsData: FetchProjectData[]) {
 // TODO 后面重构成基于配置来初始化 这个就可以干掉了
 export function resetTrashProject() {
   trashProject.tasks = []
-}
-
-// TODO 后面重构成基于配置来初始化 这个就可以干掉了
-export function resetCompletedProject() {
-  completedProject.tasks = []
 }

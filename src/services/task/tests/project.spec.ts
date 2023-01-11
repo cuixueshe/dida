@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest'
-import { nanoid } from 'nanoid'
 import { findProjectByName, initProjects, projects } from '../project'
-import { completedProject, trashProject } from '../smartProject'
+import {
+  completedSmartProject,
+  trashProject,
+} from '../smartProject'
 
 describe('project', () => {
   it('initProjects ', () => {
@@ -12,12 +14,12 @@ describe('project', () => {
           {
             title: '吃饭',
             content: '## 吃饭 \n 吃什么好呢',
-            id: nanoid(),
+            id: crypto.randomUUID(),
           },
           {
             title: '睡觉',
             content: '## 睡觉 \n 早睡早起 身体好',
-            id: nanoid(),
+            id: crypto.randomUUID(),
           },
         ],
       },
@@ -27,7 +29,7 @@ describe('project', () => {
           {
             title: '不想上班',
             content: '我不想 我不想 我不想上班',
-            id: nanoid(),
+            id: crypto.randomUUID(),
           },
         ],
       },
@@ -56,7 +58,7 @@ describe('project', () => {
     const project = findProjectByName('first')
 
     expect(project?.name).toBe('first')
-    expect(findProjectByName(completedProject.name)).toBeTruthy()
+    expect(findProjectByName(completedSmartProject.name)).toBeTruthy()
     expect(findProjectByName(trashProject.name)).toBeTruthy()
   })
 

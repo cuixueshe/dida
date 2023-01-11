@@ -1,14 +1,32 @@
 <script setup lang="ts">
+import type { Ref } from 'vue'
 import { computed, ref } from 'vue'
 import { Icon } from '@iconify/vue'
 import draggable from 'vuedraggable'
 import TaskItem from './TaskItem.vue'
-import { SmartProjectNames, useTaskLeftMenuStatusStore, useTaskStore, useThemeStore } from '@/store'
-import { useTaskListInput } from '@/composable'
+import {
+  SmartProjectNames,
+  useTaskLeftMenuStatusStore,
+  useTaskStore,
+  useThemeStore,
+} from '@/store'
 
 const taskStore = useTaskStore()
 const themeStore = useThemeStore()
 const taskLeftMenuStatusStore = useTaskLeftMenuStatusStore()
+
+function useInput() {
+  const inputRef: Ref<HTMLInputElement | null> = ref(null)
+
+  function onFocus() {
+    inputRef.value!.focus()
+  }
+
+  return {
+    inputRef,
+    onFocus,
+  }
+}
 
 const taskTitle = ref('')
 const dragging = ref<boolean>(false)
@@ -39,13 +57,21 @@ const shouldShowTodoAdd = computed(() => {
   )
 })
 
-const { inputRef, onFocus } = useTaskListInput()
+const { inputRef, onFocus } = useInput()
 </script>
 
 <template>
   <div class="flex flex-col gap-20px px-4 text-16px">
     <div flex items-center>
-      <Icon :icon="taskLeftMenuStatusStore.visible ? 'tabler:layout-sidebar-left-collapse' : 'tabler:layout-sidebar-right-collapse'" width="30" @click="toggleLeftMenu()" />
+      <Icon
+        :icon="
+          taskLeftMenuStatusStore.visible
+            ? 'tabler:layout-sidebar-left-collapse'
+            : 'tabler:layout-sidebar-right-collapse'
+        "
+        width="30"
+        @click="toggleLeftMenu()"
+      />
       <h1 class="text-4xl ml-5px">
         {{ taskStore.currentActiveProject?.name }}
       </h1>
