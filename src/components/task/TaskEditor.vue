@@ -15,7 +15,7 @@ function handleInput(e: Event) {
   <div>
     <div v-if="taskStore.currentActiveTask">
       <h1 contenteditable="true" class="text-3xl" @input="handleInput">
-        {{ taskStore.currentActiveTask.title }}
+        {{ taskStore.currentActiveTask?.title }}
       </h1>
       <div class="mt-2">
         <InkMde
