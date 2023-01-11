@@ -28,15 +28,15 @@
     "src/**/*.vue",
     "cypress/**/*.ts"
   ],
+  "vueCompilerOptions": {
+    "plugins": [
+      "@vue-macros/volar/define-options",
+      "@vue-macros/volar/define-model"
+    ]
+  },
   "references": [
     {
       "path": "./tsconfig.node.json"
     }
-  ],
-  "vueCompilerOptions": {
-    "target": 3,
-    "plugins": [
-      "@vue-macros/volar/define-model"
-    ]
-  }
+  ]
 }

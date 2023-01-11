@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import TheHeader from '@/components/header/TheHeader.vue'
 import Navbar from '@/components/navbar/Navbar.vue'
+import Search from '@/components/search/Search.vue'
 </script>
 
 <template>
@@ -12,5 +13,6 @@ import Navbar from '@/components/navbar/Navbar.vue'
         <slot />
       </div>
     </div>
+    <Search />
   </div>
 </template>

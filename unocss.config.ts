@@ -28,4 +28,12 @@ export default defineConfig({
     transformerDirectives(),
     transformerVariantGroup(),
   ],
+  rules: [
+    // scrollbar-hide
+    [/^scrollbar-hide$/, (_, { constructCSS }) => {
+      let res = constructCSS({ 'scrollbar-width': 'none' })
+      res += `\n${res.replace('{scrollbar-width:none;}', '::-webkit-scrollbar{display: none;}')}`
+      return res
+    }],
+  ],
 })
