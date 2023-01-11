@@ -39,7 +39,9 @@ const isPlaceholder = computed(() => {
 })
 
 function addTask() {
-  taskStore.addTask(taskTitle.value)
+  if (taskTitle.value)
+    taskStore.addTask(taskTitle.value)
+
   taskTitle.value = ''
 }
 
