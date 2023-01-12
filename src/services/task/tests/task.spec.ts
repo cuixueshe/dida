@@ -1,8 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import {
-  createListProject,
-  resetTrashProject,
-} from '../listProject'
+import { createListProject } from '../listProject'
 import {
   TaskState,
   addTask,
@@ -14,7 +11,8 @@ import {
 import {
   completedSmartProject,
   initCompletedSmartProject,
-  trashProject,
+  initTrashSmartProject,
+  trashSmartProject,
 } from '../smartProject'
 
 describe('task', () => {
@@ -45,24 +43,20 @@ describe('task', () => {
   it('remove task', () => {
     const listProject = createListProject('one')
     const task = createTask('coding')
+    initTrashSmartProject()
     addTask(task, listProject)
 
     removeTask(task)
 
     expect(listProject.tasks.length).toBe(0)
-    expect(trashProject!.tasks[0].title).toBe('coding')
-
-    resetTrashProject()
+    expect(trashSmartProject!.tasks[0].title).toBe('coding')
   })
 
   it('complete task', () => {
     const listProject = createListProject('one')
     const task = createTask('coding')
+    initCompletedSmartProject()
     addTask(task, listProject)
-    initCompletedSmartProject({
-      name: '已完成',
-      tasks: [],
-    })
 
     completeTask(task)
 
@@ -73,10 +67,7 @@ describe('task', () => {
   it('restore task', () => {
     const listProject = createListProject('one')
     const task = createTask('coding')
-    initCompletedSmartProject({
-      name: '已完成',
-      tasks: [],
-    })
+    initCompletedSmartProject()
     addTask(task, listProject)
     completeTask(task)
 

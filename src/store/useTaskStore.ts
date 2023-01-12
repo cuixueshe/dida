@@ -1,7 +1,7 @@
 import { computed, reactive, ref } from 'vue'
 import { defineStore } from 'pinia'
-import type { Project, Task } from '../services/task'
-import * as taskService from '../services/task'
+import type { Project, Task } from 'services/task'
+import * as taskService from 'services/task'
 
 export const useTaskStore = defineStore('task', () => {
   const listProjects = reactive(taskService.listProjects)

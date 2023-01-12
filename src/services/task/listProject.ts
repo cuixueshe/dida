@@ -1,5 +1,4 @@
 import type { Task } from './task'
-import { trashProject } from './smartProject'
 import { addTask, createTask } from './task'
 
 export interface FetchTaskData {
@@ -10,8 +9,8 @@ export interface FetchTaskData {
 }
 
 export interface FetchListProjectData {
-  name: string
-  tasks: FetchTaskData[]
+  name?: string
+  tasks?: FetchTaskData[]
 }
 export interface ListProject {
   name: string
@@ -44,18 +43,13 @@ export function initListProjects(projectsData: FetchListProjectData[]) {
   listProjects.length = 0
 
   projectsData.forEach((projectData) => {
-    const project = createListProject(projectData.name)
+    const project = createListProject(projectData.name!)
     addListProject(project)
 
     // init tasks
-    projectData.tasks.forEach(({ id, title, content }) => {
+    projectData.tasks!.forEach(({ id, title, content }) => {
       const task = createTask(title, id, content)
       addTask(task, project)
     })
   })
-}
-
-// TODO 后面重构成基于配置来初始化 这个就可以干掉了
-export function resetTrashProject() {
-  trashProject.tasks = []
 }

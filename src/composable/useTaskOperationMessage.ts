@@ -1,7 +1,7 @@
 import type { MessageReactive } from 'naive-ui'
 import { createDiscreteApi } from 'naive-ui'
 import { h } from 'vue'
-import type { Task } from '@/store'
+import type { Task } from 'services/task'
 import { useTaskStore } from '@/store'
 
 enum TaskOperationStatus {

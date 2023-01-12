@@ -1,8 +1,11 @@
 import { fetchData } from './data'
 import { initListProjects } from './listProject'
-import { initCompletedSmartProject } from './smartProject'
+import {
+  initCompletedSmartProject,
+  initTrashSmartProject,
+} from './smartProject'
 
-export { SmartProjectNames } from './smartProject'
+export { SmartProjectNames, isSmartProject } from './smartProject'
 export {
   listProjects,
   findListProjectByName as findProjectByName,
@@ -21,3 +24,4 @@ export type { ListProject as Project } from './listProject'
 
 initListProjects(fetchData.listProjects)
 initCompletedSmartProject(fetchData.completed)
+initTrashSmartProject(fetchData.trash)
