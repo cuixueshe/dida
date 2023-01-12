@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { Icon } from '@iconify/vue'
 import { reactive } from 'vue'
-import { useProjectMoreActions } from '@/composable/useProjectMoreActions';
-import { NPopover } from "naive-ui"
+import { NPopover } from 'naive-ui'
+import { useProjectMoreActions } from '@/composable/useProjectMoreActions'
 import {
   SmartProjectNames,
   useProjectSelectedStatusStore,
@@ -42,7 +42,7 @@ const selected = 'bg-[#E7F5EE] dark:bg-[#233633]'
 
 const taskStore = useTaskStore()
 const projectSelectedStatusStore = useProjectSelectedStatusStore()
-const {showMoreIconIndex, showWitchPopover, openPopover, hideTaskItem, canShowTaskList} = useProjectMoreActions()
+const { showMoreIconIndex, showWitchPopover, openPopover, hideTaskItem, canShowTaskList } = useProjectMoreActions()
 
 const handleTaskItemClick = (projectName: string, key: number) => {
   taskStore.changeCurrentActiveProject(projectName)
@@ -54,8 +54,8 @@ const handleTaskItemClick = (projectName: string, key: number) => {
   <ul>
     <li
       v-for="item in taskList"
-      :key="item.key"
       v-show="canShowTaskList.includes(item.key)"
+      :key="item.key"
       li_common
       pl-4
       pr-2
@@ -77,22 +77,28 @@ const handleTaskItemClick = (projectName: string, key: number) => {
         <span class="ml-2">{{ item.title }}</span>
       </div>
 
-      <NPopover trigger="click" style="padding: 5px 0 5px 0" @clickoutside="showWitchPopover = -1" :show="showWitchPopover === item.key"
-           :show-arrow="false" placement="bottom-start">
-            <template #trigger>
-              <Icon
-                v-show="projectSelectedStatusStore.selectedKey[0] === item.key || showMoreIconIndex === item.key"
-                icon="material-symbols:more-horiz"
-                width="20"
-                class="color-[#9D9FA3]"
-                dark="color-white"
-                @click="($event) => {$event.stopPropagation(); openPopover(item.key)}"
-              />
-            </template>
-            <ul w-180px cursor-pointer>
-              <li hover="bg-[#F3F3F5] dark:bg-[#2D2D30]" pl-4 text-14px h-20px lh-20px
-              @click="hideTaskItem(item.key)">隐藏</li>
-            </ul>
+      <NPopover
+        trigger="click" style="padding: 5px 0 5px 0" :show="showWitchPopover === item.key" :show-arrow="false"
+        placement="bottom-start" @clickoutside="showWitchPopover = -1"
+      >
+        <template #trigger>
+          <Icon
+            v-show="projectSelectedStatusStore.selectedKey[0] === item.key || showMoreIconIndex === item.key"
+            icon="material-symbols:more-horiz"
+            width="20"
+            class="color-[#9D9FA3]"
+            dark="color-white"
+            @click="($event) => { $event.stopPropagation(); openPopover(item.key) }"
+          />
+        </template>
+        <ul w-180px cursor-pointer>
+          <li
+            hover="bg-[#F3F3F5] dark:bg-[#2D2D30]" pl-4 text-14px h-20px lh-20px
+            @click="hideTaskItem(item.key)"
+          >
+            隐藏
+          </li>
+        </ul>
       </NPopover>
     </li>
   </ul>
