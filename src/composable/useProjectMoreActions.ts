@@ -1,5 +1,5 @@
-import { ref, onBeforeMount } from 'vue'
-import { SmartProjectNames } from "@/services/task/smartProject"
+import { onBeforeMount, ref } from 'vue'
+import { SmartProjectNames } from '@/services/task/smartProject'
 
 type ShowMoreIconIndex = `${SmartProjectNames}` | ''
 type ShowWitchPopover = ShowMoreIconIndex
@@ -16,7 +16,7 @@ export function useProjectMoreActions() {
 
   const hideTaskItem = (name: `${SmartProjectNames}`) => {
     if (shouldShowTaskList.value.includes(name)) {
-        shouldShowTaskList.value = shouldShowTaskList.value.filter(
+      shouldShowTaskList.value = shouldShowTaskList.value.filter(
         item => item !== name,
       )
     }
@@ -24,8 +24,8 @@ export function useProjectMoreActions() {
   }
   // TODO: 这里以后通过设置页面拿到应该要展示的智能清单数据，然后处理shouldShowTaskList
   onBeforeMount(() => {
-    
-  });
+
+  })
 
   return {
     showMoreIconIndex,
