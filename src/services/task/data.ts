@@ -1,3 +1,5 @@
+import type { FetchListProjectData } from './listProject'
+
 // 暂时模拟后端返回的数据格式
 export const fetchData = {
   listProjects: [
@@ -70,4 +72,15 @@ export const fetchData = {
       },
     ],
   },
+}
+
+export function mockProjectData(type: keyof typeof fetchData, milliSecond: number) {
+  const existData = Object.keys(fetchData || {})
+  return new Promise<Awaited<FetchListProjectData>>((resolve) => {
+    setTimeout(() => {
+      if (existData.includes(type))
+        return resolve(fetchData[type] as FetchListProjectData)
+      return fetchData.listProjects
+    }, milliSecond)
+  })
 }

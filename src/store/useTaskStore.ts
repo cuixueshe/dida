@@ -4,10 +4,9 @@ import type { Project, Task } from 'services/task'
 import * as taskService from 'services/task'
 
 export const useTaskStore = defineStore('task', () => {
-  const listProjects = reactive(taskService.listProjects)
+  const listProjects = reactive(taskService.projects)
   const currentActiveTask = ref<Task>()
   const currentActiveProject = ref<Project | undefined>(listProjects[0])
-
   const listProjectNames = computed(() => {
     return listProjects.map((project) => {
       return project.name

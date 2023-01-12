@@ -2,43 +2,19 @@
 import { Icon } from '@iconify/vue'
 import { NPopover } from 'naive-ui'
 import { reactive } from 'vue'
-import { SmartProjectNames, useProjectSelectedStatusStore, useTaskStore } from '@/store'
+import {
+  Status, useProjectSelectedStatusStore,
+  useSmartProjectStore,
+  useTaskStore,
+
+} from '@/store'
 import { useProjectMoreActions } from '@/composable/useProjectMoreActions'
-
-export interface TaskListType {
-  key: number
-  icon: string
-  title: `${SmartProjectNames}`
-  option?: string
-}
-
-const taskList = reactive<TaskListType[]>([
-  {
-    key: 1,
-    icon: 'material-symbols:check-box',
-    title: SmartProjectNames.Complete,
-  },
-  {
-    key: 2,
-    icon: 'mdi:close-box',
-    title: SmartProjectNames.Failed,
-  },
-  {
-    key: 3,
-    icon: 'material-symbols:delete',
-    title: SmartProjectNames.Trash,
-  },
-  {
-    key: 4,
-    icon: 'material-symbols:text-snippet-rounded',
-    title: SmartProjectNames.Abstract,
-  },
-])
 
 const selected = 'bg-[#E7F5EE] dark:bg-[#233633]'
 
 const taskStore = useTaskStore()
 const projectSelectedStatusStore = useProjectSelectedStatusStore()
+const { smartProjectList, checkVisible } = useSmartProjectStore()
 const { showMoreIconIndex, showWitchPopover, openPopover, hideTaskItem, canShowTaskList } = useProjectMoreActions()
 
 const handleTaskItemClick = (projectName: string, key: number) => {
@@ -50,8 +26,8 @@ const handleTaskItemClick = (projectName: string, key: number) => {
 <template>
   <ul>
     <li
-      v-for="item in taskList"
-      v-show="canShowTaskList.includes(item.key)"
+      v-for="item in smartProjectList"
+      v-show="checkVisible(item)"
       :key="item.key"
       li_common
       pl-4
@@ -60,7 +36,7 @@ const handleTaskItemClick = (projectName: string, key: number) => {
       :class="
         projectSelectedStatusStore.selectedKey[0] === item.key ? selected : ''
       "
-      @click="handleTaskItemClick(item.title, item.key)"
+      @click="handleTaskItemClick(item.name, item.key)"
       @mouseenter="showMoreIconIndex = item.key"
       @mouseleave="showMoreIconIndex = -1"
     >
@@ -71,7 +47,7 @@ const handleTaskItemClick = (projectName: string, key: number) => {
           class="color-[#9D9FA3]"
           dark="color-white-b"
         />
-        <span class="ml-2">{{ item.title }}</span>
+        <span class="ml-2">{{ item.name }}</span>
       </div>
 
       <NPopover

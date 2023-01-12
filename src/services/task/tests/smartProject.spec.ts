@@ -5,10 +5,10 @@ import {
   findSmartProjectByName,
   initCompletedSmartProject,
   initTrashSmartProject,
+  smartProjects,
   trashSmartProject,
 } from '../smartProject'
 import { TaskState } from '../task'
-
 describe('smartProject', () => {
   it('init completed project ', () => {
     const firstTaskTitle = '欢迎加入 DiDa'
@@ -36,7 +36,7 @@ describe('smartProject', () => {
         },
       ],
     })
-
+    const completedSmartProject = smartProjects.completed
     expect(completedSmartProject.tasks.length).toBe(2)
     expect(completedSmartProject.tasks[0].title).toBe(firstTaskTitle)
     expect(completedSmartProject.tasks[0].state).toBe(TaskState.COMPLETED)
