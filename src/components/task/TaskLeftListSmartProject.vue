@@ -76,7 +76,6 @@ const handleTaskItemClick = (projectName: string, key: number) => {
         />
         <span class="ml-2">{{ item.title }}</span>
       </div>
-
       <NPopover trigger="click" style="padding: 5px 0 5px 0" @clickoutside="showWitchPopover = ''" :show="showWitchPopover === item.title"
            :show-arrow="false" placement="bottom-start">
             <template #trigger>
