@@ -1,3 +1,4 @@
+export { useCommandStore } from './useCommandStore'
 export { useSearchStore } from './useSearch'
 export { useThemeStore, getGlobalThemeStore } from './useTheme'
 export { useTaskStore } from './useTaskStore'

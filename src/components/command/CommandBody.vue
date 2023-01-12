@@ -1,29 +1,50 @@
 <script setup lang="ts">
 import { NEmpty, NInput, NSkeleton } from 'naive-ui'
-import { ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { watchDebounced } from '@vueuse/core'
 import Search from './search/Search.vue'
+import Commands from './commands/Commands.vue'
 
-const searchRef = ref<InstanceType<typeof Search>>()
+const compRef = ref<InstanceType<typeof Search | typeof Commands>>()
 
 const searchWord = ref('')
 const loading = ref(false)
 const isReset = ref(true)
 
+const ComponentsAndSearchHandles = {
+  search: [Search, async (v: string) => {
+    const str = v.trim()
+    if (!str)
+      return
+    loading.value = true
+    await compRef.value!.handleSearch(str)
+    await new Promise(resolve => setTimeout(resolve, 700))
+    loading.value = false
+  }],
+  commands: [Commands, async (v: string) => {
+    const str = v.slice(1).trim()
+    if (!str)
+      return
+    await compRef.value!.handleSearch(v)
+  }],
+} as const
+
+const showComponentAndHandle = computed(() => searchWord.value.startsWith('>') ? ComponentsAndSearchHandles.commands : ComponentsAndSearchHandles.search)
+
 watchDebounced(() => searchWord.value, async (v) => {
   if (v) {
     if (isReset.value)
       isReset.value = false
-    // fake loading
-    loading.value = true
-    await searchRef.value!.handleSearch(v)
-    await new Promise(resolve => setTimeout(resolve, 700))
-    loading.value = false
+    await showComponentAndHandle.value[1](v)
   }
-  else {
+}, { debounce: 175 })
+
+watch(() => searchWord.value, (v) => {
+  if (v === '') {
     isReset.value = true
+    compRef.value?.clear()
   }
-}, { debounce: 500 })
+})
 
 defineExpose({
   reset() {
@@ -46,7 +67,7 @@ defineExpose({
           <NSkeleton text :repeat="2" />
           <NSkeleton text style="width: 60%" />
         </div>
-        <Search v-else ref="searchRef" />
+        <component :is="showComponentAndHandle[0]" v-else ref="compRef" />
       </div>
     </div>
   </div>
