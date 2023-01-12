@@ -1,18 +1,15 @@
 <script setup lang="ts">
 import { Icon } from '@iconify/vue'
-import { reactive } from 'vue'
 import { NPopover } from 'naive-ui'
+import { reactive } from 'vue'
+import { SmartProjectNames, useProjectSelectedStatusStore, useTaskStore } from '@/store'
 import { useProjectMoreActions } from '@/composable/useProjectMoreActions'
-import {
-  SmartProjectNames,
-  useProjectSelectedStatusStore,
-  useTaskStore,
-} from '@/store'
 
-interface TaskListType {
+export interface TaskListType {
   key: number
   icon: string
   title: `${SmartProjectNames}`
+  option?: string
 }
 
 const taskList = reactive<TaskListType[]>([
