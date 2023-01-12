@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import {
-  NButton, NCard, NForm, NFormItem, NInput, NModal, NPopover,
+  NButton, NCard, NForm, NFormItem, NInput, NModal, NPopover,NSpace
 } from 'naive-ui'
 import EmojiPicker from 'vue3-emoji-picker'
 import { Icon } from '@iconify/vue'
@@ -104,14 +104,14 @@ defineExpose({
       </div>
 
       <template #footer>
-        <div class="flex justify-end">
-          <NButton class="mr-3" @click="handleClose">
+        <NSpace justify="end">
+          <NButton @click="handleClose">
             关闭
           </NButton>
           <NButton type="success" :disabled="!isSavable" @click="handleSave">
             保存
           </NButton>
-        </div>
+        </NSpace>
       </template>
     </NCard>
   </NModal>
