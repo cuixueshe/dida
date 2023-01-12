@@ -1,5 +1,25 @@
 <script setup lang="ts">
 import { NDropdown, NPopover } from 'naive-ui'
+import { ref } from 'vue'
+import Command from '@/components/command/Command.vue'
+import { useIsMac } from '@/composable'
+
+const commandRef = ref<InstanceType<typeof Command>>()
+
+const isMac = useIsMac()
+
+// Command + K Or Command + / will show command in MacOS
+// Ctrl + K Or Ctrl + / in Windows
+window.addEventListener('keydown', (e: KeyboardEvent) => {
+  if ((e.key === 'k' || e.key === 'л') && (isMac.value ? e.metaKey : e.ctrlKey)) {
+    e.preventDefault()
+    commandRef.value?.show()
+  }
+  if ((e.key === '/' || e.key === ',') && (isMac.value ? e.metaKey : e.ctrlKey)) {
+    e.preventDefault()
+    commandRef.value?.show()
+  }
+})
 </script>
 
 <template>
@@ -49,6 +69,17 @@ import { NDropdown, NPopover } from 'naive-ui'
         </template>
         <span>打卡</span>
       </NPopover>
+      <NPopover placement="right">
+        <template #trigger>
+          <div
+            class="hover:text-gray-6 dark:hover:text-gray-2 cursor-pointer"
+            i="carbon-search"
+            @click="commandRef?.show()"
+          />
+        </template>
+        <span>搜索面板</span>
+      </NPopover>
     </div>
+    <Command ref="commandRef" />
   </div>
 </template>
