@@ -69,7 +69,7 @@ const data = ref<any[]>([
 const nodeProps = ({ option }: { option: TreeOption }) => {
   return {
     onClick() {
-      if (option.key === TreeRootKeys.PROJECT)
+      if (option.key === TreeRootKeys.PROJECT || option.key === TreeRootKeys.TAG)
         return
       const projectName = option.label
       projectName && taskStore.changeCurrentActiveProject(projectName)
