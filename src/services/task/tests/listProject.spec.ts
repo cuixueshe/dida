@@ -1,13 +1,9 @@
 import { describe, expect, it } from 'vitest'
-import { findProjectByName, initProjects, projects } from '../project'
-import {
-  completedSmartProject,
-  trashProject,
-} from '../smartProject'
+import { findListProjectByName, initListProjects, listProjects } from '../listProject'
 
-describe('project', () => {
-  it('initProjects ', () => {
-    initProjects([
+describe('listProject', () => {
+  it('init listProjects ', () => {
+    initListProjects([
       {
         name: 'live',
         tasks: [
@@ -35,16 +31,16 @@ describe('project', () => {
       },
     ])
 
-    expect(projects.length).toBe(2)
+    expect(listProjects.length).toBe(2)
 
-    expect(projects[0].name).toBe('live')
-    expect(projects[0].tasks.length).toBe(2)
+    expect(listProjects[0].name).toBe('live')
+    expect(listProjects[0].tasks.length).toBe(2)
 
-    expect(projects[1].name).toBe('work')
-    expect(projects[1].tasks.length).toBe(1)
+    expect(listProjects[1].name).toBe('work')
+    expect(listProjects[1].tasks.length).toBe(1)
   })
   it('should find a project when the project is created', () => {
-    initProjects([
+    initListProjects([
       {
         name: 'first',
         tasks: [],
@@ -55,11 +51,9 @@ describe('project', () => {
       },
     ])
 
-    const project = findProjectByName('first')
+    const project = findListProjectByName('first')
 
     expect(project?.name).toBe('first')
-    expect(findProjectByName(completedSmartProject.name)).toBeTruthy()
-    expect(findProjectByName(trashProject.name)).toBeTruthy()
   })
 
   it.todo('should exist when project is created', () => {})

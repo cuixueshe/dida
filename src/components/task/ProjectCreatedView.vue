@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import {
-  NButton, NCard, NForm, NFormItem, NInput, NModal, NPopover,NSpace
+  NButton, NCard, NForm, NFormItem, NInput, NModal, NPopover, NSpace,
 } from 'naive-ui'
 import EmojiPicker from 'vue3-emoji-picker'
 import { Icon } from '@iconify/vue'

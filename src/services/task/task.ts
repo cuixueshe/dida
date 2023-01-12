@@ -1,4 +1,4 @@
-import type { Project } from './project'
+import type { ListProject } from './listProject'
 import { completedSmartProject, trashProject } from './smartProject'
 
 export enum TaskState {
@@ -13,8 +13,8 @@ export interface Task {
   title: string
   state: TaskState
   content: string
-  project?: Project
-  previousProject?: Project
+  project?: ListProject
+  previousProject?: ListProject
 }
 
 export function createTask(
@@ -30,7 +30,7 @@ export function createTask(
   }
 }
 
-export function addTask(task: Task, project: Project) {
+export function addTask(task: Task, project: ListProject) {
   task.project = project
   task.state = TaskState.ACTIVE
   project.tasks.unshift(task)

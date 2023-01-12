@@ -1,5 +1,5 @@
-import type { FetchProjectData, Project } from './project'
-import { findProjectByName } from './project'
+import type { FetchListProjectData, ListProject } from './listProject'
+import { findListProjectByName } from './listProject'
 import { TaskState, addTask, createTask } from './task'
 
 export enum SmartProjectNames {
@@ -10,19 +10,19 @@ export enum SmartProjectNames {
 }
 
 // 智能列表
-interface CompletedSmartProject extends Project {
+interface CompletedSmartProject extends ListProject {
   name: '已完成'
 }
 
-interface TrashProject extends Project {
+interface TrashProject extends ListProject {
   name: '垃圾桶'
 }
 
-interface FailedProject extends Project {
+interface FailedProject extends ListProject {
   name: '已放弃'
 }
 
-interface AbstractProject extends Project {
+interface AbstractProject extends ListProject {
   name: '摘要'
 }
 
@@ -59,12 +59,12 @@ export function createAbstractProject(): AbstractProject {
   }
 }
 
-export function initCompletedSmartProject({ tasks }: FetchProjectData) {
+export function initCompletedSmartProject({ tasks }: FetchListProjectData) {
   completedSmartProject.tasks = []
 
   tasks.reverse().forEach(({ id, title, content, previousProjectName }) => {
     const task = createTask(title, id, content)
-    task.previousProject = findProjectByName(previousProjectName)
+    task.previousProject = findListProjectByName(previousProjectName)
     addTask(task, completedSmartProject)
     task.state = TaskState.COMPLETED
   })

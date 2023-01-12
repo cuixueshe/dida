@@ -29,7 +29,7 @@ export const useSearchStore = defineStore('searchStore', () => {
   }, { immediate: true })
   function collectAllTasks() {
     allTasks.value = []
-    taskStore.projects.forEach((project) => {
+    taskStore.listProjects.forEach((project) => {
       project.tasks.forEach((task) => {
         allTasks.value.push({
           id: task.id,

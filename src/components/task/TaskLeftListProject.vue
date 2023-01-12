@@ -33,13 +33,13 @@ const defaultExpandedKeys = ref<TreeRootKeys[]>([])
 const treeProjectChildren = ref<TreeOption[]>([])
 
 watchEffect(() => {
-  treeProjectChildren.value = taskStore.projectNames.map((projectname, index) => ({
+  treeProjectChildren.value = taskStore.listProjectNames.map((projectname, index) => ({
     key: TreeRootKeys.PROJECT + index + 1,
     label: projectname,
     isleaf: true,
   }))
   defaultExpandedKeys.value = [...new Set([
-    ...(taskStore.projectNames.length ? [] : [TreeRootKeys.PROJECT]),
+    ...(taskStore.listProjectNames.length ? [] : [TreeRootKeys.PROJECT]),
     ...(fakeTagsNamesData.value.length ? [] : [TreeRootKeys.TAG]),
     ...projectSelectedStatusStore.listDefaultSelectedKey,
   ])]

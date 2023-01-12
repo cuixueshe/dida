@@ -4,12 +4,12 @@ import type { Project, Task } from '../services/task'
 import * as taskService from '../services/task'
 
 export const useTaskStore = defineStore('task', () => {
-  const projects = reactive(taskService.projects)
+  const listProjects = reactive(taskService.listProjects)
   const currentActiveTask = ref<Task>()
-  const currentActiveProject = ref<Project | undefined>(projects[0])
+  const currentActiveProject = ref<Project | undefined>(listProjects[0])
 
-  const projectNames = computed(() => {
-    return projects.map((project) => {
+  const listProjectNames = computed(() => {
+    return listProjects.map((project) => {
       return project.name
     })
   })
@@ -35,7 +35,13 @@ export const useTaskStore = defineStore('task', () => {
   }
 
   function changeCurrentActiveProject(projectName: string) {
-    currentActiveProject.value = taskService.findProjectByName(projectName)
+    let targetProject: Project | undefined
+
+    targetProject = taskService.findSmartProjectByName(projectName)
+    if (!targetProject)
+      targetProject = taskService.findProjectByName(projectName)
+
+    currentActiveProject.value = targetProject
     changeActiveTask(undefined)
   }
 
@@ -44,15 +50,20 @@ export const useTaskStore = defineStore('task', () => {
     changeActiveTask(undefined)
   }
 
-  function changeCurrentActiveProjectAndCurrentTask(projectName: string, taskId: string) {
+  function changeCurrentActiveProjectAndCurrentTask(
+    projectName: string,
+    taskId: string,
+  ) {
     changeCurrentActiveProject(projectName)
-    changeActiveTask(currentActiveProject.value?.tasks.find(item => item.id === taskId))
+    changeActiveTask(
+      currentActiveProject.value?.tasks.find(item => item.id === taskId),
+    )
   }
 
   return {
-    projects,
+    listProjects,
     currentActiveProject,
-    projectNames,
+    listProjectNames,
     currentActiveTask,
     addTask,
     removeTask,

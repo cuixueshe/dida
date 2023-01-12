@@ -1,5 +1,5 @@
 import type { Task } from './task'
-import { findSmartProjectByName, trashProject } from './smartProject'
+import { trashProject } from './smartProject'
 import { addTask, createTask } from './task'
 
 export interface FetchTaskData {
@@ -9,47 +9,43 @@ export interface FetchTaskData {
   previousProjectName?: string
 }
 
-export interface FetchProjectData {
+export interface FetchListProjectData {
   name: string
   tasks: FetchTaskData[]
 }
-export interface Project {
+export interface ListProject {
   name: string
   tasks: Task[]
 }
 
-export const projects: Project[] = []
+export const listProjects: ListProject[] = []
 
-export function createProject(name: string): Project {
+export function createListProject(name: string): ListProject {
   return {
     name,
     tasks: [],
   }
 }
 
-export function addProject(project: Project) {
-  projects.push(project)
+export function addListProject(project: ListProject) {
+  listProjects.push(project)
 }
 
-export function findProjectByName(name: string | undefined) {
+export function findListProjectByName(name: string | undefined) {
   if (!name)
     return
 
-  const targetProject = findSmartProjectByName(name)
-  if (targetProject)
-    return targetProject
-
-  return projects.find((project) => {
+  return listProjects.find((project) => {
     return project.name === name
   })
 }
 
-export function initProjects(projectsData: FetchProjectData[]) {
-  projects.length = 0
+export function initListProjects(projectsData: FetchListProjectData[]) {
+  listProjects.length = 0
 
   projectsData.forEach((projectData) => {
-    const project = createProject(projectData.name)
-    addProject(project)
+    const project = createListProject(projectData.name)
+    addListProject(project)
 
     // init tasks
     projectData.tasks.forEach(({ id, title, content }) => {

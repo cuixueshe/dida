@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest'
-import { initProjects } from '../project'
+import { initListProjects } from '../listProject'
 import {
   completedSmartProject,
+  findSmartProjectByName,
   initCompletedSmartProject,
 } from '../smartProject'
 import { TaskState } from '../task'
@@ -10,7 +11,7 @@ describe('smartProject', () => {
   it('init completed project ', () => {
     const firstTaskTitle = '欢迎加入 DiDa'
     const secondTaskTitle = '第二个完成测试'
-    initProjects([
+    initListProjects([
       {
         name: '快捷',
         tasks: [],
@@ -41,5 +42,9 @@ describe('smartProject', () => {
     expect(completedSmartProject.tasks[0].previousProject).toBeTruthy()
 
     expect(completedSmartProject.tasks[1].title).toBe(secondTaskTitle)
+  })
+
+  it('find smartProject by name ', () => {
+    expect(findSmartProjectByName(completedSmartProject.name)).toBeTruthy()
   })
 })

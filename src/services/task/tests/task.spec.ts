@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import {
-  createProject,
+  createListProject,
   resetTrashProject,
-} from '../project'
+} from '../listProject'
 import {
   TaskState,
   addTask,
@@ -31,34 +31,34 @@ describe('task', () => {
 
     expect(task.content).toBe('hi')
   })
-  it('add task to project ', () => {
-    const project = createProject('one')
+  it('add task to listProject ', () => {
+    const listProject = createListProject('one')
     const firstTask = createTask('coding')
-    addTask(firstTask, project)
-    expect(project.tasks[0].title).toEqual('coding')
+    addTask(firstTask, listProject)
+    expect(listProject.tasks[0].title).toEqual('coding')
 
     const secondTask = createTask('play game')
-    addTask(secondTask, project)
-    expect(project.tasks[0].title).toEqual('play game')
+    addTask(secondTask, listProject)
+    expect(listProject.tasks[0].title).toEqual('play game')
   })
 
   it('remove task', () => {
-    const project = createProject('one')
+    const listProject = createListProject('one')
     const task = createTask('coding')
-    addTask(task, project)
+    addTask(task, listProject)
 
     removeTask(task)
 
-    expect(project.tasks.length).toBe(0)
+    expect(listProject.tasks.length).toBe(0)
     expect(trashProject!.tasks[0].title).toBe('coding')
 
     resetTrashProject()
   })
 
   it('complete task', () => {
-    const project = createProject('one')
+    const listProject = createListProject('one')
     const task = createTask('coding')
-    addTask(task, project)
+    addTask(task, listProject)
     initCompletedSmartProject({
       name: '已完成',
       tasks: [],
@@ -66,32 +66,32 @@ describe('task', () => {
 
     completeTask(task)
 
-    expect(project.tasks.length).toBe(0)
+    expect(listProject.tasks.length).toBe(0)
     expect(completedSmartProject!.tasks[0].title).toBe('coding')
   })
 
   it('restore task', () => {
-    const project = createProject('one')
+    const listProject = createListProject('one')
     const task = createTask('coding')
     initCompletedSmartProject({
       name: '已完成',
       tasks: [],
     })
-    addTask(task, project)
+    addTask(task, listProject)
     completeTask(task)
 
     restoreTask(task)
 
     expect(completedSmartProject.tasks.length).toBe(0)
-    expect(project!.tasks[0].title).toBe('coding')
+    expect(listProject!.tasks[0].title).toBe('coding')
   })
 
   it('task state', () => {
     const task = createTask('coding')
     expect(task.state).toEqual(TaskState.ACTIVE)
 
-    const project = createProject('one')
-    addTask(task, project)
+    const listProject = createListProject('one')
+    addTask(task, listProject)
     expect(task.state).toEqual(TaskState.ACTIVE)
 
     completeTask(task)
