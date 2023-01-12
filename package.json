@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "@imengyu/vue3-context-menu": "^1.1.10",
+    "fuse.js": "^6.6.2",
     "ink-mde": "^0.18.1",
     "naive-ui": "^2.34.3",
     "pinia": "^2.0.28",
