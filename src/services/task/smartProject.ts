@@ -18,8 +18,18 @@ interface TrashProject extends Project {
   name: '垃圾桶'
 }
 
+interface FailedProject extends Project {
+  name: '已放弃'
+}
+
+interface AbstractProject extends Project {
+  name: '摘要'
+}
+
 export const trashProject = createTrashProject()
 export const completedSmartProject = createCompletedSmartProject()
+export const failedSmartProject = createFailedSmartProject()
+export const abstractProject = createAbstractProject()
 
 export function createCompletedSmartProject(): CompletedSmartProject {
   return {
@@ -35,6 +45,20 @@ export function createTrashProject(): TrashProject {
   }
 }
 
+export function createFailedSmartProject(): FailedProject {
+  return {
+    name: '已放弃',
+    tasks: [],
+  }
+}
+
+export function createAbstractProject(): AbstractProject {
+  return {
+    name: '摘要',
+    tasks: [],
+  }
+}
+
 export function initCompletedSmartProject({ tasks }: FetchProjectData) {
   completedSmartProject.tasks = []
 
@@ -44,4 +68,15 @@ export function initCompletedSmartProject({ tasks }: FetchProjectData) {
     addTask(task, completedSmartProject)
     task.state = TaskState.COMPLETED
   })
+}
+
+const smartProjects = {
+  [SmartProjectNames.Complete]: completedSmartProject,
+  [SmartProjectNames.Trash]: trashProject,
+  [SmartProjectNames.Failed]: failedSmartProject,
+  [SmartProjectNames.Abstract]: abstractProject,
+}
+
+export function findSmartProjectByName(name: string) {
+  return smartProjects[name as keyof typeof smartProjects]
 }

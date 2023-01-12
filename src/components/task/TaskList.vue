@@ -39,12 +39,18 @@ const isPlaceholder = computed(() => {
 })
 
 function addTask() {
-  taskStore.addTask(taskTitle.value)
+  if (taskTitle.value)
+    taskStore.addTask(taskTitle.value)
+
   taskTitle.value = ''
 }
 
 function toggleLeftMenu() {
   taskLeftMenuStatusStore.toggle()
+}
+
+function handleInputChange(event: any) {
+  taskTitle.value = event.target.value
 }
 
 const shouldShowTodoAdd = computed(() => {
@@ -83,9 +89,10 @@ const { inputRef, onFocus } = useInput()
     >
       <input
         ref="inputRef"
-        v-model="taskTitle"
+        :value="taskTitle"
         type="text"
         class="w-100% min-w-300px h-38px rounded-6px p-4px pl-12px pr-12px outline-none border-1 b-transparent bg-gray-100 dark:bg-#3B3B3B"
+        @input="handleInputChange"
         @keypress.enter="addTask"
       >
       <div

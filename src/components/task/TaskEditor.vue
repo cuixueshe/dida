@@ -28,8 +28,9 @@ function handleInput(e: Event) {
         />
       </div>
     </div>
-    <div v-else>
-      点击任务标题查看详情
+    <div v-else class="flex flex-col w-full h-full justify-center items-center">
+      <img src="@/assets/empty-task-detail-icon.svg" alt="Empty Task Detail Icon">
+      <span class="text-[16px] pb-30">点击任务标题查看详情</span>
     </div>
   </div>
 </template>

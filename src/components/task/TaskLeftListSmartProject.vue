@@ -37,6 +37,7 @@ const taskList = reactive<TaskListType[]>([
     title: SmartProjectNames.Abstract,
   },
 ])
+
 const selected = 'bg-[#E7F5EE] dark:bg-[#233633]'
 
 const taskStore = useTaskStore()
