@@ -1,5 +1,9 @@
 <script setup lang="ts">
 import { NDropdown, NPopover } from 'naive-ui'
+import { ref } from 'vue'
+import Command from '@/components/command/Command.vue'
+
+const commandRef = ref<InstanceType<typeof Command>>()
 </script>
 
 <template>
@@ -49,6 +53,17 @@ import { NDropdown, NPopover } from 'naive-ui'
         </template>
         <span>打卡</span>
       </NPopover>
+      <NPopover placement="right">
+        <template #trigger>
+          <div
+            class="hover:text-gray-6 dark:hover:text-gray-2 cursor-pointer"
+            i="carbon-search"
+            @click="commandRef?.show()"
+          />
+        </template>
+        <span>搜索面板</span>
+      </NPopover>
     </div>
+    <Command ref="commandRef" />
   </div>
 </template>
