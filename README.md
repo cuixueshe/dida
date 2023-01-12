@@ -77,12 +77,56 @@ pnpm bootstrap
 
 推荐使用 [ corepack ](https://nodejs.org/api/corepack.html) ，这样的话可以基于项目配置的包管理器版本来安装依赖。
 
-### 1. 说明
+### 说明
 
 - 一个 PR 只处理一件事，不要把无关代码提交上来，这样最好 Review 以及 Merged
 - Issue 以 PR 为准，留言不算。
 - PR 的标题要使用英文
 - 当发生多个 PR 同时解决一个 Issue 的时候，会随机合并，注意没合并你的 PR 不代表你的实现不好，不要灰心，不要抱怨。你要做的是看看其他 PR 有没有可以学习的地方和可以优化的地方，友好的指出来，当你实现一遍后其实就已经学到很多了。
+
+
+### 规范
+#### store（pinia）和 service 的关系
+
+service 层是存放业务逻辑，纯 js/ts 是为了测试而分离出来的
+
+store 相当于是胶水层，负责两个点
+1. 负责把 UI 层和 Service 层连接起来
+   因为对于响应式的开发来讲，我们只需要操作数据就可以完成视图的更新。而数据又在 service 层，所以我们就需要一个胶水层用 reactive/ref 来包裹业务逻辑变成响应式对象，也就是和 UI 绑定在一起了。
+2. 负责跨组件通信
+
+弄明白这两者的区别后，在开发的时候就可以做出判断 我是应该直接调用 service 层的方法呢，还是在 store 包裹一层在调用。
+如果你要处理的行为需要修改响应式对象 那么就应该在 store 层包裹然后在使用，比如下面的代码中 
+```ts
+function addTask(title: string) {
+  const task = taskService.createTask(title)
+  taskService.addTask(task, currentActiveProject.value!)
+  changeActiveTask(task)
+}
+```
+既要添加 task 还需要改变 currentActiveProject 的值，而 currentActiveProject 这个变量是和 UI 绑定的， 所以 addTask 就需要放到 store 层 因为这个行为会影响和 UI 绑定的响应式数据
+
+反之就是行为不会影响到响应式对象 那么就可以直接调用 service 层的方法 比如
+```ts
+import { isSmartProject } from 'services/task'
+const shouldShowTodoAdd = computed(() => {
+  const name = taskStore.currentActiveProject?.name || ''
+  return !isSmartProject(name)
+})
+```
+isSmartProject 是基于 name 来判断是不是智能清单，不会影响到响应式对象。那么就可以直接调用
+
+#### 什么情况下应该把逻辑抽离到 composable 内
+
+当这段逻辑需要在多个组件之间（ > 1 ）复用的时候，就可以把逻辑抽离放到 composable 内了
+
+如果逻辑只在一个组件内使用的话 直接就可以放到对应的组件内
+
+这里有个技巧是可以使用 useXXX 来封装一下对应的功能，比如 useXXXX  
+
+这样的好处在于可以基于功能来隔离变量方法  不至于全部散放到 setup 内。 
+
+理论上来讲 一个组件中对应的 useXXX 之类的不会多 如果多的话 一定是可以继续拆分出组件的
 
 ## 如何参与进来
 
