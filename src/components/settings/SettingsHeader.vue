@@ -12,7 +12,7 @@ const goToHome = () => {
 </script>
 
 <template>
-  <NSpace justify="space-between" item-style="center">
+  <NSpace justify="space-between" item-style="center" class="px-10px">
     <h1 class="text-3xl">
       设置
     </h1>
