@@ -8,7 +8,9 @@ import TaskLeftListSmartProject from '@/components/task/TaskLeftListSmartProject
     <div>
       <TaskLeftListProject />
     </div>
-    <TaskLeftListSmartProject />
+    <div class="mt-2px">
+      <TaskLeftListSmartProject />
+    </div>
   </div>
 </template>
 

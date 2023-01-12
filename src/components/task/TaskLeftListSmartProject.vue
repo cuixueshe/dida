@@ -42,7 +42,7 @@ const selected = 'bg-[#E7F5EE] dark:bg-[#233633]'
 
 const taskStore = useTaskStore()
 const projectSelectedStatusStore = useProjectSelectedStatusStore()
-const {showMoreIconIndex, showWitchPopover, openPopover, hideTaskItem, canShowTaskList} = useProjectMoreActions()
+const {showMoreIconIndex, showWitchPopover, openPopover, hideTaskItem, shouldShowTaskList} = useProjectMoreActions()
 
 const handleTaskItemClick = (projectName: string, key: number) => {
   taskStore.changeCurrentActiveProject(projectName)
@@ -55,7 +55,7 @@ const handleTaskItemClick = (projectName: string, key: number) => {
     <li
       v-for="item in taskList"
       :key="item.key"
-      v-show="canShowTaskList.includes(item.key)"
+      v-show="shouldShowTaskList.includes(item.title)"
       li_common
       pl-4
       pr-2
@@ -64,8 +64,8 @@ const handleTaskItemClick = (projectName: string, key: number) => {
         projectSelectedStatusStore.selectedKey[0] === item.key ? selected : ''
       "
       @click="handleTaskItemClick(item.title, item.key)"
-      @mouseenter="showMoreIconIndex = item.key"
-      @mouseleave="showMoreIconIndex = -1"
+      @mouseenter="showMoreIconIndex = item.title"
+      @mouseleave="showMoreIconIndex = ''"
     >
       <div flex>
         <Icon
@@ -77,21 +77,21 @@ const handleTaskItemClick = (projectName: string, key: number) => {
         <span class="ml-2">{{ item.title }}</span>
       </div>
 
-      <NPopover trigger="click" style="padding: 5px 0 5px 0" @clickoutside="showWitchPopover = -1" :show="showWitchPopover === item.key"
+      <NPopover trigger="click" style="padding: 5px 0 5px 0" @clickoutside="showWitchPopover = ''" :show="showWitchPopover === item.title"
            :show-arrow="false" placement="bottom-start">
             <template #trigger>
               <Icon
-                v-show="projectSelectedStatusStore.selectedKey[0] === item.key || showMoreIconIndex === item.key"
+                v-show="projectSelectedStatusStore.selectedKey[0] === item.key || showMoreIconIndex === item.title"
                 icon="material-symbols:more-horiz"
                 width="20"
                 class="color-[#9D9FA3]"
                 dark="color-white"
-                @click="($event) => {$event.stopPropagation(); openPopover(item.key)}"
+                @click="($event) => {$event.stopPropagation(); openPopover(item.title)}"
               />
             </template>
             <ul w-180px cursor-pointer>
               <li hover="bg-[#F3F3F5] dark:bg-[#2D2D30]" pl-4 text-14px h-20px lh-20px
-              @click="hideTaskItem(item.key)">隐藏</li>
+              @click="hideTaskItem(item.title)">隐藏</li>
             </ul>
       </NPopover>
     </li>
