@@ -1,12 +1,27 @@
 <script setup lang="ts">
 import type { TreeOption } from 'naive-ui'
 import { NTree } from 'naive-ui'
-import { ref, watchEffect } from 'vue'
+import { onMounted, ref, watchEffect } from 'vue'
 import { useProjectSelectedStatusStore, useTaskStore } from '@/store'
+import 'vue3-emoji-picker/css'
+import ProjectCreateView from '@/components/task/ProjectCreatedView.vue'
 
 enum TreeRootKeys {
   PROJECT = 100,
   TAG = 200,
+}
+
+const { projectViewRef, projectRender } = useCreateProjectButton()
+
+function useCreateProjectButton() {
+  const projectViewRef = ref()
+  const projectRender = ref(undefined)
+  onMounted(() => {
+    projectRender.value = projectViewRef.value.renderCreateProjectButton
+  })
+  return {
+    projectRender, projectViewRef,
+  }
 }
 
 const projectSelectedStatusStore = useProjectSelectedStatusStore()
@@ -14,9 +29,7 @@ const taskStore = useTaskStore()
 
 // fake data to simulate tags render
 const fakeTagsNamesData = ref<string[]>([])
-
-const defautExpandedKeys = ref<TreeRootKeys[]>([])
-
+const defaultExpandedKeys = ref<TreeRootKeys[]>([])
 const treeProjectChildren = ref<TreeOption[]>([])
 
 watchEffect(() => {
@@ -25,7 +38,7 @@ watchEffect(() => {
     label: projectname,
     isleaf: true,
   }))
-  defautExpandedKeys.value = [...new Set([
+  defaultExpandedKeys.value = [...new Set([
     ...(taskStore.projectNames.length ? [] : [TreeRootKeys.PROJECT]),
     ...(fakeTagsNamesData.value.length ? [] : [TreeRootKeys.TAG]),
     ...projectSelectedStatusStore.listDefaultSelectedKey,
@@ -81,7 +94,8 @@ const onExpandedKey = (key: number[]) => {
 <template>
   <NTree
     v-model:selected-keys="projectSelectedStatusStore.selectedKey"
-    :default-expanded-keys="defautExpandedKeys"
+    :default-expanded-keys="defaultExpandedKeys"
+    :render-suffix="projectRender"
     block-line
     expand-on-click
     :data="data"
@@ -89,6 +103,7 @@ const onExpandedKey = (key: number[]) => {
     @update:expanded-keys="onExpandedKey"
     @update:selected-keys="changeSelectedKey"
   />
+  <ProjectCreateView ref="projectViewRef" />
 </template>
 
 <style>
