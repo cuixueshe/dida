@@ -30,7 +30,9 @@
     "src/**/*.d.ts",
     "src/**/*.tsx",
     "src/**/*.vue",
-    "cypress/**/*.ts"
+    "cypress/**/*.ts",
+    "typings/auto-imports.d.ts",
+    "typings/components.d.ts"
   ],
   "references": [
     {
