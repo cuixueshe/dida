@@ -1,0 +1,7 @@
+/*  overrides NaiveUI Theme (These cannot use API to change) */
+
+/* https://github.com/tusen-ai/naive-ui/issues/2846 */
+.n-modal-mask {
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}

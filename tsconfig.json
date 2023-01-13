@@ -17,7 +17,12 @@
     ],
     "skipLibCheck": true,
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": [
+        "src/*"
+      ],
+      "services/*": [
+        "src/services/*"
+      ]
     }
   },
   "include": [

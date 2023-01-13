@@ -2,15 +2,35 @@
 import type { Ref } from 'vue'
 import { computed, ref } from 'vue'
 import { Icon } from '@iconify/vue'
-import { useEventListener } from '@vueuse/core'
-
+import draggable from 'vuedraggable'
+import { isSmartProject } from 'services/task'
+import Command from '../command/Command.vue'
 import TaskItem from './TaskItem.vue'
-import { useTaskStore } from '@/store/task'
+import {
+  useTaskLeftMenuStatusStore,
+  useTaskStore,
+  useThemeStore,
+} from '@/store'
 
 const taskStore = useTaskStore()
+const themeStore = useThemeStore()
+const taskLeftMenuStatusStore = useTaskLeftMenuStatusStore()
+
+function useInput() {
+  const inputRef: Ref<HTMLInputElement | null> = ref(null)
+
+  function onFocus() {
+    inputRef.value!.focus()
+  }
+
+  return {
+    inputRef,
+    onFocus,
+  }
+}
 
 const taskTitle = ref('')
-const inputRef: Ref<HTMLInputElement | null> = ref(null)
+const dragging = ref<boolean>(false)
 
 const placeholderText = computed(() => {
   return `添加任务至“${taskStore.currentActiveProject?.name}”，回车即可保存`
@@ -20,59 +40,55 @@ const isPlaceholder = computed(() => {
 })
 
 function addTask() {
-  taskStore.addTask(taskTitle.value)
+  if (taskTitle.value)
+    taskStore.addTask(taskTitle.value)
+
   taskTitle.value = ''
 }
 
-function onFocus() {
-  inputRef.value!.focus()
+function toggleLeftMenu() {
+  taskLeftMenuStatusStore.toggle()
 }
 
-useEventListener(
-  () => inputRef.value,
-  'focus',
-  () => {
-    const classList = inputRef.value!.classList
+function handleInputChange(event: any) {
+  taskTitle.value = event.target.value
+}
 
-    classList.add('border-blue')
-    classList.add('dark:color-black')
-    classList.remove('bg-gray-100')
-    classList.remove('dark:bg-#3B3B3B')
-  },
-)
+const shouldShowTodoAdd = computed(() => {
+  const name = taskStore.currentActiveProject?.name || ''
+  return !isSmartProject(name)
+})
 
-useEventListener(
-  () => inputRef.value,
-  'blur',
-  () => {
-    const classList = inputRef.value!.classList
-
-    classList.add('bg-gray-100')
-    classList.add('dark:bg-#3B3B3B')
-
-    classList.remove('border-blue')
-    classList.remove('dark:color-black')
-  },
-)
+const { inputRef, onFocus } = useInput()
 </script>
 
 <template>
   <div class="flex flex-col gap-20px px-4 text-16px">
-    <div>
-      <h1 class="text-4xl">
+    <div flex items-center>
+      <Icon
+        :icon="
+          taskLeftMenuStatusStore.visible
+            ? 'tabler:layout-sidebar-left-collapse'
+            : 'tabler:layout-sidebar-right-collapse'
+        "
+        width="30"
+        @click="toggleLeftMenu()"
+      />
+      <h1 class="text-4xl ml-5px">
         {{ taskStore.currentActiveProject?.name }}
       </h1>
     </div>
     <div
-      v-show="taskStore.shouldShowTodoAdd()"
+      v-show="shouldShowTodoAdd"
       class="relative cursor-text"
       @click="onFocus"
     >
       <input
         ref="inputRef"
-        v-model="taskTitle"
+        :value="taskTitle"
         type="text"
         class="w-100% min-w-300px h-38px rounded-6px p-4px pl-12px pr-12px outline-none border-1 b-transparent bg-gray-100 dark:bg-#3B3B3B"
+        @input="handleInputChange"
         @keypress.enter="addTask"
       >
       <div
@@ -87,13 +103,28 @@ useEventListener(
         {{ placeholderText }}
       </div>
     </div>
-    <TransitionGroup name="list" tag="ul" class="flex flex-col gap-10px">
-      <li v-for="task in taskStore.currentActiveProject?.tasks" :key="task.id">
-        <TaskItem :task="task" />
-      </li>
-    </TransitionGroup>
+    <draggable
+      :list="taskStore.currentActiveProject?.tasks ?? []"
+      :ghost-class="themeStore.isDark ? 'dark-ghost' : 'ghost'"
+      :drag-class="themeStore.isDark ? 'dark-drag' : 'drag'"
+      item-key="id"
+      :animation="200"
+      :component-data="{
+        tag: 'div',
+        type: 'transition-group',
+        name: !dragging ? 'flip-list' : null,
+      }"
+      class="flex flex-col gap-10px"
+      @start="dragging = true"
+      @end="dragging = false"
+    >
+      <template #item="{ element, index }">
+        <TaskItem :task="element" :index="index" class="item" />
+      </template>
+    </draggable>
     <!-- 暂时性修复 contenteditable 的 bug #9 -->
     <div class="w-full h-1px" contenteditable="false" />
+    <Command />
   </div>
 </template>
 
@@ -105,5 +136,25 @@ useEventListener(
 .list-enter-from {
   opacity: 0;
   transform: translateX(30px);
+}
+
+.ghost {
+  opacity: 0.5;
+  background: #c8ebfb;
+}
+
+.dark-ghost {
+  opacity: 0.4;
+  background: #2f2f2f;
+}
+
+.drag {
+  opacity: 0.5;
+  background: #c8ebfb;
+}
+
+.dark-drag {
+  opacity: 0.4;
+  background: #2f2f2f;
 }
 </style>

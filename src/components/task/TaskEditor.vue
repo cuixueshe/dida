@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import InkMde from 'ink-mde/vue'
-import { useTaskStore } from '@/store/task'
-import { isDark } from '@/composable/dark'
+import { useTaskStore, useThemeStore } from '@/store'
 
 const taskStore = useTaskStore()
+const themeStore = useThemeStore()
 
 function handleInput(e: Event) {
   if (taskStore.currentActiveTask)
@@ -22,14 +22,15 @@ function handleInput(e: Event) {
           v-model="taskStore.currentActiveTask.content"
           :options="{
             interface: {
-              appearance: isDark ? 'dark' : 'light',
+              appearance: themeStore.isDark ? 'dark' : 'light',
             },
           }"
         />
       </div>
     </div>
-    <div v-else>
-      点击任务标题查看详情
+    <div v-else class="flex flex-col w-full h-full justify-center items-center">
+      <img src="@/assets/empty-task-detail-icon.svg" alt="Empty Task Detail Icon">
+      <span class="text-[16px] pb-30">点击任务标题查看详情</span>
     </div>
   </div>
 </template>

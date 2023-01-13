@@ -1,14 +1,19 @@
 <script setup lang="ts">
 import { NPopover } from 'naive-ui'
-import type { Task } from '@/store/task'
-import { TaskState, useTaskStore } from '@/store/task'
-import { useTaskRightContextMenu } from '@/composable/taskRightContextMenu'
+import type { Task } from 'services/task'
+import { useTaskOperationMessage, useTaskRightContextMenu } from '@/composable'
+import { TaskState, useTaskStore, useThemeStore } from '@/store'
 
 interface Props {
   task: Task
 }
 
 const props = defineProps<Props>()
+const taskStore = useTaskStore()
+const themeStore = useThemeStore()
+
+const { showCompleteMessage } = useTaskOperationMessage()
+const { showContextMenu } = useTaskRightContextMenu()
 
 const checkboxColors: Record<TaskState, string> = {
   [TaskState.ACTIVE]: 'bg-#ccc',
@@ -16,9 +21,6 @@ const checkboxColors: Record<TaskState, string> = {
   [TaskState.GIVE_UP]: 'bg-#FF2200',
   [TaskState.REMOVED]: 'bg-#ccc',
 }
-
-const taskStore = useTaskStore()
-const { showContextMenu } = useTaskRightContextMenu()
 
 function handleRightClickTask(e: MouseEvent, task: Task) {
   taskStore.changeActiveTask(task)
@@ -35,19 +37,46 @@ function handleInput(e: Event) {
 }
 
 function handleCompleteTodo(e: Event) {
-  if (props.task.state === TaskState.ACTIVE)
+  if (props.task.state === TaskState.ACTIVE) {
     taskStore.completeTask(props.task)
-  else if (props.task.state === TaskState.COMPLETED)
+    showCompleteMessage(props.task)
+  }
+  else if (props.task.state === TaskState.COMPLETED) {
     taskStore.restoreTask(props.task)
-  else if (props.task.state === TaskState.REMOVED)
+  }
+  else if (props.task.state === TaskState.REMOVED) {
     // eslint-disable-next-line no-console
     console.log('在垃圾桶里面的 task 不可以直接恢复')
+  }
 }
 </script>
 
 <template>
-  <div @click.right="handleRightClickTask($event, task)">
-    <div class="flex justify-start items-center gap-5px">
+  <div
+    class="flex flex-row w-full items-center"
+    @click.right="handleRightClickTask($event, task)"
+  >
+    <i
+      class="cursor-move text-gray-200 dark:text-#3B3B3B flex-shrink-0 i-mdi-format-align-justify text-sm"
+    />
+    <div
+      flex
+      justify-start
+      items-center
+      gap-5px
+      h-40px
+      py-5px
+      flex-1
+      pl-10px
+      :class="[
+        themeStore.isDark ? 'hover:bg-[#474747]/50' : 'hover:bg-[#ECF1FF]/50',
+        taskStore.currentActiveTask?.id === task.id
+          ? themeStore.isDark
+            ? '!bg-[#474747]'
+            : '!bg-[#ECF1FF]'
+          : '',
+      ]"
+    >
       <template v-if="task.state === TaskState.REMOVED">
         <!-- 临时加的提示 后面要去掉 -->
         <div class="flex justify-start items-center gap-5px">
@@ -73,7 +102,7 @@ function handleCompleteTodo(e: Event) {
           @click="handleCompleteTodo"
         />
         <div
-          class="w-full cursor-pointer"
+          class="w-full cursor-pointer focus:outline-0"
           contenteditable="true"
           @input="handleInput"
           @focus="handleClickTask(task)"

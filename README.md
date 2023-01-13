@@ -4,9 +4,48 @@
 
 > 展示复杂前端项目应该如何测试
 
+## Features
+编程是门手艺 再真实的项目中不断地练习练习再练习
+
+- 最前沿的技术栈 是的 不新不潮不用
+- 只专注技术
+  - 代码的实现是不是优雅 
+  - 架构是不是整洁
+  - 分层是不是清晰 
+  - 功能不人性化？样式丑？能 run 就行
+
 ## why
 
-做这个项目的目的主要是为了展示前端项目应该如何测试
+做这个项目主要有两个点
+- 带同学们刷副本 打怪升级
+- 展示前端项目应该如何测试
+
+### 刷副本 打怪升级
+如果你问我最好最高效提高编程能力的方式是什么
+
+我会告诉你做项目 做符合 i+1 难度的项目 一直做
+
+i 是你当前的能力 在这个难度基础上再 +1 就是适合你的项目
+
+同学们应该都玩过游戏打过副本吧
+
+想要在游戏里面升级的话 你必须找到符合你当前等级的副本
+
+同时最好是有人带你  这样刷副本的话 最快
+
+而这个项目就是如此 非常适合工作 1-3 年的同学提高
+
+我会把任务拆分成不同等级的难度，让你知道可以领什么样子的任务
+
+然后会 review PR ， 告诉你有什么问题 应该如何解决
+
+最后我会重构 让你知道好的代码结构应该是什么样子的
+
+我们从实战中学习 同时也可以在开源社区建立个人影响力 持续不断的获得正向反馈 激励我们不断地前进 
+
+> 不要在刷面试题 算法题 八股文了 那只会让你感觉编程是痛苦的
+
+### 展示前端项目应该如何测试
 
 我是一名前端测试布道者，在布道测试的时候听到最多的一句话就是： 测试很好 但是业务代码不适合/没法写
 
@@ -20,27 +59,74 @@
 程序员如何保证自己的代码质量以及提高工作效率将会成为重点问题
 而测试就是这个问题的解
 
-## Features
 
-集成了以下技术栈
+## 安装
 
-- [x] vite
-- [x] vue3
-- [x] typescript
-- [x] vitest
-- [x] vue-router
-- [x] pinia(vuex5)
-- [x] naive-ui
-- [x] cypress
-- [x] cypress-component-test
-- [x] alias
-- [x] ci && cd
-- [x] unocss (更好用的 tailwind-css)
-- [x] git hooks (lint-stage + commit-lint)
-- [x] eslint 校验
-- [ ] lint + eslint + prettier
-- [ ] axios
+执行下面的命令即可
 
+```bash
+pnpm bootstrap
+```
+
+执行这个命令安装依赖的话 会跳过 cypress 的安装
+> 因为有很多同学反馈在安装 cypress 的时候超时
+
+## 代码贡献指南
+
+你需要安装 Node.js 16+ 版本和 PNPM 7+ 版本。
+
+推荐使用 [ corepack ](https://nodejs.org/api/corepack.html) ，这样的话可以基于项目配置的包管理器版本来安装依赖。
+
+### 说明
+
+- 一个 PR 只处理一件事，不要把无关代码提交上来，这样最好 Review 以及 Merged
+- Issue 以 PR 为准，留言不算。
+- PR 的标题要使用英文
+- 当发生多个 PR 同时解决一个 Issue 的时候，会随机合并，注意没合并你的 PR 不代表你的实现不好，不要灰心，不要抱怨。你要做的是看看其他 PR 有没有可以学习的地方和可以优化的地方，友好的指出来，当你实现一遍后其实就已经学到很多了。
+
+
+### 规范
+#### store（pinia）和 service 的关系
+
+service 层是存放业务逻辑，纯 js/ts 是为了测试而分离出来的
+
+store 相当于是胶水层，负责两个点
+1. 负责把 UI 层和 Service 层连接起来
+   因为对于响应式的开发来讲，我们只需要操作数据就可以完成视图的更新。而数据又在 service 层，所以我们就需要一个胶水层用 reactive/ref 来包裹业务逻辑变成响应式对象，也就是和 UI 绑定在一起了。
+2. 负责跨组件通信
+
+弄明白这两者的区别后，在开发的时候就可以做出判断 我是应该直接调用 service 层的方法呢，还是在 store 包裹一层在调用。
+如果你要处理的行为需要修改响应式对象 那么就应该在 store 层包裹然后在使用，比如下面的代码中 
+```ts
+function addTask(title: string) {
+  const task = taskService.createTask(title)
+  taskService.addTask(task, currentActiveProject.value!)
+  changeActiveTask(task)
+}
+```
+既要添加 task 还需要改变 currentActiveProject 的值，而 currentActiveProject 这个变量是和 UI 绑定的， 所以 addTask 就需要放到 store 层 因为这个行为会影响和 UI 绑定的响应式数据
+
+反之就是行为不会影响到响应式对象 那么就可以直接调用 service 层的方法 比如
+```ts
+import { isSmartProject } from 'services/task'
+const shouldShowTodoAdd = computed(() => {
+  const name = taskStore.currentActiveProject?.name || ''
+  return !isSmartProject(name)
+})
+```
+isSmartProject 是基于 name 来判断是不是智能清单，不会影响到响应式对象。那么就可以直接调用
+
+#### 什么情况下应该把逻辑抽离到 composable 内
+
+当这段逻辑需要在多个组件之间（ > 1 ）复用的时候，就可以把逻辑抽离放到 composable 内了
+
+如果逻辑只在一个组件内使用的话 直接就可以放到对应的组件内
+
+这里有个技巧是可以使用 useXXX 来封装一下对应的功能，比如 useXXXX  
+
+这样的好处在于可以基于功能来隔离变量方法  不至于全部散放到 setup 内。 
+
+理论上来讲 一个组件中对应的 useXXX 之类的不会多 如果多的话 一定是可以继续拆分出组件的
 
 ## 如何参与进来
 
@@ -66,4 +152,6 @@
 
 总之参与进来会对你技术提高有很大的帮助，而且开源合作方式就比较的自由，有时间了就来领个任务做做涨涨经验值 没时间了就该忙啥忙啥去
 
-
+## Roadmap
+1. 支持 Vim 的方式通过快捷键来操作 类似于 [vimium](https://chrome.google.com/webstore/detail/vimium/dbepggeogbaibhgnhhndojpepiihcmeb?hl=en)
+2. 支持可以通过 github 账号登录，数据直接保存在自己的 github 上
