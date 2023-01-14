@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import InkMde from 'ink-mde/vue'
+import { changeTaskContent, changeTaskTitle } from 'services/task'
 import { useTaskStore, useThemeStore } from '@/store'
 
 const taskStore = useTaskStore()
@@ -7,7 +8,12 @@ const themeStore = useThemeStore()
 
 function handleInput(e: Event) {
   if (taskStore.currentActiveTask)
-    taskStore.currentActiveTask.title = (e.target as HTMLElement).innerText
+    changeTaskTitle(taskStore.currentActiveTask, (e.target as HTMLElement).innerText)
+}
+
+function handleAfterUpdate(doc: string) {
+  if (taskStore.currentActiveTask)
+    changeTaskContent(taskStore.currentActiveTask, doc)
 }
 </script>
 
@@ -23,6 +29,9 @@ function handleInput(e: Event) {
           :options="{
             interface: {
               appearance: themeStore.isDark ? 'dark' : 'light',
+            },
+            hooks: {
+              afterUpdate: handleAfterUpdate,
             },
           }"
         />

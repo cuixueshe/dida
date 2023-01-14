@@ -1,23 +1,35 @@
 import { computed, reactive, ref } from 'vue'
 import { defineStore } from 'pinia'
-import type { Project, Task } from 'services/task'
+import type { ListProject, Task } from 'services/task'
 import * as taskService from 'services/task'
+import type { Project } from '@/services/task/listProject'
+
+const listProjects = reactive<ListProject[]>([])
+const tasks = reactive<Task[]>([])
+const currentActiveTask = ref<Task>()
+// TODO 应该拿用户设置的一上来显示的 project 的id  来赋值 这里我们先写死取第一个
+const currentActiveProject = ref<ListProject>(listProjects[0])
+
+const listProjectNames = computed(() => {
+  return listProjects.map((project) => {
+    return project.name
+  })
+})
+
+export async function initTask() {
+  taskService.init(listProjects, tasks)
+  await taskService.loadProjects()
+  currentActiveProject.value = listProjects[0]
+  await taskService.loadTasks(currentActiveProject.value)
+}
 
 export const useTaskStore = defineStore('task', () => {
-  const listProjects = reactive(taskService.listProjects)
-  const currentActiveTask = ref<Task>()
-  const currentActiveProject = ref<Project | undefined>(listProjects[0])
-
-  const listProjectNames = computed(() => {
-    return listProjects.map((project) => {
-      return project.name
-    })
-  })
-
   function addTask(title: string) {
-    const task = taskService.createTask(title)
-    taskService.addTask(task, currentActiveProject.value!)
-    changeActiveTask(task)
+    if (currentActiveProject.value) {
+      const task = taskService.createTask(title)
+      taskService.addTask(task, currentActiveProject.value!.id)
+      changeActiveTask(task)
+    }
   }
 
   function changeActiveTask(task: Task | undefined) {
@@ -34,14 +46,8 @@ export const useTaskStore = defineStore('task', () => {
     changeActiveTask(undefined)
   }
 
-  function changeCurrentActiveProject(projectName: string) {
-    let targetProject: Project | undefined
-
-    targetProject = taskService.findSmartProjectByName(projectName)
-    if (!targetProject)
-      targetProject = taskService.findProjectByName(projectName)
-
-    currentActiveProject.value = targetProject
+  async function selectProject(project: Project) {
+    await taskService.loadTasks(project)
     changeActiveTask(undefined)
   }
 
@@ -50,17 +56,8 @@ export const useTaskStore = defineStore('task', () => {
     changeActiveTask(undefined)
   }
 
-  function changeCurrentActiveProjectAndCurrentTask(
-    projectName: string,
-    taskId: string,
-  ) {
-    changeCurrentActiveProject(projectName)
-    changeActiveTask(
-      currentActiveProject.value?.tasks.find(item => item.id === taskId),
-    )
-  }
-
   return {
+    tasks,
     listProjects,
     currentActiveProject,
     listProjectNames,
@@ -70,7 +67,6 @@ export const useTaskStore = defineStore('task', () => {
     completeTask,
     restoreTask,
     changeActiveTask,
-    changeCurrentActiveProject,
-    changeCurrentActiveProjectAndCurrentTask,
+    selectProject,
   }
 })

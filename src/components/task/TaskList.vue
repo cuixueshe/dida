@@ -104,7 +104,7 @@ const { inputRef, onFocus } = useInput()
       </div>
     </div>
     <draggable
-      :list="taskStore.currentActiveProject?.tasks ?? []"
+      :list="taskStore.tasks"
       :ghost-class="themeStore.isDark ? 'dark-ghost' : 'ghost'"
       :drag-class="themeStore.isDark ? 'dark-drag' : 'drag'"
       item-key="id"

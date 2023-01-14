@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { NPopover } from 'naive-ui'
 import type { Task } from 'services/task'
+import { changeTaskTitle } from 'services/task'
 import { useTaskOperationMessage, useTaskRightContextMenu } from '@/composable'
 import { TaskState, useTaskStore, useThemeStore } from '@/store'
 
@@ -31,9 +32,9 @@ function handleClickTask(task: Task) {
   taskStore.changeActiveTask(task)
 }
 
-function handleInput(e: Event) {
-  if (taskStore.currentActiveTask)
-    taskStore.currentActiveTask.title = (e.target as HTMLElement).innerText
+function handleInput(e: Event, task: Task) {
+  const newTitle = (e.target as HTMLElement).innerText
+  changeTaskTitle(task, newTitle)
 }
 
 function handleCompleteTodo(e: Event) {
@@ -104,7 +105,7 @@ function handleCompleteTodo(e: Event) {
         <div
           class="w-full cursor-pointer focus:outline-0"
           contenteditable="true"
-          @input="handleInput"
+          @input="handleInput($event, task)"
           @focus="handleClickTask(task)"
         >
           {{ task.title }}

@@ -2,16 +2,20 @@ import '@imengyu/vue3-context-menu/lib/vue3-context-menu.css'
 import ContextMenu from '@imengyu/vue3-context-menu'
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
+import { initDB } from './db'
 import App from './App.vue'
 import { setupRouter } from './router'
 import '@unocss/reset/tailwind.css'
 import 'uno.css'
 import './style/overrides.css'
+import { initStore } from './store'
 
 async function setupApp() {
+  initDB()
   const app = createApp(App)
   const pinia = createPinia()
   app.use(pinia)
+  await initStore()
   await setupRouter(app)
   app.use(ContextMenu)
   // This must be placed at bottom of app initialization, before mount.

@@ -1,15 +1,12 @@
-import { fetchData } from './data'
-import { initListProjects } from './listProject'
-import {
-  initCompletedSmartProject,
-  initTrashSmartProject,
-} from './smartProject'
+import type { ListProject } from './listProject'
+import { initListProject } from './listProject'
+import type { Task } from './task'
+import { initTask } from './task'
+import { dbRepository } from './dbRepository'
+import { initSmartProject } from './smartProject'
 
-export { SmartProjectNames, isSmartProject } from './smartProject'
-export {
-  listProjects,
-  findListProjectByName as findProjectByName,
-} from './listProject'
+export { SmartProjectNames, isSmartProject, initSmartProject } from './smartProject'
+export { findListProjectByName } from './listProject'
 export { findSmartProjectByName } from './smartProject'
 export {
   TaskState,
@@ -18,10 +15,23 @@ export {
   restoreTask,
   completeTask,
   createTask,
+  changeTaskTitle,
+  changeTaskContent,
+  loadTasks,
+  loadAllTasksNotRemoved,
+  getTaskFromProject,
+  findTaskById,
 } from './task'
 export type { Task } from './task'
-export type { ListProject as Project } from './listProject'
+export type { ListProject } from './listProject'
+export type { SmartProject } from './smartProject'
+export { initListProject, loadProjects } from './listProject'
 
-initListProjects(fetchData.listProjects)
-initCompletedSmartProject(fetchData.completed)
-initTrashSmartProject(fetchData.trash)
+export function init(
+  listProjectsReactive: ListProject[],
+  tasksReactive: Task[],
+) {
+  initListProject(listProjectsReactive, dbRepository)
+  initSmartProject(dbRepository)
+  initTask(tasksReactive, dbRepository)
+}

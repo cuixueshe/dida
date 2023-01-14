@@ -18,6 +18,7 @@ specifiers:
   cross-env: ^7.0.3
   cypress: ^12.3.0
   cypress-promise: ^1.1.0
+  dexie: ^3.2.2
   eslint: ^8.31.0
   fuse.js: ^6.6.2
   ink-mde: ^0.18.1
@@ -40,6 +41,7 @@ specifiers:
 
 dependencies:
   '@imengyu/vue3-context-menu': 1.1.10
+  dexie: 3.2.2
   fuse.js: 6.6.2
   ink-mde: 0.18.1_vue@3.2.45
   naive-ui: 2.34.3_vue@3.2.45
@@ -3121,6 +3123,11 @@ packages:
     resolution: {integrity: sha512-Mc7QhQ8s+cLrnUfU/Ji94vG/r8M26m8f++vyres4ZoojaRDpZ1eSIh/EpzLNwlWuvzSZ3UbDFspjFvTDXe6e/g==}
     engines: {node: '>=12.20'}
     dev: true
+
+  /dexie/3.2.2:
+    resolution: {integrity: sha512-q5dC3HPmir2DERlX+toCBbHQXW5MsyrFqPFcovkH9N2S/UW/H3H5AWAB6iEOExeraAu+j+zRDG+zg/D7YhH0qg==}
+    engines: {node: '>=6.0'}
+    dev: false
 
   /diff/4.0.2:
     resolution: {integrity: sha512-58lmxKSA4BNyLz+HHMUzlOEpg09FV+ev6ZMe3vJihgdxzgcwZ8VoEEPmALCZG9LmqfVoNMMKpttIYTVG6uDY7A==}

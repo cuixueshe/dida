@@ -1,32 +1,45 @@
-import type { Task } from './task'
-import { addTask, createTask } from './task'
+import type { Repository } from './dbRepository'
 
-export interface FetchTaskData {
-  title: string
-  content: string
-  id: string
-  previousProjectName?: string
-}
-
-export interface FetchListProjectData {
-  name?: string
-  tasks?: FetchTaskData[]
-}
-export interface ListProject {
+export interface Project {
   name: string
-  tasks: Task[]
+  loadTasks: () => any
 }
 
-export const listProjects: ListProject[] = []
+export interface ListProject extends Project {
+  id: number
+}
 
-export function createListProject(name: string): ListProject {
+let repository: Repository | undefined
+let listProjects: ListProject[]
+
+export function initListProject(
+  listProjectReactive: ListProject[] = [],
+  _repository: Repository,
+) {
+  repository = _repository
+  listProjects = listProjectReactive
+}
+
+export function createListProject(name: string, id: number): ListProject {
   return {
+    id,
     name,
-    tasks: [],
+    loadTasks: () => {
+      return repository!.getTasks(id)
+    },
   }
 }
 
+export async function loadProjects() {
+  return repository!.loadProjects().then((projects) => {
+    projects.forEach((project: any) => {
+      listProjects.push(createListProject(project.name, project.id))
+    })
+  })
+}
+
 export function addListProject(project: ListProject) {
+  // TODO 调用 repository
   listProjects.push(project)
 }
 
@@ -39,17 +52,8 @@ export function findListProjectByName(name: string | undefined) {
   })
 }
 
-export function initListProjects(projectsData: FetchListProjectData[]) {
-  listProjects.length = 0
-
-  projectsData.forEach((projectData) => {
-    const project = createListProject(projectData.name!)
-    addListProject(project)
-
-    // init tasks
-    projectData.tasks!.forEach(({ id, title, content }) => {
-      const task = createTask(title, id, content)
-      addTask(task, project)
-    })
+export function findListProjectById(id: number) {
+  return listProjects.find((project) => {
+    return project.id === id
   })
 }

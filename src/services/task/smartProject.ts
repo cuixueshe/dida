@@ -1,6 +1,8 @@
-import type { FetchListProjectData, ListProject } from './listProject'
-import { findListProjectByName } from './listProject'
-import { TaskState, addTask, createTask } from './task'
+import { TaskState } from './task'
+import type { Repository } from './dbRepository'
+import type { Project } from './listProject'
+
+export interface SmartProject extends Project {}
 
 export enum SmartProjectNames {
   Complete = '已完成',
@@ -9,83 +11,36 @@ export enum SmartProjectNames {
   Abstract = '摘要',
 }
 
-// 智能列表
-interface CompletedSmartProject extends ListProject {
-  name: '已完成'
-}
+let repository: Repository | undefined
 
-interface TrashProject extends ListProject {
-  name: '垃圾桶'
-}
-
-interface FailedProject extends ListProject {
-  name: '已放弃'
-}
-
-interface AbstractProject extends ListProject {
-  name: '摘要'
+export function initSmartProject(_repository: Repository) {
+  repository = _repository
 }
 
 export const trashSmartProject = createTrashSmartProject()
 export const completedSmartProject = createCompletedSmartProject()
-export const failedSmartProject = createFailedSmartProject()
-export const abstractProject = createAbstractProject()
 
-export function createCompletedSmartProject(): CompletedSmartProject {
+function createCompletedSmartProject(): SmartProject {
   return {
-    name: '已完成',
-    tasks: [],
+    name: SmartProjectNames.Complete,
+    loadTasks() {
+      return repository!.findTasksByState(TaskState.COMPLETED)
+    },
   }
 }
 
-export function createTrashSmartProject(): TrashProject {
+function createTrashSmartProject(): SmartProject {
   return {
-    name: '垃圾桶',
-    tasks: [],
+    name: SmartProjectNames.Trash,
+    loadTasks() {
+      return repository!.findTasksByState(TaskState.REMOVED)
+    },
   }
-}
-
-export function createFailedSmartProject(): FailedProject {
-  return {
-    name: '已放弃',
-    tasks: [],
-  }
-}
-
-export function createAbstractProject(): AbstractProject {
-  return {
-    name: '摘要',
-    tasks: [],
-  }
-}
-
-export function initCompletedSmartProject({ tasks = [] }: FetchListProjectData = {}) {
-  completedSmartProject.tasks = []
-
-  tasks.reverse().forEach(({ id, title, content, previousProjectName }) => {
-    const task = createTask(title, id, content)
-    task.previousProject = findListProjectByName(previousProjectName)
-    addTask(task, completedSmartProject)
-    task.state = TaskState.COMPLETED
-  })
-}
-
-export function initTrashSmartProject({ tasks = [] }: FetchListProjectData = {}) {
-  trashSmartProject.tasks = []
-
-  tasks.reverse().forEach(({ id, title, content, previousProjectName }) => {
-    const task = createTask(title, id, content)
-    task.previousProject = findListProjectByName(previousProjectName)
-    addTask(task, trashSmartProject)
-    task.state = TaskState.REMOVED
-  })
 }
 
 const smartProjects = {
   [SmartProjectNames.Complete]: completedSmartProject,
   [SmartProjectNames.Trash]: trashSmartProject,
-  [SmartProjectNames.Failed]: failedSmartProject,
-  [SmartProjectNames.Abstract]: abstractProject,
 }
 
 export function findSmartProjectByName(name: string) {

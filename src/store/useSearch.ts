@@ -1,44 +1,48 @@
 import { defineStore } from 'pinia'
 import { ref, watch } from 'vue'
 import Fuse from 'fuse.js'
-import { useTaskStore } from './useTaskStore'
+import { TaskState, getTaskFromProject, loadAllTasksNotRemoved } from 'services/task'
+import type { ListProject, SmartProject } from 'services/task'
 
 interface SearchTaskItem {
-  id: string
+  id: number
   title: string
   desc: string
   done: boolean
-  from: string
+  from: ListProject | SmartProject | undefined
 }
 
 export const useSearchStore = defineStore('searchStore', () => {
-  const taskStore = useTaskStore()
-
   const allTasks = ref<SearchTaskItem[]>([])
 
   const searchTasks = ref<Fuse.FuseResult<SearchTaskItem>[]>([])
-  // 还未实现后端的逻辑，这里就暂时模拟先收集所有的数据
 
   const fuse = new Fuse(allTasks.value, {
     keys: ['title', 'desc'],
   })
 
-  watch(() => allTasks.value, (v) => {
-    if (v && v.length)
-      fuse.setCollection(v)
-  }, { immediate: true })
+  watch(
+    () => allTasks.value,
+    (v) => {
+      if (v && v.length)
+        fuse.setCollection(v)
+    },
+    { immediate: true },
+  )
+
   function collectAllTasks() {
     allTasks.value = []
-    taskStore.listProjects.forEach((project) => {
-      project.tasks.forEach((task) => {
+    loadAllTasksNotRemoved().then((tasks) => {
+      tasks.forEach((task) => {
         allTasks.value.push({
-          id: task.id,
+          id: task.id!,
           title: task.title,
           desc: task.content,
-          done: false,
-          from: project.name,
+          done: task.state === TaskState.COMPLETED,
+          from: getTaskFromProject(task),
         })
       })
+      fuse.setCollection(allTasks.value)
     })
   }
 

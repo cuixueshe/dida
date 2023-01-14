@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { findListProjectByName } from 'services/task'
 import type { TreeOption } from 'naive-ui'
 import { NTree } from 'naive-ui'
 import { onMounted, ref, watchEffect } from 'vue'
@@ -20,7 +21,8 @@ function useCreateProjectButton() {
     projectRender.value = projectViewRef.value.renderCreateProjectButton
   })
   return {
-    projectRender, projectViewRef,
+    projectRender,
+    projectViewRef,
   }
 }
 
@@ -33,16 +35,20 @@ const defaultExpandedKeys = ref<TreeRootKeys[]>([])
 const treeProjectChildren = ref<TreeOption[]>([])
 
 watchEffect(() => {
-  treeProjectChildren.value = taskStore.listProjectNames.map((projectname, index) => ({
-    key: TreeRootKeys.PROJECT + index + 1,
-    label: projectname,
-    isleaf: true,
-  }))
-  defaultExpandedKeys.value = [...new Set([
-    ...(taskStore.listProjectNames.length ? [] : [TreeRootKeys.PROJECT]),
-    ...(fakeTagsNamesData.value.length ? [] : [TreeRootKeys.TAG]),
-    ...projectSelectedStatusStore.listDefaultSelectedKey,
-  ])]
+  treeProjectChildren.value = taskStore.listProjectNames.map(
+    (projectname, index) => ({
+      key: TreeRootKeys.PROJECT + index + 1,
+      label: projectname,
+      isleaf: true,
+    }),
+  )
+  defaultExpandedKeys.value = [
+    ...new Set([
+      ...(taskStore.listProjectNames.length ? [] : [TreeRootKeys.PROJECT]),
+      ...(fakeTagsNamesData.value.length ? [] : [TreeRootKeys.TAG]),
+      ...projectSelectedStatusStore.listDefaultSelectedKey,
+    ]),
+  ]
 })
 
 const data = ref<any[]>([
@@ -60,34 +66,47 @@ const data = ref<any[]>([
     isLeaf: false,
     children: fakeTagsNamesData.value.length
       ? fakeTagsNamesData.value
-      : [{
-          label: '以标签的维度展示不同清单的任务。在添加任务时输入“#”可快速选择标签',
-          placeholder: true,
-        }],
+      : [
+          {
+            label:
+              '以标签的维度展示不同清单的任务。在添加任务时输入“#”可快速选择标签',
+            placeholder: true,
+          },
+        ],
   },
 ])
 const nodeProps = ({ option }: { option: TreeOption }) => {
   return {
     onClick() {
-      if (option.key === TreeRootKeys.PROJECT || option.key === TreeRootKeys.TAG)
+      if (
+        option.key === TreeRootKeys.PROJECT
+        || option.key === TreeRootKeys.TAG
+      )
         return
-      const projectName = option.label
-      projectName && taskStore.changeCurrentActiveProject(projectName)
+      const project = findListProjectByName(option.label)
+      if (project)
+        taskStore.selectProject(project)
     },
     class: option.placeholder ? 'placeholder' : '',
   }
 }
 
 const changeSelectedKey = (key: number[]) => {
-  if (key[0] === TreeRootKeys.PROJECT)
-    projectSelectedStatusStore.changePreSelectKey(projectSelectedStatusStore.selectedKey)
+  if (key[0] === TreeRootKeys.PROJECT) {
+    projectSelectedStatusStore.changePreSelectKey(
+      projectSelectedStatusStore.selectedKey,
+    )
+  }
 
   projectSelectedStatusStore.changeSelectedKey(key)
 }
 
 const onExpandedKey = (key: number[]) => {
-  if (key.includes(TreeRootKeys.PROJECT))
-    projectSelectedStatusStore.changeSelectedKey(projectSelectedStatusStore.preSelectKey)
+  if (key.includes(TreeRootKeys.PROJECT)) {
+    projectSelectedStatusStore.changeSelectedKey(
+      projectSelectedStatusStore.preSelectKey,
+    )
+  }
 }
 </script>
 
@@ -107,11 +126,13 @@ const onExpandedKey = (key: number[]) => {
 </template>
 
 <style>
-.n-tree.n-tree--block-line .n-tree-node:not(.n-tree-node--disabled).n-tree-node--pending {
+.n-tree.n-tree--block-line
+  .n-tree-node:not(.n-tree-node--disabled).n-tree-node--pending {
   background-color: transparent;
 }
-.n-tree.n-tree--block-line .n-tree-node:not(.n-tree-node--disabled).n-tree-node--selected {
-  background-color: var(--n-node-color-active)
+.n-tree.n-tree--block-line
+  .n-tree-node:not(.n-tree-node--disabled).n-tree-node--selected {
+  background-color: var(--n-node-color-active);
 }
 
 .n-tree-node-wrapper .placeholder .n-tree-node-indent {
@@ -136,10 +157,10 @@ const onExpandedKey = (key: number[]) => {
 }
 
 .dark .n-tree-node-wrapper .placeholder {
-  background-color: rgb(59,59,59, 1);
+  background-color: rgb(59, 59, 59, 1);
 }
 
 .dark .placeholder .n-tree-node-content__text {
-  color: rgba(156,163,175,0.5);
+  color: rgba(156, 163, 175, 0.5);
 }
 </style>

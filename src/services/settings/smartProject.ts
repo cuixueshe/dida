@@ -44,7 +44,7 @@ const completedSmartProject: SettingsSmartProject = {
 const trashSmartProject = {
   title: '垃圾桶',
   options: createOptions(),
-  option: 'hidden',
+  option: 'visible',
   icon: 'mdi:close-box',
 }
 
