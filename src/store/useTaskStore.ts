@@ -20,7 +20,8 @@ export async function initTask() {
   taskService.init(listProjects, tasks)
   await taskService.loadProjects()
   currentActiveProject.value = listProjects[0]
-  await taskService.loadTasks(currentActiveProject.value)
+  if (currentActiveProject.value)
+    await taskService.loadTasks(currentActiveProject.value)
 }
 
 export const useTaskStore = defineStore('task', () => {
