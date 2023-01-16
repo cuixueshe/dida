@@ -4,7 +4,6 @@
     "//#lint": {},
     "//#test": {},
     "build": {
-      "cache": true,
       "dependsOn": [
         "//#lint",
         "//#test",
