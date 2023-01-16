@@ -49,6 +49,7 @@ export const useTaskStore = defineStore('task', () => {
 
   async function selectProject(project: Project) {
     await taskService.loadTasks(project)
+    currentActiveProject.value = project as ListProject
     changeActiveTask(undefined)
   }
 
