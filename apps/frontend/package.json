@@ -1,0 +1,50 @@
+{
+  "name": "frontend",
+  "type": "module",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "test": "pnpm test-unit-run",
+    "test-unit": "vitest",
+    "test-component": "cypress open --component",
+    "test-e2e": "cross-env NODE_ENV=developer cypress open --e2e",
+    "test-unit-run": "vitest --run",
+    "test-component-run": "cypress run --component",
+    "test-e2e-run": "cross-env NODE_ENV=developer cypress run --e2e"
+  },
+  "dependencies": {
+    "@imengyu/vue3-context-menu": "^1.1.10",
+    "dexie": "^3.2.2",
+    "fuse.js": "^6.6.2",
+    "ink-mde": "^0.18.1",
+    "naive-ui": "^2.34.3",
+    "pinia": "^2.0.28",
+    "vue": "^3.2.45",
+    "vue-router": "4.1.6",
+    "vue3-emoji-picker": "^1.1.7",
+    "vuedraggable": "^4.1.0"
+  },
+  "devDependencies": {
+    "@iconify-json/carbon": "^1.1.13",
+    "@iconify-json/mdi": "^1.1.41",
+    "@iconify/vue": "^4.0.2",
+    "@peculiar/webcrypto": "^1.4.1",
+    "@unocss/reset": "^0.48.3",
+    "@vitejs/plugin-vue": "^4.0.0",
+    "@vitejs/plugin-vue-jsx": "^3.0.0",
+    "@vue/test-utils": "^2.2.7",
+    "@vueuse/core": "^9.10.0",
+    "cross-env": "^7.0.3",
+    "cypress": "^12.3.0",
+    "cypress-promise": "^1.1.0",
+    "jsdom": "^21.0.0",
+    "typescript": "^4.9.4",
+    "unocss": "^0.48.3",
+    "vite": "^4.0.4",
+    "vitest": "^0.27.0",
+    "vue-tsc": "^1.0.24"
+  }
+}
