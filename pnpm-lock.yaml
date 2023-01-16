@@ -46,7 +46,6 @@ importers:
       ink-mde: ^0.18.1
       jsdom: ^21.0.0
       naive-ui: ^2.34.3
-      path: ^0.12.7
       pinia: ^2.0.28
       typescript: ^4.9.4
       unocss: ^0.48.3
@@ -82,7 +81,6 @@ importers:
       cypress: 12.3.0
       cypress-promise: 1.1.0
       jsdom: 21.0.0
-      path: 0.12.7
       typescript: 4.9.4
       unocss: 0.48.3_vite@4.0.4
       vite: 4.0.4
@@ -4419,10 +4417,6 @@ packages:
       wrappy: 1.0.2
     dev: true
 
-  /inherits/2.0.3:
-    resolution: {integrity: sha512-x00IRNXNy63jwGkJmzPigoySHbaqpNuzKbBOmzK+g2OdZpQ9w+sxCN+VSB3ja7IAge2OP2qpfxTjeNcyjmW1uw==}
-    dev: true
-
   /inherits/2.0.4:
     resolution: {integrity: sha512-k/vGaX4/Yla3WzyMCvTQOXYeIHvqOKtnqBduzTHpzpQZzAskKMhZ2K+EnBiSM9zGSoIFeMpXKxa4dYeZIQqewQ==}
     dev: true
@@ -5812,13 +5806,6 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
-  /path/0.12.7:
-    resolution: {integrity: sha512-aXXC6s+1w7otVF9UletFkFcDsJeO7lSZBPUQhtb5O0xJe8LtYhj/GxldoL09bBj9+ZmE2hNoHqQSFMN5fikh4Q==}
-    dependencies:
-      process: 0.11.10
-      util: 0.10.4
-    dev: true
-
   /pathe/0.2.0:
     resolution: {integrity: sha512-sTitTPYnn23esFR3RlqYBWn4c45WGeLcsKzQiUpXJAyfcWkolvlYpV8FLo7JishK946oQwMFUCHXQ9AjGPKExw==}
     dev: true
@@ -5932,11 +5919,6 @@ packages:
   /proc-log/3.0.0:
     resolution: {integrity: sha512-++Vn7NS4Xf9NacaU9Xq3URUuqZETPsf8L4j5/ckhaRYsfPeRyzGw+iDjFhV/Jr3uNmTvvddEJFWh5R1gRgUH8A==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
-    dev: true
-
-  /process/0.11.10:
-    resolution: {integrity: sha512-cdGef/drWFoydD1JsMzuFf8100nZl+GT+yacc2bEced5f9Rjk4z+WtFUTBu9PhOi9j/jfmBPu0mMEY4wIdAF8A==}
-    engines: {node: '>= 0.6.0'}
     dev: true
 
   /promise-inflight/1.0.1:
@@ -7013,12 +6995,6 @@ packages:
 
   /util-deprecate/1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
-    dev: true
-
-  /util/0.10.4:
-    resolution: {integrity: sha512-0Pm9hTQ3se5ll1XihRic3FDIku70C+iHUdT/W926rSgHV5QgXsYbKZN8MSC3tJtSkhuROzvsQjAaFENRXr+19A==}
-    dependencies:
-      inherits: 2.0.3
     dev: true
 
   /uuid/8.3.2:
