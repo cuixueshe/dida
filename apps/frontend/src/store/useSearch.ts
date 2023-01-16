@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref, watch } from 'vue'
+import { ref } from 'vue'
 import Fuse from 'fuse.js'
 import { TaskState, getTaskFromProject, loadAllTasksNotRemoved } from 'services/task'
 import type { ListProject, SmartProject } from 'services/task'
@@ -21,18 +21,9 @@ export const useSearchStore = defineStore('searchStore', () => {
     keys: ['title', 'desc'],
   })
 
-  watch(
-    () => allTasks.value,
-    (v) => {
-      if (v && v.length)
-        fuse.setCollection(v)
-    },
-    { immediate: true },
-  )
-
   function collectAllTasks() {
     allTasks.value = []
-    loadAllTasksNotRemoved().then((tasks) => {
+    return loadAllTasksNotRemoved().then((tasks) => {
       tasks.forEach((task) => {
         allTasks.value.push({
           id: task.id!,
@@ -46,9 +37,8 @@ export const useSearchStore = defineStore('searchStore', () => {
     })
   }
 
-  collectAllTasks()
-
-  const handleSearch = (input: string) => {
+  const handleSearch = async (input: string) => {
+    await collectAllTasks()
     searchTasks.value = fuse.search(input)
   }
 
