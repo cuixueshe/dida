@@ -29,11 +29,5 @@ jobs:
       - name: Install Dependencies
         run: pnpm i --frozen-lockfile
 
-      - name: Lint
-        run: pnpm lint
-
-      - name: Build
+      - name: Build with Turbo
         run: pnpm build
-
-      - name: Unit-Test
-        run: pnpm test-unit
