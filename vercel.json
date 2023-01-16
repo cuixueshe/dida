@@ -1,5 +1,5 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "corepack enable && pnpm build:fe",
+  "buildCommand": "pnpm build:fe",
   "outputDirectory": "apps/frontend/dist"
 }
