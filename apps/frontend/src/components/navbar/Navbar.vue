@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { NDropdown, NPopover } from 'naive-ui'
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import Command from '@/components/command/Command.vue'
 import { useIsMac } from '@/composable'
 
@@ -20,18 +21,28 @@ window.addEventListener('keydown', (e: KeyboardEvent) => {
     commandRef.value?.show()
   }
 })
+const router = useRouter()
+
+const settingOptions = [
+  {
+    label: '设置',
+    key: 'settings',
+    props: {
+      onClick: () => {
+        router.push({
+          name: 'Settings',
+        })
+      },
+    },
+  },
+]
 </script>
 
 <template>
   <div class="w-[48px] border-r border-blue border-solid py-2 dark:bg-black">
     <NDropdown
       placement="right-end"
-      :options="[
-        {
-          label: '设置',
-          key: 'settings',
-        },
-      ]"
+      :options="settingOptions"
     >
       <!-- avatar -->
       <div class="w-[32px] h-[32px] rounded-sm bg-blue mx-auto">
