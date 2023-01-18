@@ -15,7 +15,7 @@ export interface Task {
   title: string
   state: TaskState
   content: string
-  projectId: number
+  project: Project | undefined
 }
 
 export function createTask(
@@ -25,13 +25,15 @@ export function createTask(
   projectId = 0,
   state = TaskState.ACTIVE,
 ): Task {
-  return {
+  const task = {
     id,
     title,
     content,
     state,
-    projectId,
+    project: getTaskFromProject(projectId, state),
   }
+
+  return task
 }
 
 let repository: Repository | undefined
@@ -100,13 +102,13 @@ export function restoreTask(task: Task) {
   _removeTask(task)
 }
 
-export function getTaskFromProject(task: Task): Project | undefined {
-  if (task.state === TaskState.REMOVED)
+function getTaskFromProject(projectId: number, state: TaskState): Project | undefined {
+  if (state === TaskState.REMOVED)
     return trashSmartProject
-  else if (task.state === TaskState.COMPLETED)
+  else if (state === TaskState.COMPLETED)
     return completedSmartProject
   else
-    return findListProjectById(task.projectId)
+    return findListProjectById(projectId)
 }
 
 export function findTaskById(id: number) {

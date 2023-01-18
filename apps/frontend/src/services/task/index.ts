@@ -19,7 +19,6 @@ export {
   changeTaskContent,
   loadTasks,
   loadAllTasksNotRemoved,
-  getTaskFromProject,
   findTaskById,
 } from './task'
 export type { Task } from './task'

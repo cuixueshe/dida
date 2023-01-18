@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { createListProject, initListProject } from '../listProject'
 import type { Task } from '../task'
 import {
   TaskState,
@@ -19,6 +20,17 @@ describe('task', () => {
     repository = {}
     tasks = []
     initTask(tasks, repository)
+  })
+
+  it('should have project', () => {
+    const projectId = 1
+    const liveProject = createListProject('生活', projectId)
+    const listProjects = [liveProject]
+    initListProject(listProjects, {} as any)
+
+    const task = createTask('test', 1, '', projectId)
+
+    expect(task.project?.name).toBe('生活')
   })
 
   it('should change title of task', () => {

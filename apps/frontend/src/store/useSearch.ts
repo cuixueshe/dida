@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, watch } from 'vue'
 import Fuse from 'fuse.js'
-import { TaskState, getTaskFromProject, loadAllTasksNotRemoved } from 'services/task'
+import { TaskState, loadAllTasksNotRemoved } from 'services/task'
 import type { Project } from 'services/task'
 
 interface SearchTaskItem {
@@ -39,7 +39,7 @@ export const useSearchStore = defineStore('searchStore', () => {
           title: task.title,
           desc: task.content,
           done: task.state === TaskState.COMPLETED,
-          from: getTaskFromProject(task),
+          from: task.project,
         })
       })
       fuse.setCollection(allTasks.value)
