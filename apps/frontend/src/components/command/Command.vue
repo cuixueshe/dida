@@ -16,10 +16,14 @@ defineExpose({
     showCommand.value = true
   },
 })
+const updateShow = () => {
+  if (!showCommand.value)
+    commandBody.value?.reset()
+}
 </script>
 
 <template>
-  <NModal v-model:show="showCommand" display-directive="show">
+  <NModal v-model:show="showCommand" display-directive="show" @update:show="updateShow">
     <CommandBody ref="commandBody" />
   </NModal>
 </template>
