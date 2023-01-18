@@ -37,7 +37,7 @@ watchDebounced(() => searchWord.value, async (v) => {
       isReset.value = false
     await showComponentAndHandle.value[1](v)
   }
-}, { debounce: 175 })
+}, { debounce: 500 })
 
 watch(() => searchWord.value, (v) => {
   if (v === '') {
