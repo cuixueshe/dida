@@ -19,7 +19,7 @@ export function initListProject(
   listProjects = listProjectReactive
 }
 
-export function createListProject(name: string, id: number): ListProject {
+export function createListProject(name: string, id = 0): ListProject {
   return {
     id,
     name,
@@ -37,8 +37,12 @@ export async function loadProjects() {
   })
 }
 
-export function addListProject(project: ListProject) {
-  // TODO 调用 repository
+export async function addListProject(project: Project) {
+  const pIndex = await repository?.addProject(project.name)
+
+  if (pIndex)
+    project.id = pIndex
+
   listProjects.push(project)
 }
 

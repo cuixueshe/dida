@@ -1,64 +1,67 @@
-import { expect, it } from 'vitest'
-// import { findListProjectByName } from '../listProject'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import {
+  addListProject,
+  createListProject,
+  findListProjectById,
+  findListProjectByName,
+  initListProject,
+  loadProjects,
+} from '../listProject'
+import type { ListProject } from '../listProject'
 
-it('listProject', () => {
-  expect(true).toBe(true)
+describe('listProject', () => {
+  let listProjects: ListProject[]
+  let repository: any
+  beforeEach(() => {
+    listProjects = []
+    repository = {}
+    initListProject(listProjects, repository)
+  })
+  it('should get project by project name', () => {
+    listProjects.push(
+      createListProject('生活', 1),
+      createListProject('工作', 2),
+    )
+
+    expect(findListProjectByName('生活')?.name).toBeTruthy()
+    expect(findListProjectByName('工作')?.name).toBeTruthy()
+  })
+  it('should get project by project id', () => {
+    listProjects.push(
+      createListProject('生活', 1),
+      createListProject('工作', 2),
+    )
+
+    expect(findListProjectById(1)?.name).toBeTruthy()
+    expect(findListProjectById(2)?.name).toBeTruthy()
+  })
+  it('should load projects', async () => {
+    repository.loadProjects = vi.fn(() =>
+      Promise.resolve([
+        {
+          name: '生活',
+          id: 1,
+        },
+        {
+          id: 2,
+          name: '工作',
+        },
+      ]),
+    )
+
+    await loadProjects()
+
+    expect(listProjects.length).toBe(2)
+  })
+
+  it('add project', async () => {
+    const pIndex = 1
+    repository.addProject = vi.fn(() => Promise.resolve(pIndex))
+    const listProject = createListProject('过年')
+
+    await addListProject(listProject)
+
+    expect(listProjects.length).toBe(1)
+    expect(listProjects[0].id).toBe(pIndex)
+  })
 })
-
-// describe('listProject', () => {
-//   it('init listProjects ', () => {
-//     initListProjects([
-//       {
-//         name: 'live',
-//         tasks: [
-//           {
-//             title: '吃饭',
-//             content: '## 吃饭 \n 吃什么好呢',
-//             id: crypto.randomUUID(),
-//           },
-//           {
-//             title: '睡觉',
-//             content: '## 睡觉 \n 早睡早起 身体好',
-//             id: crypto.randomUUID(),
-//           },
-//         ],
-//       },
-//       {
-//         name: 'work',
-//         tasks: [
-//           {
-//             title: '不想上班',
-//             content: '我不想 我不想 我不想上班',
-//             id: crypto.randomUUID(),
-//           },
-//         ],
-//       },
-//     ])
-
-//     expect(listProjects.length).toBe(2)
-
-//     expect(listProjects[0].name).toBe('live')
-//     expect(listProjects[0].tasks.length).toBe(2)
-
-//     expect(listProjects[1].name).toBe('work')
-//     expect(listProjects[1].tasks.length).toBe(1)
-//   })
-//   it('should find a project when the project is created', () => {
-//     initListProjects([
-//       {
-//         name: 'first',
-//         tasks: [],
-//       },
-//       {
-//         name: 'second',
-//         tasks: [],
-//       },
-//     ])
-
-//     const project = findListProjectByName('first')
-
-//     expect(project?.name).toBe('first')
-//   })
-
-//   it.todo('should exist when project is created', () => {})
-// })

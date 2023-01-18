@@ -23,6 +23,27 @@ export async function initTask() {
     await taskService.loadTasks(currentActiveProject.value)
 }
 
+function changeActiveTask(task: Task | undefined) {
+  currentActiveTask.value = task
+}
+
+async function selectProject(project: Project) {
+  await taskService.loadTasks(project)
+  currentActiveProject.value = project
+  changeActiveTask(undefined)
+}
+
+function useProject() {
+  async function addProject(name: string) {
+    const project = taskService.createListProject(name)
+    await taskService.addListProject(project)
+    await selectProject(project)
+  }
+  return {
+    addProject,
+  }
+}
+
 export const useTaskStore = defineStore('task', () => {
   function addTask(title: string) {
     if (currentActiveProject.value) {
@@ -30,10 +51,6 @@ export const useTaskStore = defineStore('task', () => {
       taskService.addTask(task, currentActiveProject.value!.id)
       changeActiveTask(task)
     }
-  }
-
-  function changeActiveTask(task: Task | undefined) {
-    currentActiveTask.value = task
   }
 
   function completeTask(task: Task) {
@@ -46,18 +63,14 @@ export const useTaskStore = defineStore('task', () => {
     changeActiveTask(undefined)
   }
 
-  async function selectProject(project: Project) {
-    await taskService.loadTasks(project)
-    currentActiveProject.value = project
-    changeActiveTask(undefined)
-  }
-
   function restoreTask(task: Task) {
     taskService.restoreTask(task)
     changeActiveTask(undefined)
   }
 
   return {
+    ...useProject(),
+
     tasks,
     listProjects,
     currentActiveProject,

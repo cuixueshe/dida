@@ -6,7 +6,7 @@ import { dbRepository } from './dbRepository'
 import { initSmartProject } from './smartProject'
 
 export { SmartProjectNames, isSmartProject, initSmartProject } from './smartProject'
-export { findListProjectByName } from './listProject'
+export { createListProject, addListProject, findListProjectByName } from './listProject'
 export { findSmartProjectByName } from './smartProject'
 export {
   TaskState,

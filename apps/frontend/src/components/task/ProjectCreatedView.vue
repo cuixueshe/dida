@@ -6,9 +6,11 @@ import {
 import EmojiPicker from 'vue3-emoji-picker'
 import { Icon } from '@iconify/vue'
 import { useTaskLeftListCreateProject } from '@/composable'
+import { useTaskStore } from '@/store'
 import 'vue3-emoji-picker/css'
 
 const inputElement = ref<HTMLInputElement>()
+const taskStore = useTaskStore()
 
 const {
   EMOJI_GROUPS_NAMES,
@@ -30,7 +32,7 @@ const {
 } = useTaskLeftListCreateProject(inputElement)
 
 function handleSave() {
-  // @todo create project
+  taskStore.addProject(formValue.value.projectName)
   isShowModal.value = false
   cleanupInput()
 }

@@ -16,8 +16,8 @@ export interface Project {
 }
 
 export class MySubClassedDexie extends Dexie {
-  tasks!: Table<Task>
-  projects!: Table<Project>
+  tasks!: Table<Task, number>
+  projects!: Table<Project, number>
 
   constructor() {
     super('myDatabase')
