@@ -2,14 +2,14 @@ import { defineStore } from 'pinia'
 import { ref, watch } from 'vue'
 import Fuse from 'fuse.js'
 import { TaskState, getTaskFromProject, loadAllTasksNotRemoved } from 'services/task'
-import type { ListProject, SmartProject } from 'services/task'
+import type { Project } from 'services/task'
 
 interface SearchTaskItem {
   id: number
   title: string
   desc: string
   done: boolean
-  from: ListProject | SmartProject | undefined
+  from: Project | undefined
 }
 
 export const useSearchStore = defineStore('searchStore', () => {

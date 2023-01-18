@@ -23,7 +23,7 @@ export {
   findTaskById,
 } from './task'
 export type { Task } from './task'
-export type { ListProject } from './listProject'
+export type { Project } from './listProject'
 export type { SmartProject } from './smartProject'
 export { initListProject, loadProjects } from './listProject'
 

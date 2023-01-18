@@ -1,7 +1,6 @@
 import type { Repository } from './dbRepository'
-import type { ListProject, Project } from './listProject'
+import type { Project } from './listProject'
 import { findListProjectById } from './listProject'
-import type { SmartProject } from './smartProject'
 import { completedSmartProject, trashSmartProject } from './smartProject'
 
 export enum TaskState {
@@ -101,7 +100,7 @@ export function restoreTask(task: Task) {
   _removeTask(task)
 }
 
-export function getTaskFromProject(task: Task): SmartProject | ListProject | undefined {
+export function getTaskFromProject(task: Task): Project | undefined {
   if (task.state === TaskState.REMOVED)
     return trashSmartProject
   else if (task.state === TaskState.COMPLETED)

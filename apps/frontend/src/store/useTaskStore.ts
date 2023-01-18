@@ -1,14 +1,13 @@
 import { computed, reactive, ref } from 'vue'
 import { defineStore } from 'pinia'
-import type { ListProject, Task } from 'services/task'
+import type { Project, Task } from 'services/task'
 import * as taskService from 'services/task'
-import type { Project } from '@/services/task/listProject'
 
-const listProjects = reactive<ListProject[]>([])
+const listProjects = reactive<Project[]>([])
 const tasks = reactive<Task[]>([])
 const currentActiveTask = ref<Task>()
 // TODO 应该拿用户设置的一上来显示的 project 的id  来赋值 这里我们先写死取第一个
-const currentActiveProject = ref<ListProject>(listProjects[0])
+const currentActiveProject = ref<Project>(listProjects[0])
 
 const listProjectNames = computed(() => {
   return listProjects.map((project) => {
@@ -49,6 +48,7 @@ export const useTaskStore = defineStore('task', () => {
 
   async function selectProject(project: Project) {
     await taskService.loadTasks(project)
+    currentActiveProject.value = project
     changeActiveTask(undefined)
   }
 

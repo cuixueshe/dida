@@ -1,13 +1,12 @@
 import type { Repository } from './dbRepository'
 
 export interface Project {
+  id: number
   name: string
   loadTasks: () => any
 }
 
-export interface ListProject extends Project {
-  id: number
-}
+export interface ListProject extends Project {}
 
 let repository: Repository | undefined
 let listProjects: ListProject[]

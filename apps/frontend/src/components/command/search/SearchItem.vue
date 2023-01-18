@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { NCheckbox, NEllipsis } from 'naive-ui'
 import { inject } from 'vue'
-import type { ListProject, SmartProject } from 'services/task'
+import type { Project } from 'services/task'
 import { findTaskById } from 'services/task'
 import {
   useTaskStore,
@@ -11,7 +11,7 @@ const props = defineProps<{
   title: string
   desc: string
   done: boolean
-  from: ListProject | SmartProject | undefined
+  from: Project | undefined
   id: number
 }>()
 

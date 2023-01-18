@@ -22,6 +22,7 @@ export const completedSmartProject = createCompletedSmartProject()
 
 function createCompletedSmartProject(): SmartProject {
   return {
+    id: -1,
     name: SmartProjectNames.Complete,
     loadTasks() {
       return repository!.findTasksByState(TaskState.COMPLETED)
@@ -31,6 +32,7 @@ function createCompletedSmartProject(): SmartProject {
 
 function createTrashSmartProject(): SmartProject {
   return {
+    id: -2,
     name: SmartProjectNames.Trash,
     loadTasks() {
       return repository!.findTasksByState(TaskState.REMOVED)
