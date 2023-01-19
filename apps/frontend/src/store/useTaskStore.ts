@@ -5,6 +5,9 @@ import * as taskService from 'services/task'
 
 const listProjects = reactive<Project[]>([])
 const tasks = reactive<Task[]>([])
+
+taskService.init(listProjects, tasks)
+
 const currentActiveTask = ref<Task>()
 // TODO 应该拿用户设置的一上来显示的 project 的id  来赋值 这里我们先写死取第一个
 const currentActiveProject = ref<Project>(listProjects[0])
@@ -15,12 +18,12 @@ const listProjectNames = computed(() => {
   })
 })
 
-export async function initTask() {
-  taskService.init(listProjects, tasks)
+async function init() {
   await taskService.loadProjects()
+  if (listProjects.length === 0)
+    return
   currentActiveProject.value = listProjects[0]
-  if (currentActiveProject.value)
-    await taskService.loadTasks(currentActiveProject.value)
+  await taskService.loadTasks(currentActiveProject.value)
 }
 
 function changeActiveTask(task: Task | undefined) {
@@ -82,5 +85,6 @@ export const useTaskStore = defineStore('task', () => {
     restoreTask,
     changeActiveTask,
     selectProject,
+    init,
   }
 })

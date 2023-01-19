@@ -1,10 +1,16 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onBeforeMount, ref } from 'vue'
 import TaskEditor from '@/components/task/TaskEditor.vue'
 import TaskLeftListView from '@/components/task/TaskLeftListView.vue'
 import TaskList from '@/components/task/TaskList.vue'
 import { useTaskSidebarDrag } from '@/composable'
-import { useTaskLeftMenuStatusStore } from '@/store'
+import { useTaskLeftMenuStatusStore, useTaskStore } from '@/store'
+
+const taskStore = useTaskStore()
+
+onBeforeMount(async () => {
+  await taskStore.init()
+})
 
 const AREA_MIN_WIDTH = 240
 

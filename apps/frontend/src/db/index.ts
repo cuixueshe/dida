@@ -1,26 +1,14 @@
 import type { Table } from 'dexie'
 import Dexie from 'dexie'
+import type { ProjectTable, TaskTable } from './types'
 import { TaskState } from '@/services/task'
 
-export interface Task {
-  id?: number
-  title: string
-  content: string
-  projectId: number
-  state: number
-}
-
-export interface Project {
-  id?: number
-  name: string
-}
-
-export class MySubClassedDexie extends Dexie {
-  tasks!: Table<Task, number>
-  projects!: Table<Project, number>
+export class DexieDB extends Dexie {
+  tasks!: Table<TaskTable, number>
+  projects!: Table<ProjectTable, number>
 
   constructor() {
-    super('myDatabase')
+    super('dida')
     this.version(1).stores({
       tasks: '++id, title, content, projectId, state',
       projects: '++id, name',
@@ -28,52 +16,53 @@ export class MySubClassedDexie extends Dexie {
   }
 }
 
-let db: MySubClassedDexie
-export async function initDB() {
-  db = new MySubClassedDexie()
-
+let db: DexieDB
+export async function setupDB() {
+  db = new DexieDB()
   // 临时给用户添加数据
-  const projects = await db.projects.toArray()
-  if (projects.length === 0)
-    initData()
+  await initData()
 }
 
 export function getDB() {
   return db
 }
 
-function initData() {
-  db.tasks.add({
+async function initData() {
+  const projects = await db.projects.toArray()
+  if (projects.length !== 0)
+    return
+
+  await db.tasks.add({
     title: '吃饭',
     content: '',
     projectId: 1,
     state: TaskState.ACTIVE,
   })
-  db.tasks.add({
+  await db.tasks.add({
     title: '睡觉',
     content: '',
     projectId: 1,
     state: TaskState.ACTIVE,
   })
-  db.tasks.add({
+  await db.tasks.add({
     title: '写代码',
     content: '',
     projectId: 1,
     state: TaskState.ACTIVE,
   })
 
-  db.tasks.add({
+  await db.tasks.add({
     title: '摸鱼2个小时',
     content: '',
     projectId: 2,
     state: TaskState.ACTIVE,
   })
 
-  db.projects.add({
+  await db.projects.add({
     id: 1,
     name: '生活',
   })
-  db.projects.add({
+  await db.projects.add({
     id: 2,
     name: '工作',
   })
