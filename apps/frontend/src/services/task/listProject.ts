@@ -1,9 +1,10 @@
 import type { Repository } from './dbRepository'
+import type { TaskTable } from '@/db/types'
 
 export interface Project {
   id: number
   name: string
-  loadTasks: () => any
+  loadTasks: () => Promise<TaskTable[]>
 }
 
 export interface ListProject extends Project {}

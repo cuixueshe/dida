@@ -45,18 +45,15 @@ export function initTask(tasksReactive: Task[] = [], _repository: Repository) {
 }
 
 export async function loadTasks(project: Project) {
-  await project.loadTasks().then((tasksData: any) => {
-    // 每次 loadTasks 的时候都需要清空 tasks
-    // 要注意不可以直接对 tasks 赋值， 因为 tasks 是个 reactive 对象 直接赋值的话会造成响应式对象的丢失问题
-    tasks.length = 0
-    tasksData.forEach(({ title, id, content, projectId: pId, state }: any) => {
-      const task = createTask(title, id, content, pId, state)
-      tasks.unshift(task)
-    })
+  const allTasks = await project.loadTasks()
+  tasks.length = 0
+  allTasks.forEach(({ id, title, content, projectId, state }) => {
+    const task = createTask(title, id, content, projectId, state)
+    tasks.unshift(task)
   })
 }
 
-export async function loadAllTasksNotRemoved(): Promise<Task[]> {
+export async function findAllTasksNotRemoved(): Promise<Task[]> {
   const tasks = (await repository?.getAllTasks()) || []
 
   return tasks
@@ -102,13 +99,15 @@ export function restoreTask(task: Task) {
   _removeTask(task)
 }
 
-function getTaskFromProject(projectId: number, state: TaskState): Project | undefined {
+function getTaskFromProject(
+  projectId: number,
+  state: TaskState,
+): Project | undefined {
   if (state === TaskState.REMOVED)
     return trashSmartProject
   else if (state === TaskState.COMPLETED)
     return completedSmartProject
-  else
-    return findListProjectById(projectId)
+  else return findListProjectById(projectId)
 }
 
 export function findTaskById(id: number) {

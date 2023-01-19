@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import Fuse from 'fuse.js'
-import { TaskState, loadAllTasksNotRemoved } from 'services/task'
+import { TaskState, findAllTasksNotRemoved } from 'services/task'
 import type { Project } from 'services/task'
 
 interface SearchTaskItem {
@@ -23,7 +23,7 @@ export const useSearchStore = defineStore('searchStore', () => {
 
   function collectAllTasks() {
     allTasks.value = []
-    return loadAllTasksNotRemoved().then((tasks) => {
+    return findAllTasksNotRemoved().then((tasks) => {
       tasks.forEach((task) => {
         allTasks.value.push({
           id: task.id!,
