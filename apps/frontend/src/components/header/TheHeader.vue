@@ -10,14 +10,14 @@ const goTo = {
   settings: () => router.push({
     name: 'Settings',
   }),
-  github: () => window.open('https://github.com/cuixiaorui/vue3-dida'),
+  github: () => window.open('https://github.com/cuixueshe/dida'),
 } as const
 </script>
 
 <template>
   <div class="w-full base-color h-40px px-1% flex justify-between items-center text-16px">
     <div class="cursor-pointer" aria-label="Go Home" @click="goTo.home()">
-      Vue3 DiDa Todo List
+      DiDa
     </div>
     <div class="flex items-center justify-start">
       <button class="mx-2 !outline-none" @click="goTo.settings()">
