@@ -2,7 +2,9 @@
 import { findListProjectByName } from 'services/task'
 import type { TreeOption } from 'naive-ui'
 import { NTree } from 'naive-ui'
-import { onMounted, ref, watchEffect } from 'vue'
+import { Icon } from '@iconify/vue'
+import { h, onMounted, ref, watchEffect } from 'vue'
+import TagCreateView from './TagCreateView.vue'
 import { useProjectSelectedStatusStore, useTaskStore } from '@/store'
 import 'vue3-emoji-picker/css'
 import ProjectCreateView from '@/components/task/ProjectCreatedView.vue'
@@ -26,6 +28,15 @@ function useCreateProjectButton() {
   }
 }
 
+const createSuffix = (onclick: (e: Event) => void) => {
+  return () => h(Icon, {
+    icon: 'ic:baseline-plus',
+    width: '20',
+    class: 'invisible rounded-1 hover:bg-gray-2',
+    onclick,
+  })
+}
+
 const projectSelectedStatusStore = useProjectSelectedStatusStore()
 const taskStore = useTaskStore()
 
@@ -33,6 +44,8 @@ const taskStore = useTaskStore()
 const fakeTagsNamesData = ref<string[]>([])
 const defaultExpandedKeys = ref<TreeRootKeys[]>([])
 const treeProjectChildren = ref<TreeOption[]>([])
+const treeTagChildren = ref<TreeOption[]>([])
+const createTagVisible = ref(false)
 
 watchEffect(() => {
   treeProjectChildren.value = taskStore.listProjectNames.map(
@@ -58,14 +71,18 @@ const data = ref<any[]>([
     checkboxDisabled: false,
     isLeaf: false,
     children: treeProjectChildren,
+    suffix: createSuffix((e: Event) => {
+      // todo: 新建清单的按钮操作可以放在这里
+      e.stopPropagation()
+    }),
   },
   {
     key: TreeRootKeys.TAG,
     label: '标签',
     checkboxDisabled: false,
     isLeaf: false,
-    children: fakeTagsNamesData.value.length
-      ? fakeTagsNamesData.value
+    children: treeTagChildren.value.length
+      ? treeTagChildren.value
       : [
           {
             label:
@@ -73,6 +90,10 @@ const data = ref<any[]>([
             placeholder: true,
           },
         ],
+    suffix: createSuffix((e: Event) => {
+      createTagVisible.value = true
+      e.stopPropagation()
+    }),
   },
 ])
 const nodeProps = ({ option }: { option: TreeOption }) => {
@@ -114,7 +135,6 @@ const onExpandedKey = (key: number[]) => {
   <NTree
     v-model:selected-keys="projectSelectedStatusStore.selectedKey"
     :default-expanded-keys="defaultExpandedKeys"
-    :render-suffix="projectRender"
     block-line
     expand-on-click
     :data="data"
@@ -123,6 +143,7 @@ const onExpandedKey = (key: number[]) => {
     @update:selected-keys="changeSelectedKey"
   />
   <ProjectCreateView ref="projectViewRef" />
+  <TagCreateView v-model:show="createTagVisible" />
 </template>
 
 <style>
@@ -162,5 +183,9 @@ const onExpandedKey = (key: number[]) => {
 
 .dark .placeholder .n-tree-node-content__text {
   color: rgba(156, 163, 175, 0.5);
+}
+
+.n-tree.n-tree--block-line .n-tree-node:not(.n-tree-node--disabled):hover .iconify  {
+  visibility: visible;
 }
 </style>
