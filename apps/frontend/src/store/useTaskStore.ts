@@ -60,6 +60,17 @@ function useProject() {
   }
 }
 
+function useTag() {
+  async function addTag(tagVal: { name: string; parentTagId?: number; color: string }) {
+    const tag = taskService.createListTag(tagVal.name, tagVal.color, tagVal.parentTagId)
+    await taskService.addListTag(tag)
+    await selectCategory(tag)
+  }
+  return {
+    addTag,
+  }
+}
+
 export const useTaskStore = defineStore('task', () => {
   function addTask(title: string) {
     if (currentActiveProject.value) {
@@ -90,7 +101,7 @@ export const useTaskStore = defineStore('task', () => {
 
   return {
     ...useProject(),
-
+    ...useTag(),
     tasks,
     listProjects,
     currentActiveProject,

@@ -61,7 +61,7 @@ const generateTagChildrenNode = (tags: Tag[]) => {
         h(Icon, {
           icon: 'carbon:circle-solid',
           width: '8',
-          color: '#2b9fda',
+          color: tag.color,
           class: 'mx-2',
         }),
         h(Icon, {

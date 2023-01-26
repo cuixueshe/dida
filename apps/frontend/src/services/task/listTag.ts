@@ -20,12 +20,12 @@ export function initListTag(
   listTags = listTagReactive
 }
 
-export function createListTag(name: string, id = 0, parentTagId: number | null, color?: string): Tag {
+export function createListTag(name: string, color?: string, parentTagId?: number, id = 0): Tag {
   return {
     id,
     name,
     color: color || '',
-    parentTagId,
+    parentTagId: parentTagId || null,
     loadTasks: () => {
       return repository!.getTasksByTagId(id)
     },
@@ -34,8 +34,8 @@ export function createListTag(name: string, id = 0, parentTagId: number | null, 
 
 export async function loadTags() {
   return repository!.loadTags().then((tags) => {
-    tags.forEach((tag: any) => {
-      listTags.push(createListTag(tag.name, tag.id, tag.color))
+    tags.forEach((tag) => {
+      listTags.push(createListTag(tag.name, tag.color, tag.parentTagId || undefined, tag.id))
     })
   })
 }

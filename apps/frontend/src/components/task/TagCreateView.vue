@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { computed, defineEmits, nextTick, ref } from 'vue'
 import type { FormInst } from 'naive-ui'
 import {
   NButton,
@@ -10,19 +11,21 @@ import {
   NSelect,
   NSpace,
 } from 'naive-ui'
-import { computed, defineEmits, ref } from 'vue'
 import { Icon } from '@iconify/vue'
+import { useProjectSelectedStatusStore, useTaskStore } from '@/store'
 interface TProps {
   show: boolean
 }
 interface TFormModel {
   name: string
   color: string
-  parentId: string
+  parentTagId: number | undefined
 }
 const props = defineProps<TProps>()
 const emits = defineEmits(['update:show'])
+const taskStore = useTaskStore()
 const formRef = ref<FormInst | null>(null)
+const projectSelectedStatusStore = useProjectSelectedStatusStore()
 const generateRandomColor = () => {
   return `#${(`00000${(Math.random() * 0x1000000 << 0).toString(16)}`).slice(-6)}`
 }
@@ -34,17 +37,38 @@ const visible = computed({
     emits('update:show', val)
   },
 })
-// const rPasswordFormItemRef = ref<FormItemInst | null>(null)
-const model = ref<TFormModel>({
+
+const nullOption = [{
+  label: '',
+  value: -1,
+}]
+const parentTagOptions = computed(() => {
+  return nullOption.concat(taskStore.listTags.map(tag => ({
+    label: tag.name,
+    value: tag.id,
+  })))
+})
+
+const initModel = {
   name: '',
   color: generateRandomColor(),
-  parentId: '',
-})
+  parentTagId: -1,
+}
+
+const model = ref<TFormModel>(initModel)
 const handleAdd = () => {
-  formRef.value?.validate((error) => {
-    if (!error)
-      // eslint-disable-next-line no-console
-      console.log(model.value)
+  formRef.value?.validate(async (error) => {
+    if (error)
+      return
+    const modelVal = Object.assign(model.value, {})
+    modelVal.parentTagId === -1 && (modelVal.parentTagId = undefined)
+    await taskStore.addTag(modelVal)
+    nextTick(() => {
+      model.value = initModel
+      projectSelectedStatusStore.listDefaultSelectedKey.push(200)
+      projectSelectedStatusStore.changeSelectedKey([200 + taskStore.listTags.length - 1])
+      visible.value = false
+    })
   })
 }
 </script>
@@ -65,11 +89,8 @@ const handleAdd = () => {
         label="父标签"
       >
         <NSelect
-          v-model:value="model.parentId"
-          :options="[{
-            label: '无',
-            value: '',
-          }]"
+          v-model:value="model.parentTagId"
+          :options="parentTagOptions"
         />
       </NFormItem>
       <NSpace justify="end">

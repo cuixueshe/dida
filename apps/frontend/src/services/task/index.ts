@@ -27,7 +27,7 @@ export type { Task } from './task'
 export type { Project } from './listProject'
 export type { SmartProject } from './smartProject'
 export { initListProject, loadProjects } from './listProject'
-export { loadTags } from './listTag'
+export { addListTag, createListTag, loadTags } from './listTag'
 
 export function init(
   listProjectsReactive: ListProject[],
