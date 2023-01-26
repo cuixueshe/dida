@@ -64,7 +64,11 @@ export const useTaskStore = defineStore('task', () => {
   function addTask(title: string) {
     if (currentActiveProject.value) {
       const task = taskService.createTask(title)
-      taskService.addTask(task, currentActiveProject.value!.id)
+      if (Object.keys(currentActiveProject.value).includes('color'))
+        taskService.addTask(task, undefined, [currentActiveProject.value.id])
+      else
+        taskService.addTask(task, currentActiveProject.value!.id)
+
       changeActiveTask(task)
     }
   }

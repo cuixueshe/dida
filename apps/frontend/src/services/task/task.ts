@@ -76,8 +76,8 @@ export function changeTaskContent(task: Task, content: string) {
   task.content = content
 }
 
-export function addTask(task: Task, projectId = -1) {
-  repository?.addTask(task.title, task.content, task.state, projectId, [])
+export function addTask(task: Task, projectId = -1, tags: number[] = []) {
+  repository?.addTask(task.title, task.content, task.state, projectId, tags)
   tasks.unshift(task)
 }
 
