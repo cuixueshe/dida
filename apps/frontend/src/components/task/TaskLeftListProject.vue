@@ -8,6 +8,8 @@ import TagCreateView from './TagCreateView.vue'
 import { useProjectSelectedStatusStore, useTaskStore } from '@/store'
 import 'vue3-emoji-picker/css'
 import ProjectCreateView from '@/components/task/ProjectCreatedView.vue'
+import type { Tag } from '@/services/task/listTag'
+import { findListTagByName } from '@/services/task/listTag'
 
 enum TreeRootKeys {
   PROJECT = 100,
@@ -37,11 +39,45 @@ const createSuffix = (onclick: (e: Event) => void) => {
   })
 }
 
+const generateTagChildrenNode = (tags: Tag[]) => {
+  if (!tags.length) {
+    return [
+      {
+        label: '以标签的维度展示不同清单的任务。在添加任务时输入“#”可快速选择标签',
+        placeholder: true,
+      },
+    ]
+  }
+  return tags.map((tag, index) => ({
+    key: TreeRootKeys.TAG + index + 1,
+    label: tag.name,
+    color: tag.color,
+    prefix: () => h(Icon, {
+      icon: 'carbon:tag',
+      width: '14',
+    }),
+    suffix: () => h('div', { class: 'flex flex-row items-center' },
+      [
+        h(Icon, {
+          icon: 'carbon:circle-solid',
+          width: '8',
+          color: '#2b9fda',
+          class: 'mx-2',
+        }),
+        h(Icon, {
+          icon: 'mdi:dots-horizontal',
+          width: '20',
+        }),
+      ],
+    ),
+    isleaf: true,
+  }))
+}
+
 const projectSelectedStatusStore = useProjectSelectedStatusStore()
 const taskStore = useTaskStore()
 
 // fake data to simulate tags render
-const fakeTagsNamesData = ref<string[]>([])
 const defaultExpandedKeys = ref<TreeRootKeys[]>([])
 const treeProjectChildren = ref<TreeOption[]>([])
 const treeTagChildren = ref<TreeOption[]>([])
@@ -55,10 +91,12 @@ watchEffect(() => {
       isleaf: true,
     }),
   )
+
+  treeTagChildren.value = generateTagChildrenNode(taskStore.listTags)
   defaultExpandedKeys.value = [
     ...new Set([
       ...(taskStore.listProjectNames.length ? [] : [TreeRootKeys.PROJECT]),
-      ...(fakeTagsNamesData.value.length ? [] : [TreeRootKeys.TAG]),
+      ...(taskStore.listTags.length ? [] : [TreeRootKeys.TAG]),
       ...projectSelectedStatusStore.listDefaultSelectedKey,
     ]),
   ]
@@ -81,15 +119,7 @@ const data = ref<any[]>([
     label: '标签',
     checkboxDisabled: false,
     isLeaf: false,
-    children: treeTagChildren.value.length
-      ? treeTagChildren.value
-      : [
-          {
-            label:
-              '以标签的维度展示不同清单的任务。在添加任务时输入“#”可快速选择标签',
-            placeholder: true,
-          },
-        ],
+    children: treeTagChildren,
     suffix: createSuffix((e: Event) => {
       createTagVisible.value = true
       e.stopPropagation()
@@ -104,9 +134,16 @@ const nodeProps = ({ option }: { option: TreeOption }) => {
         || option.key === TreeRootKeys.TAG
       )
         return
-      const project = findListProjectByName(option.label)
-      if (project)
-        taskStore.selectProject(project)
+
+      if (option.key! < 200) {
+        const project = findListProjectByName(option.label)
+        if (project)
+          taskStore.selectProject(project)
+      }
+
+      const tag = findListTagByName(option.label)
+      if (tag)
+        taskStore.selectCategory(tag)
     },
     class: option.placeholder ? 'placeholder' : '',
   }

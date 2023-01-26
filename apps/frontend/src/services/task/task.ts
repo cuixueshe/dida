@@ -1,6 +1,7 @@
 import type { Repository } from './dbRepository'
 import type { Project } from './listProject'
 import { findListProjectById } from './listProject'
+import type { Tag } from './listTag'
 import { completedSmartProject, trashSmartProject } from './smartProject'
 
 export enum TaskState {
@@ -44,8 +45,8 @@ export function initTask(tasksReactive: Task[] = [], _repository: Repository) {
   tasks = tasksReactive
 }
 
-export async function loadTasks(project: Project) {
-  const allTasks = await project.loadTasks()
+export async function loadTasks(category: Project | Tag) {
+  const allTasks = await category.loadTasks()
   tasks.length = 0
   allTasks.forEach(({ id, title, content, projectId, state }) => {
     const task = createTask(title, id, content, projectId, state)
@@ -76,7 +77,7 @@ export function changeTaskContent(task: Task, content: string) {
 }
 
 export function addTask(task: Task, projectId = -1) {
-  repository?.addTask(task.title, task.content, task.state, projectId)
+  repository?.addTask(task.title, task.content, task.state, projectId, [])
   tasks.unshift(task)
 }
 

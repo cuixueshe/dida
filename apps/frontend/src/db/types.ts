@@ -3,10 +3,18 @@ export interface TaskTable {
   title: string
   content: string
   projectId: number
+  tagIds: number[]
   state: number
 }
 
 export interface ProjectTable {
   id?: number
+  name: string
+}
+
+export interface TagTable {
+  id?: number
+  color?: string
+  parentTagId: number | null
   name: string
 }
