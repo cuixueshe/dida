@@ -4,7 +4,7 @@ import type { Ref } from 'vue'
 const LEFT_AREA_MAX_WIDTH = 360
 const CENTRAL_AREA_MIN_WIDTH = 380
 
-const lineBorderWidth = 2
+const lineBorderWidth = 6
 
 enum Direction {
   LEFT = 'left',

@@ -51,8 +51,8 @@ const taskLeftMenuStatusStore = useTaskLeftMenuStatusStore()
     <div
       v-if="taskLeftMenuStatusStore.visible"
       ref="leftResizeElement"
-      class="border-solid cursor-w-resize h-screen border-1 opacity-60 hover-opacity-100"
-      style="flex: 0 0 1px"
+      class="border-solid cursor-w-resize h-screen border-l-2px opacity-60 hover-opacity-100"
+      style="flex: 0 0 6px"
       title="收缩侧边栏"
       @mousedown.prevent="useDividerLeftDrag"
     />
@@ -61,8 +61,8 @@ const taskLeftMenuStatusStore = useTaskLeftMenuStatusStore()
     </div>
     <div
       ref="rightResizeElement"
-      class="border-solid cursor-w-resize h-screen border-1 opacity-60 hover-opacity-100"
-      style="flex: 0 0 1px"
+      class="border-solid cursor-w-resize h-screen border-l-2px opacity-60 hover-opacity-100"
+      style="flex: 0 0 6px"
       title="收缩侧边栏"
       @mousedown.prevent="useDividerRightDrag"
     />
