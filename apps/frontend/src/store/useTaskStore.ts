@@ -86,13 +86,17 @@ export const useTaskStore = defineStore('task', () => {
   function addTask(title: string) {
     if (currentActiveProject.value) {
       const task = taskService.createTask(title)
-      if (Object.keys(currentActiveProject.value).includes('color'))
-        taskService.addTask(task, undefined, [currentActiveProject.value.id])
-      else
-        taskService.addTask(task, currentActiveProject.value!.id)
-
+      taskService.addTask(task, currentActiveProject.value!.id)
       changeActiveTask(task)
     }
+  }
+
+  function addTaskToTag(title: string) {
+    if (!currentActiveProject.value)
+      return
+    const task = taskService.createTask(title)
+    taskService.addTask(task, undefined, [currentActiveProject.value.id])
+    changeActiveTask(task)
   }
 
   function completeTask(task: Task) {
@@ -127,5 +131,6 @@ export const useTaskStore = defineStore('task', () => {
     init,
     listTags,
     selectCategory,
+    addTaskToTag,
   }
 })
