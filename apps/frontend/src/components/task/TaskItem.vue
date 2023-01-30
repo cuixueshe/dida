@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { NPopover } from 'naive-ui'
-import type { Task } from 'services/task'
+import type { Project, Task } from 'services/task'
 import { changeTaskTitle } from 'services/task'
 import { useTaskOperationMessage, useTaskRightContextMenu } from '@/composable'
 import { TaskState, useTaskStore, useThemeStore } from '@/store'
 
 interface Props {
   task: Task
+  project: Project
 }
 
 const props = defineProps<Props>()
@@ -40,7 +41,7 @@ function handleInput(e: Event, task: Task) {
 function handleCompleteTodo(e: Event) {
   if (props.task.state === TaskState.ACTIVE) {
     taskStore.completeTask(props.task)
-    showCompleteMessage(props.task)
+    showCompleteMessage(props.task, props.project)
   }
   else if (props.task.state === TaskState.COMPLETED) {
     taskStore.restoreTask(props.task)

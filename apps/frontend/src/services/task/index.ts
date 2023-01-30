@@ -1,4 +1,6 @@
 import type { ListProject } from './listProject'
+import type { Tag } from './listTag'
+import { initListTag } from './listTag'
 import { initListProject } from './listProject'
 import type { Task } from './task'
 import { initTask } from './task'
@@ -25,12 +27,15 @@ export type { Task } from './task'
 export type { Project } from './listProject'
 export type { SmartProject } from './smartProject'
 export { initListProject, loadProjects } from './listProject'
+export { addListTag, createListTag, loadTags } from './listTag'
 
 export function init(
   listProjectsReactive: ListProject[],
   tasksReactive: Task[],
+  listTagReactive: Tag[],
 ) {
   initListProject(listProjectsReactive, dbRepository)
+  initListTag(listTagReactive, dbRepository)
   initSmartProject(dbRepository)
   initTask(tasksReactive, dbRepository)
 }
