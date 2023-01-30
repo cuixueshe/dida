@@ -4,9 +4,10 @@ import TaskEditor from '@/components/task/TaskEditor.vue'
 import TaskLeftListView from '@/components/task/TaskLeftListView.vue'
 import TaskList from '@/components/task/TaskList.vue'
 import { useTaskSidebarDrag } from '@/composable'
-import { useTaskLeftMenuStatusStore, useTaskStore } from '@/store'
+import { useTaskLeftMenuStatusStore, useTaskStore, useThemeStore } from '@/store'
 
 const taskStore = useTaskStore()
+const themeStore = useThemeStore()
 
 onBeforeMount(async () => {
   await taskStore.init()
@@ -30,6 +31,7 @@ const { useDividerLeftDrag, useDividerRightDrag } = useTaskSidebarDrag(
   rightContainerElement,
   leftWidthFlex,
   rightWidthFlex,
+  themeStore,
 )
 const taskLeftMenuStatusStore = useTaskLeftMenuStatusStore()
 </script>
