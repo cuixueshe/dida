@@ -210,6 +210,7 @@ const onExpandedKey = (key: number[]) => {
     @update:selected-keys="changeSelectedKey"
   />
   <ProjectCreateView ref="projectViewRef" />
+  <TagCreateView v-model:show="createTagVisible" />
 </template>
 
 <style>
