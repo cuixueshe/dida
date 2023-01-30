@@ -1,7 +1,7 @@
 import type { PromiseExtended } from 'dexie'
 import { TaskState } from './task'
 import { getDB } from '@/db'
-import type { ProjectTable, TaskTable } from '@/db/types'
+import type { ProjectTable, TagTable, TaskTable } from '@/db/types'
 
 export interface Repository {
   loadProjects: () => Promise<ProjectTable[]>
@@ -12,11 +12,16 @@ export interface Repository {
     title: string,
     content: string,
     state: TaskState,
-    projectId: number
+    projectId: number,
+    tagIds: number[],
   ) => void
   updateTask: (id: number, changes: any) => void
 
   addProject: (name: string) => PromiseExtended<number>
+
+  loadTags: () => Promise<TagTable[]>
+  getTasksByTagId: (tagId: number) => Promise<TaskTable[]>
+  addTag: (name: string, parentTagId: number | null, color: string) => PromiseExtended<number>
 }
 
 export const dbRepository: Repository = {
@@ -36,6 +41,18 @@ export const dbRepository: Repository = {
       .toArray()
   },
 
+  addTag(name, parentTagId, color) {
+    return getDB().tags.add({ name, parentTagId, color })
+  },
+
+  async loadTags() {
+    return getDB().tags.toArray()
+  },
+
+  async getTasksByTagId(tagId: number) {
+    return getDB().tasks.filter(task => task.tagIds.includes(tagId) && task.state === TaskState.ACTIVE).toArray()
+  },
+
   async getAllTasks() {
     return getDB().tasks.toArray()
   },
@@ -53,12 +70,14 @@ export const dbRepository: Repository = {
     content: string,
     state = TaskState.ACTIVE,
     projectId: number,
+    tagIds: number[],
   ) {
     return getDB().tasks.add({
       title,
       content,
       projectId,
       state,
+      tagIds,
     })
   },
 

@@ -2,15 +2,17 @@ import { computed, reactive, ref } from 'vue'
 import { defineStore } from 'pinia'
 import type { Project, Task } from 'services/task'
 import * as taskService from 'services/task'
+import type { Tag } from '@/services/task/listTag'
 
 const listProjects = reactive<Project[]>([])
 const tasks = reactive<Task[]>([])
+const listTags = reactive<Tag[]>([])
 
-taskService.init(listProjects, tasks)
+taskService.init(listProjects, tasks, listTags)
 
 const currentActiveTask = ref<Task>()
 // TODO 应该拿用户设置的一上来显示的 project 的id  来赋值 这里我们先写死取第一个
-const currentActiveProject = ref<Project>(listProjects[0])
+const currentActiveProject = ref<Project | Tag>(listProjects[0])
 
 const listProjectNames = computed(() => {
   return listProjects.map((project) => {
@@ -20,14 +22,25 @@ const listProjectNames = computed(() => {
 
 async function init() {
   await taskService.loadProjects()
+  await iniTags()
   if (listProjects.length === 0)
     return
   currentActiveProject.value = listProjects[0]
   await taskService.loadTasks(currentActiveProject.value)
 }
 
+async function iniTags() {
+  await taskService.loadTags()
+}
+
 function changeActiveTask(task: Task | undefined) {
   currentActiveTask.value = task
+}
+
+async function selectCategory(category: Project | Tag) {
+  await taskService.loadTasks(category)
+  currentActiveProject.value = category
+  changeActiveTask(undefined)
 }
 
 async function selectProject(project: Project) {
@@ -47,11 +60,26 @@ function useProject() {
   }
 }
 
+function useTag() {
+  async function addTag(tagVal: { name: string; parentTagId?: number; color: string }) {
+    const tag = taskService.createListTag(tagVal.name, tagVal.color, tagVal.parentTagId)
+    await taskService.addListTag(tag)
+    await selectCategory(tag)
+  }
+  return {
+    addTag,
+  }
+}
+
 export const useTaskStore = defineStore('task', () => {
   function addTask(title: string) {
     if (currentActiveProject.value) {
       const task = taskService.createTask(title)
-      taskService.addTask(task, currentActiveProject.value!.id)
+      if (Object.keys(currentActiveProject.value).includes('color'))
+        taskService.addTask(task, undefined, [currentActiveProject.value.id])
+      else
+        taskService.addTask(task, currentActiveProject.value!.id)
+
       changeActiveTask(task)
     }
   }
@@ -73,7 +101,7 @@ export const useTaskStore = defineStore('task', () => {
 
   return {
     ...useProject(),
-
+    ...useTag(),
     tasks,
     listProjects,
     currentActiveProject,
@@ -86,5 +114,7 @@ export const useTaskStore = defineStore('task', () => {
     changeActiveTask,
     selectProject,
     init,
+    listTags,
+    selectCategory,
   }
 })
