@@ -3,8 +3,10 @@ import { findListProjectByName } from 'services/task'
 import type { TreeOption } from 'naive-ui'
 import { NTree } from 'naive-ui'
 import { Icon } from '@iconify/vue'
-import { h, onMounted, ref, watchEffect } from 'vue'
+import { h, onMounted, ref, render, watchEffect } from 'vue'
+import ContextMenu from '@imengyu/vue3-context-menu'
 import TagCreateView from './TagCreateView.vue'
+import TagDialog from './TagCreateView'
 import { useProjectSelectedStatusStore, useTaskStore } from '@/store'
 import 'vue3-emoji-picker/css'
 import ProjectCreateView from '@/components/task/ProjectCreatedView.vue'
@@ -39,6 +41,8 @@ const createSuffix = (onclick: (e: Event) => void) => {
   })
 }
 
+const editVisible = ref(true)
+
 const generateTagChildrenNode = (tags: Tag[]) => {
   if (!tags.length) {
     return [
@@ -67,6 +71,30 @@ const generateTagChildrenNode = (tags: Tag[]) => {
         h(Icon, {
           icon: 'mdi:dots-horizontal',
           width: '20',
+          onclick(e: MouseEvent) {
+            e.preventDefault()
+            ContextMenu.showContextMenu({
+              x: e.x,
+              y: e.y,
+              items: [
+                {
+                  label: 'edit',
+                  onClick: () => {
+                    TagDialog({ tag }).then(() => {
+                      // eslint-disable-next-line no-console
+                      console.log('done')
+                    })
+                  },
+                },
+                {
+                  label: 'remove',
+                  onClick: () => {
+
+                  },
+                },
+              ],
+            })
+          },
         }),
       ],
     ),
@@ -81,7 +109,6 @@ const taskStore = useTaskStore()
 const defaultExpandedKeys = ref<TreeRootKeys[]>([])
 const treeProjectChildren = ref<TreeOption[]>([])
 const treeTagChildren = ref<TreeOption[]>([])
-const createTagVisible = ref(false)
 
 watchEffect(() => {
   treeProjectChildren.value = taskStore.listProjectNames.map(
@@ -121,8 +148,11 @@ const data = ref<any[]>([
     isLeaf: false,
     children: treeTagChildren,
     suffix: createSuffix((e: Event) => {
-      createTagVisible.value = true
       e.stopPropagation()
+      TagDialog().then(() => {
+        // eslint-disable-next-line no-console
+        console.log('done')
+      })
     }),
   },
 ])
@@ -180,7 +210,6 @@ const onExpandedKey = (key: number[]) => {
     @update:selected-keys="changeSelectedKey"
   />
   <ProjectCreateView ref="projectViewRef" />
-  <TagCreateView v-model:show="createTagVisible" />
 </template>
 
 <style>

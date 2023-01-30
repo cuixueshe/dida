@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, defineEmits, nextTick, ref } from 'vue'
+import { computed, defineEmits, nextTick, onMounted, ref } from 'vue'
 import type { FormInst } from 'naive-ui'
 import {
   NButton,
@@ -13,16 +13,21 @@ import {
 } from 'naive-ui'
 import { Icon } from '@iconify/vue'
 import { useProjectSelectedStatusStore, useTaskStore } from '@/store'
+import type { Tag } from '@/services/task/listTag'
 interface TProps {
   show: boolean
+  tag?: Omit<Tag, 'loadTasks'>
 }
+
+type Actions = 'close' | 'cancel' | 'created' | 'edited'
+const props = defineProps<TProps>()
+const emits = defineEmits(['update:show', 'close', 'closed', 'cancel', 'created', 'edited'])
 interface TFormModel {
   name: string
   color: string
   parentTagId: number | undefined
 }
-const props = defineProps<TProps>()
-const emits = defineEmits(['update:show'])
+
 const taskStore = useTaskStore()
 const formRef = ref<FormInst | null>(null)
 const projectSelectedStatusStore = useProjectSelectedStatusStore()
@@ -49,32 +54,59 @@ const parentTagOptions = computed(() => {
   })))
 })
 
-const initModel = {
+const initModel = () => ({
   name: '',
   color: generateRandomColor(),
   parentTagId: -1,
+})
+
+const model = ref<TFormModel>(initModel())
+
+const handleActions = (action: Actions) => {
+  emits(action)
+  visible.value = false
+  emits('closed')
 }
 
-const model = ref<TFormModel>(initModel)
-const handleAdd = () => {
+const handleCreateTag = async () => {
+  const modelVal = Object.assign(model.value, {})
+  modelVal.parentTagId === -1 && (modelVal.parentTagId = undefined)
+  await taskStore.addTag(modelVal)
+  nextTick(() => {
+    model.value = initModel()
+    projectSelectedStatusStore.listDefaultSelectedKey.push(200)
+    projectSelectedStatusStore.changeSelectedKey([200 + taskStore.listTags.length - 1])
+    handleActions('created')
+  })
+}
+
+const handleEditTag = () => {
+  taskStore.editTag({ ...model.value, id: props.tag!.id })
+  handleActions('edited')
+}
+
+const handleConfirm = () => {
   formRef.value?.validate(async (error) => {
     if (error)
       return
-    const modelVal = Object.assign(model.value, {})
-    modelVal.parentTagId === -1 && (modelVal.parentTagId = undefined)
-    await taskStore.addTag(modelVal)
-    nextTick(() => {
-      model.value = initModel
-      projectSelectedStatusStore.listDefaultSelectedKey.push(200)
-      projectSelectedStatusStore.changeSelectedKey([200 + taskStore.listTags.length - 1])
-      visible.value = false
-    })
+
+    if (props.tag)
+      handleEditTag()
+    else
+      handleCreateTag()
   })
 }
+
+onMounted(() => {
+  if (props.tag) {
+    const { name, color, parentTagId } = props.tag
+    model.value = { name, color, parentTagId: parentTagId || undefined }
+  }
+})
 </script>
 
 <template>
-  <NModal v-model:show="visible" preset="dialog" :show-icon="false" title="创建标签">
+  <NModal v-model:show="visible" preset="dialog" :show-icon="false" title="创建标签" @close="handleActions('close')">
     <NForm ref="formRef" :model="model" label-placement="left" class="pt-4">
       <NFormItem path="name" label="">
         <NInput v-model:value="model.name" size="large" placeholder="名称" @keydown.enter.prevent />
@@ -94,10 +126,10 @@ const handleAdd = () => {
         />
       </NFormItem>
       <NSpace justify="end">
-        <NButton attr-type="button" @click="visible = false">
+        <NButton attr-type="button" @click="handleActions('cancel')">
           关闭
         </NButton>
-        <NButton type="info" attr-type="button" :disabled="!model.name" @click="handleAdd">
+        <NButton type="info" attr-type="button" :disabled="!model.name" @click="handleConfirm">
           保存
         </NButton>
       </NSpace>

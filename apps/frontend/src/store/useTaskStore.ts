@@ -66,8 +66,19 @@ function useTag() {
     await taskService.addListTag(tag)
     await selectCategory(tag)
   }
+
+  async function editTag(tag: { id: number; name: string; parentTagId?: number; color: string }) {
+    const origin = listTags.find(t => t.id === tag.id)
+    if (!origin)
+      return
+    await taskService.updateListTag({ ...tag, parentTagId: tag.parentTagId || null })
+    origin.name = tag.name
+    origin.color = tag.color
+    origin.parentTagId = tag.parentTagId || null
+  }
   return {
     addTag,
+    editTag,
   }
 }
 
