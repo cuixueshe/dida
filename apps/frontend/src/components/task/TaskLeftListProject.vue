@@ -50,6 +50,7 @@ const createTagLeafPrefix = () => {
 
 const creatOperateNodeBtn = (items: MenuItem[]) => {
   return h(Icon, {
+    class: 'invisible',
     icon: 'mdi:dots-horizontal',
     width: '20',
     onclick(e: MouseEvent) {
