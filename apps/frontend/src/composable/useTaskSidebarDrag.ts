@@ -2,7 +2,9 @@ import { useEventListener } from '@vueuse/core'
 import type { Ref } from 'vue'
 
 const LEFT_AREA_MAX_WIDTH = 360
-const RIGHT_AREA_MAX_WIDTH = 800
+const CENTRAL_AREA_MIN_WIDTH = 380
+
+const lineBorderWidth = 6
 
 enum Direction {
   LEFT = 'left',
@@ -18,6 +20,7 @@ export function useTaskSidebarDrag(
   rightContainerElement: Ref<HTMLDivElement | undefined>,
   leftWidthFlex: Ref<string>,
   rightWidthFlex: Ref<string>,
+  themeStore: Record<string, any>,
 ) {
   function getContainerHorizontalPadding(
     containerRef: Ref<HTMLDivElement | undefined>,
@@ -47,14 +50,18 @@ export function useTaskSidebarDrag(
     else {
       const space
         = boxContainerElement.value!.clientWidth
-        - getContainerHorizontalPadding(boxContainerElement) / 2
+        - getContainerHorizontalPadding(boxContainerElement) - lineBorderWidth
 
-      if (moveDistance > space - minWidth)
-        moveDistance = space - minWidth
-
-      if (moveDistance < space - RIGHT_AREA_MAX_WIDTH)
-        moveDistance = space - RIGHT_AREA_MAX_WIDTH
-      moveDistance = space - moveDistance
+      if (moveDistance >= space - minWidth) {
+        moveDistance = minWidth
+      }
+      else {
+        if (moveDistance < CENTRAL_AREA_MIN_WIDTH + minWidth)
+          moveDistance = CENTRAL_AREA_MIN_WIDTH + minWidth
+        moveDistance = space - moveDistance
+      }
+      if (moveDistance < minWidth)
+        moveDistance = minWidth
     }
     return moveDistance
   }
@@ -65,6 +72,8 @@ export function useTaskSidebarDrag(
     direction === Direction.LEFT
       ? (offsetLeft = leftResizeElement.value!.offsetLeft)
       : (offsetLeft = rightResizeElement.value!.offsetLeft)
+
+    offsetLeft = offsetLeft - themeStore.sideBarWidth - themeStore.taskLeftListViewPadding
 
     const cleanupMouseMove = useEventListener(
       document,
