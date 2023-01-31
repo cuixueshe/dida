@@ -49,11 +49,28 @@ export async function addListTag(tag: Tag) {
   listTags.push(tag)
 }
 
-export function findListTagByName(name: string | undefined) {
-  if (!name)
-    return
+export function findListTagByProperty(propertyKey: keyof Omit<Tag, 'loadTasks'>) {
+  return (value: Tag[typeof propertyKey] | undefined) => {
+    if (!value)
+      return
+    return listTags.find((tag) => {
+      return tag[propertyKey] === value
+    })
+  }
+}
 
-  return listTags.find((tag) => {
-    return tag.name === name
-  })
+export const findListTagByName = findListTagByProperty('name')
+export const findListTagById = findListTagByProperty('id')
+
+// export function findListTagByName(name: string | undefined) {
+//   if (!name)
+//     return
+
+//   return listTags.find((tag) => {
+//     return tag.name === name
+//   })
+// }
+
+export function updateListTag(tag: Omit<Tag, 'loadTasks'>) {
+  repository?.updateTag(tag.id, tag)
 }

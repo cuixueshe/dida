@@ -3,8 +3,10 @@ import { findListProjectByName } from 'services/task'
 import type { TreeOption } from 'naive-ui'
 import { NTree } from 'naive-ui'
 import { Icon } from '@iconify/vue'
-import { h, onMounted, ref, watchEffect } from 'vue'
-import TagCreateView from './TagCreateView.vue'
+import { h, onMounted, ref, render, watchEffect } from 'vue'
+import type { MenuItem } from '@imengyu/vue3-context-menu'
+import ContextMenu from '@imengyu/vue3-context-menu'
+import TagDialog from './TagCreateView'
 import { useProjectSelectedStatusStore, useTaskStore } from '@/store'
 import 'vue3-emoji-picker/css'
 import ProjectCreateView from '@/components/task/ProjectCreatedView.vue'
@@ -30,13 +32,59 @@ function useCreateProjectButton() {
   }
 }
 
-const createSuffix = (onclick: (e: Event) => void) => {
+const createRootNodeSuffix = (onclick: (e: Event) => void) => {
   return () => h(Icon, {
     icon: 'ic:baseline-plus',
     width: '20',
     class: 'invisible rounded-1 hover:bg-gray-2',
     onclick,
   })
+}
+
+const createTagLeafPrefix = () => {
+  return () => h(Icon, {
+    icon: 'carbon:tag',
+    width: '14',
+  })
+}
+
+const creatOperateNodeBtn = (items: MenuItem[]) => {
+  return h(Icon, {
+    class: 'invisible',
+    icon: 'mdi:dots-horizontal',
+    width: '20',
+    onclick(e: MouseEvent) {
+      e.preventDefault()
+      ContextMenu.showContextMenu({
+        x: e.x,
+        y: e.y,
+        items,
+      })
+    },
+  })
+}
+
+const createTagLeafSuffix = (tag: Tag) => {
+  return () => h('div', { class: 'flex flex-row items-center' },
+    [
+      h(Icon, {
+        icon: 'carbon:circle-solid',
+        width: '8',
+        color: tag.color,
+        class: 'mx-2',
+      }),
+      creatOperateNodeBtn([
+        {
+          label: 'edit',
+          onClick: () => TagDialog({ tag }),
+        },
+        {
+          label: 'remove',
+          onClick: () => {},
+        },
+      ]),
+    ],
+  )
 }
 
 const generateTagChildrenNode = (tags: Tag[]) => {
@@ -52,24 +100,8 @@ const generateTagChildrenNode = (tags: Tag[]) => {
     key: TreeRootKeys.TAG + index + 1,
     label: tag.name,
     color: tag.color,
-    prefix: () => h(Icon, {
-      icon: 'carbon:tag',
-      width: '14',
-    }),
-    suffix: () => h('div', { class: 'flex flex-row items-center' },
-      [
-        h(Icon, {
-          icon: 'carbon:circle-solid',
-          width: '8',
-          color: tag.color,
-          class: 'mx-2',
-        }),
-        h(Icon, {
-          icon: 'mdi:dots-horizontal',
-          width: '20',
-        }),
-      ],
-    ),
+    prefix: createTagLeafPrefix(),
+    suffix: createTagLeafSuffix(tag),
     isleaf: true,
   }))
 }
@@ -77,11 +109,9 @@ const generateTagChildrenNode = (tags: Tag[]) => {
 const projectSelectedStatusStore = useProjectSelectedStatusStore()
 const taskStore = useTaskStore()
 
-// fake data to simulate tags render
 const defaultExpandedKeys = ref<TreeRootKeys[]>([])
 const treeProjectChildren = ref<TreeOption[]>([])
 const treeTagChildren = ref<TreeOption[]>([])
-const createTagVisible = ref(false)
 
 watchEffect(() => {
   treeProjectChildren.value = taskStore.listProjectNames.map(
@@ -93,6 +123,9 @@ watchEffect(() => {
   )
 
   treeTagChildren.value = generateTagChildrenNode(taskStore.listTags)
+})
+
+onMounted(() => {
   defaultExpandedKeys.value = [
     ...new Set([
       ...(taskStore.listProjectNames.length ? [] : [TreeRootKeys.PROJECT]),
@@ -109,7 +142,7 @@ const data = ref<any[]>([
     checkboxDisabled: false,
     isLeaf: false,
     children: treeProjectChildren,
-    suffix: createSuffix((e: Event) => {
+    suffix: createRootNodeSuffix((e: Event) => {
       // todo: 新建清单的按钮操作可以放在这里
       e.stopPropagation()
     }),
@@ -120,9 +153,12 @@ const data = ref<any[]>([
     checkboxDisabled: false,
     isLeaf: false,
     children: treeTagChildren,
-    suffix: createSuffix((e: Event) => {
-      createTagVisible.value = true
+    suffix: createRootNodeSuffix((e: Event) => {
       e.stopPropagation()
+      TagDialog().then(() => {
+        // eslint-disable-next-line no-console
+        console.log('done')
+      })
     }),
   },
 ])
@@ -180,7 +216,6 @@ const onExpandedKey = (key: number[]) => {
     @update:selected-keys="changeSelectedKey"
   />
   <ProjectCreateView ref="projectViewRef" />
-  <TagCreateView v-model:show="createTagVisible" />
 </template>
 
 <style>

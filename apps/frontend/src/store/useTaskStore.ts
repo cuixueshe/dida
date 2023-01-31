@@ -66,8 +66,19 @@ function useTag() {
     await taskService.addListTag(tag)
     await selectCategory(tag)
   }
+
+  async function editTag(tag: { id: number; name: string; parentTagId?: number; color: string }) {
+    const origin = listTags.find(t => t.id === tag.id)
+    if (!origin)
+      return
+    await taskService.updateListTag({ ...tag, parentTagId: tag.parentTagId || null })
+    origin.name = tag.name
+    origin.color = tag.color
+    origin.parentTagId = tag.parentTagId || null
+  }
   return {
     addTag,
+    editTag,
   }
 }
 
@@ -75,13 +86,17 @@ export const useTaskStore = defineStore('task', () => {
   function addTask(title: string) {
     if (currentActiveProject.value) {
       const task = taskService.createTask(title)
-      if (Object.keys(currentActiveProject.value).includes('color'))
-        taskService.addTask(task, undefined, [currentActiveProject.value.id])
-      else
-        taskService.addTask(task, currentActiveProject.value!.id)
-
+      taskService.addTask(task, currentActiveProject.value!.id)
       changeActiveTask(task)
     }
+  }
+
+  function addTaskToTag(title: string) {
+    if (!currentActiveProject.value)
+      return
+    const task = taskService.createTask(title)
+    taskService.addTask(task, undefined, [currentActiveProject.value.id])
+    changeActiveTask(task)
   }
 
   function completeTask(task: Task) {
@@ -116,5 +131,6 @@ export const useTaskStore = defineStore('task', () => {
     init,
     listTags,
     selectCategory,
+    addTaskToTag,
   }
 })
