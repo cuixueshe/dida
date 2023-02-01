@@ -14,7 +14,7 @@ export interface Repository {
     state: TaskState,
     projectId: number,
     tagIds: number[],
-  ) => void
+  ) => PromiseExtended<number>
   updateTask: (id: number, changes: any) => void
 
   addProject: (name: string) => PromiseExtended<number>
