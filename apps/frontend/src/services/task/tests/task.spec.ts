@@ -110,11 +110,12 @@ describe('task', () => {
 
     expect(task.content).toBe('干饭干饭')
   })
-  it('should add task ', () => {
-    repository.addTask = vi.fn()
+  it('should add task ', async () => {
+    let i = 0
+    repository.addTask = vi.fn(() => ++i)
 
-    addTask(createTask('吃饭'))
-    addTask(createTask('睡觉'))
+    await addTask(createTask('吃饭'))
+    await addTask(createTask('睡觉'))
 
     expect(tasks.length).toBe(2)
     expect(tasks[0].title).toBe('睡觉')
