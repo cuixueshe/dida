@@ -76,9 +76,15 @@ function useTag() {
     origin.color = tag.color
     origin.parentTagId = tag.parentTagId || null
   }
+
+  async function deleteTag(id: number) {
+    await taskService.deleteListTag(id)
+  }
+
   return {
     addTag,
     editTag,
+    deleteTag,
   }
 }
 
