@@ -1,8 +1,7 @@
 import type { MessageReactive } from 'naive-ui'
 import { createDiscreteApi } from 'naive-ui'
 import { h } from 'vue'
-import type { Project, Task } from 'services/task'
-import { useTaskStore } from '@/store'
+import type { Task } from 'services/task'
 
 enum TaskOperationStatus {
   Complete = '已完成',
@@ -10,7 +9,6 @@ enum TaskOperationStatus {
 }
 
 export function useTaskOperationMessage() {
-  const taskStore = useTaskStore()
   const { message } = createDiscreteApi(['message'])
 
   let messageReactive: MessageReactive | null = null
@@ -40,11 +38,10 @@ export function useTaskOperationMessage() {
     }
   }
 
-  function showCompleteMessage(task: Task, project: Project) {
+  function showCompleteMessage(task: Task, undoCallback: (undoFlag: boolean) => void) {
+    let undoFlag = false
     const onClick = () => {
-      taskStore.restoreTask(task)
-      // 撤销后刷新当前展示的task列表
-      taskStore.selectProject(project)
+      undoFlag = true
       removeMessage()
     }
     const content = `${task.title} ${TaskOperationStatus.Complete}`
@@ -52,6 +49,9 @@ export function useTaskOperationMessage() {
     messageReactive = message.info(createMessageView(content, onClick), {
       icon: () => null,
       duration: 1000,
+      onAfterLeave() {
+        undoCallback && undoCallback(undoFlag)
+      },
     })
   }
 

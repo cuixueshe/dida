@@ -114,6 +114,14 @@ export const useTaskStore = defineStore('task', () => {
     changeActiveTask(undefined)
   }
 
+  function preCompleteTask(index: number) {
+    tasks.splice(index, 1)
+  }
+
+  function undoTask(task: Task, index: number) {
+    tasks.splice(index, 0, task)
+  }
+
   return {
     ...useProject(),
     ...useTag(),
@@ -126,6 +134,8 @@ export const useTaskStore = defineStore('task', () => {
     removeTask,
     completeTask,
     restoreTask,
+    preCompleteTask,
+    undoTask,
     changeActiveTask,
     selectProject,
     init,

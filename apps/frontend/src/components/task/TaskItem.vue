@@ -7,7 +7,7 @@ import { TaskState, useTaskStore, useThemeStore } from '@/store'
 
 interface Props {
   task: Task
-  project: Project
+  index: number
 }
 
 const props = defineProps<Props>()
@@ -40,8 +40,7 @@ function handleInput(e: Event, task: Task) {
 
 function handleCompleteTodo(e: Event) {
   if (props.task.state === TaskState.ACTIVE) {
-    taskStore.completeTask(props.task)
-    showCompleteMessage(props.task, props.project)
+    handleCompleteTask()
   }
   else if (props.task.state === TaskState.COMPLETED) {
     taskStore.restoreTask(props.task)
@@ -50,6 +49,15 @@ function handleCompleteTodo(e: Event) {
     // eslint-disable-next-line no-console
     console.log('在垃圾桶里面的 task 不可以直接恢复')
   }
+}
+
+function handleCompleteTask() {
+  taskStore.preCompleteTask(props.index)
+  const undoCallback = (undoFlag: boolean) => {
+    // 撤销时，执行撤销操作；未撤销时，执行完成的回调操作
+    undoFlag ? taskStore.undoTask(props.task, props.index) : taskStore.completeTask(props.task)
+  }
+  showCompleteMessage(props.task, undoCallback)
 }
 </script>
 
