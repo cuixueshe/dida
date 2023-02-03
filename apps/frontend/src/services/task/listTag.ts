@@ -12,6 +12,15 @@ export interface Tag {
 let repository: Repository | undefined
 let listTags: Tag[]
 
+function _removeTag(id: number) {
+  for (let i = 0; i < listTags.length; i++) {
+    if (listTags[i].id === id) {
+      listTags.splice(i, 1)
+      break
+    }
+  }
+}
+
 export function initListTag(
   listTagReactive: Tag[] = [],
   _repository: Repository,
@@ -62,15 +71,11 @@ export function findListTagByProperty(propertyKey: keyof Omit<Tag, 'loadTasks'>)
 export const findListTagByName = findListTagByProperty('name')
 export const findListTagById = findListTagByProperty('id')
 
-// export function findListTagByName(name: string | undefined) {
-//   if (!name)
-//     return
-
-//   return listTags.find((tag) => {
-//     return tag.name === name
-//   })
-// }
-
 export function updateListTag(tag: Omit<Tag, 'loadTasks'>) {
   repository?.updateTag(tag.id, tag)
+}
+
+export async function deleteListTag(id: number) {
+  await repository?.deleteTag(id)
+  _removeTag(id)
 }

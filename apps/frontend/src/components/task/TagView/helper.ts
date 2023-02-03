@@ -1,9 +1,7 @@
 import type { Component } from 'vue'
 import { createApp, h, reactive } from 'vue'
-import TagCreateView from '../TagCreateView.vue'
-import type { Tag } from '@/services/task/listTag'
 
-const mountCompoent = (component: Component, props: Record<string | symbol, any>, eventListener: Record<string, any>) => {
+export const mountCompoent = (component: Component, props: Record<string | symbol, any>, eventListener: Record<string, any>) => {
   const app = createApp({
     setup() {
       return () => h(component, {
@@ -26,18 +24,13 @@ const mountCompoent = (component: Component, props: Record<string | symbol, any>
   }
 }
 
-interface TagDialogOptions {
-  show?: boolean
-  tag?: Omit<Tag, 'loadTasks'>
-}
-
-function TagDialog(options: TagDialogOptions = {}) {
+export const dialogInit = (component: Component, options: Record<any, any> = {}) => {
   let pRes: (res: string) => void
   const p = new Promise((resolve) => {
     pRes = resolve
   })
   const reactiveOptions = reactive(Object.assign({ show: false }, options))
-  const { unmount } = mountCompoent(TagCreateView, reactiveOptions, {
+  const { unmount } = mountCompoent(component, reactiveOptions, {
     'onCancel': () => {
       pRes('cancel')
     },
@@ -47,8 +40,8 @@ function TagDialog(options: TagDialogOptions = {}) {
     'onClosed': () => {
       unmount()
     },
-    'onCreated': () => {
-      pRes('created')
+    'onConfirm': () => {
+      pRes('confirm')
     },
     'onUpdate:show': (value: boolean) => {
       reactiveOptions.show = value
@@ -57,5 +50,3 @@ function TagDialog(options: TagDialogOptions = {}) {
   reactiveOptions.show = true
   return p
 }
-
-export default TagDialog

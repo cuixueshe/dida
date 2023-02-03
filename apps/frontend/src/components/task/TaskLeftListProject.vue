@@ -6,12 +6,16 @@ import { Icon } from '@iconify/vue'
 import { h, onMounted, ref, render, watchEffect } from 'vue'
 import type { MenuItem } from '@imengyu/vue3-context-menu'
 import ContextMenu from '@imengyu/vue3-context-menu'
-import TagDialog from './TagCreateView'
+import { tagCreateViewDialog } from './TagView'
+import { tagRemoveAlert } from './TagView/TagRemoveAlert'
 import { useProjectSelectedStatusStore, useTaskStore } from '@/store'
 import 'vue3-emoji-picker/css'
 import ProjectCreateView from '@/components/task/ProjectCreatedView.vue'
 import type { Tag } from '@/services/task/listTag'
 import { findListTagByName } from '@/services/task/listTag'
+
+const projectSelectedStatusStore = useProjectSelectedStatusStore()
+const taskStore = useTaskStore()
 
 enum TreeRootKeys {
   PROJECT = 100,
@@ -76,11 +80,20 @@ const createTagLeafSuffix = (tag: Tag) => {
       creatOperateNodeBtn([
         {
           label: 'edit',
-          onClick: () => TagDialog({ tag }),
+          onClick: () => tagCreateViewDialog({ tag }),
         },
         {
           label: 'remove',
-          onClick: () => {},
+          onClick: () => {
+            tagRemoveAlert({
+              tagName: tag.name,
+            }).then((action) => {
+              // eslint-disable-next-line no-console
+              console.log(action)
+              if (action === 'confirm')
+                taskStore.deleteTag(tag.id)
+            })
+          },
         },
       ]),
     ],
@@ -105,9 +118,6 @@ const generateTagChildrenNode = (tags: Tag[]) => {
     isleaf: true,
   }))
 }
-
-const projectSelectedStatusStore = useProjectSelectedStatusStore()
-const taskStore = useTaskStore()
 
 const defaultExpandedKeys = ref<TreeRootKeys[]>([])
 const treeProjectChildren = ref<TreeOption[]>([])
@@ -155,7 +165,7 @@ const data = ref<any[]>([
     children: treeTagChildren,
     suffix: createRootNodeSuffix((e: Event) => {
       e.stopPropagation()
-      TagDialog().then(() => {
+      tagCreateViewDialog().then(() => {
         // eslint-disable-next-line no-console
         console.log('done')
       })
