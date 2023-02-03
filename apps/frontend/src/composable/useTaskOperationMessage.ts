@@ -7,6 +7,7 @@ import { useTaskStore } from '@/store'
 enum TaskOperationStatus {
   Complete = '已完成',
   Remove = '删除完成',
+  Move = '已移动到',
 }
 
 export function useTaskOperationMessage() {
@@ -62,8 +63,18 @@ export function useTaskOperationMessage() {
     })
   }
 
+  function showMoveMessage(task: Task, projectname: string) {
+    const content = `${task.title} ${TaskOperationStatus.Move} ${projectname}`
+
+    messageReactive = message.info(createMessageView(content), {
+      icon: () => null,
+      duration: 1000,
+    })
+  }
+
   return {
     showCompleteMessage,
     showRemoveMessage,
+    showMoveMessage,
   }
 }

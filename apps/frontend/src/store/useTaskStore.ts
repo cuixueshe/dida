@@ -71,6 +71,10 @@ export const useTaskStore = defineStore('task', () => {
     changeActiveTask(undefined)
   }
 
+  function addSpecifyTask(task: Task, projectId?: number) {
+    taskService.addTask(task, projectId)
+  }
+
   return {
     ...useProject(),
 
@@ -84,6 +88,7 @@ export const useTaskStore = defineStore('task', () => {
     completeTask,
     restoreTask,
     changeActiveTask,
+    addSpecifyTask,
     selectProject,
     init,
   }
