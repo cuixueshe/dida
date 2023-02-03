@@ -77,7 +77,13 @@ export function changeTaskContent(task: Task, content: string) {
 }
 
 export async function addTask(task: Task, projectId = -1, tags: number[] = []) {
-  const tId = await repository?.addTask(task.title, task.content, task.state, projectId, tags)
+  const tId = await repository?.addTask(
+    task.title,
+    task.content,
+    task.state,
+    projectId,
+    tags,
+  )
   if (tId) {
     task.id = tId
     tasks.unshift(task)
@@ -100,6 +106,12 @@ export function completeTask(task: Task) {
 export function restoreTask(task: Task) {
   repository?.updateTask(task.id, { state: TaskState.ACTIVE })
   task.state = TaskState.ACTIVE
+  _removeTask(task)
+}
+
+export function moveTask(task: Task, targetProjectId: number) {
+  // update projectId
+  repository?.updateTask(task.id, { projectId: targetProjectId })
   _removeTask(task)
 }
 
