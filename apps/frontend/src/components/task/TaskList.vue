@@ -3,7 +3,7 @@ import type { Ref } from 'vue'
 import { computed, ref } from 'vue'
 import { Icon } from '@iconify/vue'
 import draggable from 'vuedraggable'
-import { isSmartProject } from 'services/task'
+import { isSmartProject, updateTaskIndex } from 'services/task'
 import Command from '../command/Command.vue'
 import TaskItem from './TaskItem.vue'
 import {
@@ -44,8 +44,7 @@ function addTask() {
     return
   if (Reflect.has(taskStore.currentActiveProject, 'color'))
     taskStore.addTaskToTag(taskTitle.value)
-  else
-    taskStore.addTask(taskTitle.value)
+  else taskStore.addTask(taskTitle.value)
 
   taskTitle.value = ''
 }
@@ -64,6 +63,29 @@ const shouldShowTodoAdd = computed(() => {
 })
 
 const { inputRef, onFocus } = useInput()
+
+function handleEndDrag(e: any) {
+  dragging.value = false
+
+  const currentTask = taskStore.tasks[e.newIndex]
+  const currentIndex = taskStore.tasks.length - 1 - e.newIndex
+  updateTaskIndex(currentTask!, currentIndex)
+
+  if (e.newIndex > e.oldIndex) {
+    // console.log("往下拖拽");
+    for (let i = e.oldIndex; i < e.newIndex; i++) {
+      const exchangedIndex = taskStore.tasks.length - 1 - i
+      updateTaskIndex(taskStore.tasks[i], exchangedIndex)
+    }
+  }
+  else {
+    // console.log("往上拖拽", e.oldIndex, e.newIndex);
+    for (let i = e.newIndex + 1; i < e.oldIndex + 1; i++) {
+      const exchangedIndex = taskStore.tasks.length - 1 - i
+      updateTaskIndex(taskStore.tasks[i], exchangedIndex)
+    }
+  }
+}
 </script>
 
 <template>
@@ -120,10 +142,15 @@ const { inputRef, onFocus } = useInput()
       }"
       class="flex flex-col gap-10px"
       @start="dragging = true"
-      @end="dragging = false"
+      @end="handleEndDrag"
     >
       <template #item="{ element, index }">
-        <TaskItem :project="taskStore.currentActiveProject" :task="element" :index="index" class="item" />
+        <TaskItem
+          :project="taskStore.currentActiveProject"
+          :task="element"
+          :index="index"
+          class="item"
+        />
       </template>
     </draggable>
     <!-- 暂时性修复 contenteditable 的 bug #9 -->

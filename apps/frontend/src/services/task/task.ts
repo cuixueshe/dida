@@ -17,6 +17,7 @@ export interface Task {
   state: TaskState
   content: string
   project: Project | undefined
+  index: number
 }
 
 export function createTask(
@@ -25,6 +26,7 @@ export function createTask(
   content = '',
   projectId = 0,
   state = TaskState.ACTIVE,
+  index = 0,
 ): Task {
   const task = {
     id,
@@ -32,8 +34,8 @@ export function createTask(
     content,
     state,
     project: getTaskFromProject(projectId, state),
+    index,
   }
-
   return task
 }
 
@@ -48,27 +50,32 @@ export function initTask(tasksReactive: Task[] = [], _repository: Repository) {
 export async function loadTasks(category: Project | Tag) {
   const allTasks = await category.loadTasks()
   tasks.length = 0
-  allTasks.forEach(({ id, title, content, projectId, state }) => {
-    const task = createTask(title, id, content, projectId, state)
+  allTasks.forEach(({ id, title, content, projectId, state, index }) => {
+    const task = createTask(title, id, content, projectId, state, index)
     tasks.unshift(task)
   })
+  tasks.sort(_compareTaskIndex())
 }
 
 export async function findAllTasksNotRemoved(): Promise<Task[]> {
   const tasks = (await repository?.getAllTasks()) || []
-
   return tasks
     .filter(({ state }) => {
       return state !== TaskState.REMOVED
     })
-    .map(({ projectId, title, id, content, state }) => {
-      return createTask(title, id, content, projectId, state)
+    .map(({ projectId, title, id, content, state, index }) => {
+      return createTask(title, id, content, projectId, state, index)
     })
 }
 
 export function changeTaskTitle(task: Task, title: string) {
   repository?.updateTask(task.id, { title })
   task.title = title
+}
+
+export function updateTaskIndex(task: Task, newIndex: number) {
+  repository?.updateTask(task.id, { index: newIndex })
+  task.index = newIndex
 }
 
 export function changeTaskContent(task: Task, content: string) {
@@ -83,6 +90,7 @@ export async function addTask(task: Task, projectId = -1, tags: number[] = []) {
     task.state,
     projectId,
     tags,
+    task.index,
   )
   if (tId) {
     task.id = tId
@@ -109,10 +117,14 @@ export function restoreTask(task: Task) {
   _removeTask(task)
 }
 
-export function moveTask(task: Task, targetProjectId: number) {
-  // update projectId
-  repository?.updateTask(task.id, { projectId: targetProjectId })
+export async function moveTask(task: Task, targetProjectId: number) {
+  const tasks = await findListProjectById(targetProjectId)?.loadTasks()
+  repository?.updateTask(task.id, {
+    projectId: targetProjectId,
+    index: tasks?.length,
+  })
   _removeTask(task)
+  _updateTaskIndex()
 }
 
 function getTaskFromProject(
@@ -137,5 +149,18 @@ function _removeTask(task: Task) {
   for (let i = len; i >= 0; i--) {
     if (task.id === tasks[i].id)
       tasks.splice(i, 1)
+  }
+}
+
+function _compareTaskIndex() {
+  return function (a: Task, b: Task) {
+    return b.index - a.index // desc
+  }
+}
+
+function _updateTaskIndex() {
+  for (let i = 0; i < tasks.length; i++) {
+    tasks[i].index = tasks.length - 1 - i
+    updateTaskIndex(tasks[i], tasks[i].index)
   }
 }
