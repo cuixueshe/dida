@@ -11,17 +11,17 @@ import {
   NSelect,
   NSpace,
 } from 'naive-ui'
-import { Icon } from '@iconify/vue'
 import { useProjectSelectedStatusStore, useTaskStore } from '@/store'
 import type { Tag } from '@/services/task/listTag'
+
 interface TProps {
   show: boolean
   tag?: Omit<Tag, 'loadTasks'>
 }
 
-type Actions = 'close' | 'cancel' | 'created' | 'edited'
+type Actions = 'close' | 'cancel' | 'confirm' | 'edited'
 const props = defineProps<TProps>()
-const emits = defineEmits(['update:show', 'close', 'closed', 'cancel', 'created', 'edited'])
+const emits = defineEmits(['update:show', 'close', 'closed', 'cancel', 'confirm', 'edited'])
 interface TFormModel {
   name: string
   color: string
@@ -76,7 +76,7 @@ const handleCreateTag = async () => {
     model.value = initModel()
     projectSelectedStatusStore.listDefaultSelectedKey.push(200)
     projectSelectedStatusStore.changeSelectedKey([200 + taskStore.listTags.length - 1])
-    handleActions('created')
+    handleActions('confirm')
   })
 }
 
