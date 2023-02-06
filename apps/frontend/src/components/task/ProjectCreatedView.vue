@@ -1,23 +1,23 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { Icon } from '@iconify/vue'
 import {
   NButton, NCard, NForm, NFormItem, NInput, NModal, NPopover, NSpace,
 } from 'naive-ui'
+import { ref } from 'vue'
 import EmojiPicker from 'vue3-emoji-picker'
-import { Icon } from '@iconify/vue'
-import { useTaskLeftListCreateProject } from '@/composable'
 import { useTaskStore } from '@/store'
+import { useTaskLeftListCreateProject } from '@/composable'
 import 'vue3-emoji-picker/css'
 
 const inputElement = ref<HTMLInputElement>()
 const taskStore = useTaskStore()
 
 const {
-  EMOJI_GROUPS_NAMES,
-  EMOJI_STATIC_TEXTS,
+  cleanupInput,
   emojiValue,
   formRules,
   formValue,
+  getDefaultEmojiConfig,
   handleClose,
   handleMouseLeave,
   handleMouseOver,
@@ -27,34 +27,28 @@ const {
   isSavable,
   isShowModal,
   isShowPopover,
-  cleanupInput,
-  renderCreateProjectButton,
 } = useTaskLeftListCreateProject(inputElement)
 
+const { EMOJI_STATIC_TEXTS, EMOJI_GROUPS_NAMES } = getDefaultEmojiConfig()
+
 function handleSave() {
-  taskStore.addProject(formValue.value.projectName)
+  taskStore.addProject(emojiValue.value += formValue.value.projectName)
   isShowModal.value = false
   cleanupInput()
 }
+
+function toggleShowModal() {
+  isShowModal.value = true
+}
+
 defineExpose({
-  renderCreateProjectButton,
+  toggleShowModal,
 })
 </script>
 
 <template>
-  <NModal
-    v-model:show="isShowModal"
-    transform-origin="center"
-    :mask-closable="!isSavable"
-    @esc="cleanupInput"
-  >
-    <NCard
-      style="width: 600px"
-      size="huge"
-      role="dialog"
-      aria-modal="true"
-      :bordered="false"
-    >
+  <NModal v-model:show="isShowModal" transform-origin="center" :mask-closable="!isSavable" @esc="cleanupInput">
+    <NCard style="width: 600px" size="huge" role="dialog" aria-modal="true" :bordered="false">
       <template #header>
         <div class="flex font-bold justify-center">
           添加清单
@@ -64,18 +58,10 @@ defineExpose({
       <div @mouseover="handleMouseOver" @mouseleave="handleMouseLeave">
         <NForm :model="formValue" :rules="formRules">
           <NFormItem path="projectName">
-            <NInput
-              ref="inputElement"
-              v-model:value="formValue.projectName"
-              placeholder="名称"
-            >
+            <NInput ref="inputElement" v-model:value="formValue.projectName" placeholder="名称">
               <template #prefix>
                 <NPopover
-                  v-if="isHover"
-                  placement="bottom"
-                  trigger="click"
-                  :show="isShowPopover"
-                  :show-arrow="false"
+                  v-if="isHover" placement="bottom" trigger="click" :show="isShowPopover" :show-arrow="false"
                   @update:show="handleUpdateShow"
                 >
                   <template #trigger>
@@ -87,11 +73,8 @@ defineExpose({
                     </NButton>
                   </template>
                   <EmojiPicker
-                    picker-type="inputValue"
-                    :native="true"
-                    :static-texts="EMOJI_STATIC_TEXTS"
-                    :group-names="EMOJI_GROUPS_NAMES"
-                    @select="handleSelectEmoji"
+                    picker-type="inputValue" :native="true" :static-texts="EMOJI_STATIC_TEXTS"
+                    :group-names="EMOJI_GROUPS_NAMES" @select="handleSelectEmoji"
                   />
                 </NPopover>
                 <NButton v-else text>
