@@ -1,5 +1,5 @@
 import type { Repository } from './dbRepository'
-import type { TaskTable } from '@/db/types'
+import type { ProjectTable, TaskTable } from '@/db/types'
 
 export interface Project {
   id: number
@@ -32,7 +32,8 @@ export function createListProject(name: string, id = 0): ListProject {
 
 export async function loadProjects() {
   return repository!.loadProjects().then((projects) => {
-    projects.forEach((project: any) => {
+    listProjects.length = 0
+    projects.forEach((project: ProjectTable) => {
       listProjects.push(createListProject(project.name, project.id))
     })
   })
