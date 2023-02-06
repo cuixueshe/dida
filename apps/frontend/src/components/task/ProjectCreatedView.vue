@@ -1,23 +1,30 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import {
-  NButton, NCard, NForm, NFormItem, NInput, NModal, NPopover, NSpace,
-} from 'naive-ui'
-import EmojiPicker from 'vue3-emoji-picker'
 import { Icon } from '@iconify/vue'
-import { useTaskLeftListCreateProject } from '@/composable'
+import {
+  NButton,
+  NCard,
+  NForm,
+  NFormItem,
+  NInput,
+  NModal,
+  NPopover,
+  NSpace,
+} from 'naive-ui'
+import { ref } from 'vue'
+import EmojiPicker from 'vue3-emoji-picker'
 import { useTaskStore } from '@/store'
+import { useTaskLeftListCreateProject } from '@/composable'
 import 'vue3-emoji-picker/css'
 
 const inputElement = ref<HTMLInputElement>()
 const taskStore = useTaskStore()
 
 const {
-  EMOJI_GROUPS_NAMES,
-  EMOJI_STATIC_TEXTS,
+  cleanupInput,
   emojiValue,
   formRules,
   formValue,
+  getDefaultEmojiConfig,
   handleClose,
   handleMouseLeave,
   handleMouseOver,
@@ -27,17 +34,24 @@ const {
   isSavable,
   isShowModal,
   isShowPopover,
-  cleanupInput,
-  renderCreateProjectButton,
 } = useTaskLeftListCreateProject(inputElement)
 
+const { EMOJI_STATIC_TEXTS, EMOJI_GROUPS_NAMES } = getDefaultEmojiConfig()
+
 function handleSave() {
-  taskStore.addProject(formValue.value.projectName)
+  let projectName = formValue.value.projectName
+  emojiValue.value && (projectName = emojiValue.value + projectName)
+  taskStore.addProject(projectName)
   isShowModal.value = false
   cleanupInput()
 }
+
+function toggleShowModal() {
+  isShowModal.value = true
+}
+
 defineExpose({
-  renderCreateProjectButton,
+  toggleShowModal,
 })
 </script>
 

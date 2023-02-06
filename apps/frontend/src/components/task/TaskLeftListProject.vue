@@ -1,18 +1,18 @@
 <script setup lang="ts">
-import { findListProjectByName } from 'services/task'
-import type { TreeOption } from 'naive-ui'
-import { NTree } from 'naive-ui'
 import { Icon } from '@iconify/vue'
-import { h, onMounted, ref, render, watchEffect } from 'vue'
 import type { MenuItem } from '@imengyu/vue3-context-menu'
 import ContextMenu from '@imengyu/vue3-context-menu'
+import type { TreeOption } from 'naive-ui'
+import { NTree } from 'naive-ui'
+import { findListProjectByName } from 'services/task'
+import { h, onMounted, ref, watchEffect } from 'vue'
+import 'vue3-emoji-picker/css'
 import { tagCreateViewDialog } from './TagView'
 import { tagRemoveAlert } from './TagView/TagRemoveAlert'
 import { useProjectSelectedStatusStore, useTaskStore } from '@/store'
-import 'vue3-emoji-picker/css'
+import { findListTagByName } from '@/services/task/listTag'
 import ProjectCreateView from '@/components/task/ProjectCreatedView.vue'
 import type { Tag } from '@/services/task/listTag'
-import { findListTagByName } from '@/services/task/listTag'
 
 const projectSelectedStatusStore = useProjectSelectedStatusStore()
 const taskStore = useTaskStore()
@@ -22,16 +22,11 @@ enum TreeRootKeys {
   TAG = 200,
 }
 
-const { projectViewRef, projectRender } = useCreateProjectButton()
+const { projectViewRef } = useCreateProjectButton()
 
 function useCreateProjectButton() {
   const projectViewRef = ref()
-  const projectRender = ref(undefined)
-  onMounted(() => {
-    projectRender.value = projectViewRef.value.renderCreateProjectButton
-  })
   return {
-    projectRender,
     projectViewRef,
   }
 }
@@ -52,7 +47,7 @@ const createTagLeafPrefix = () => {
   })
 }
 
-const creatOperateNodeBtn = (items: MenuItem[]) => {
+const createOperateNodeBtn = (items: MenuItem[]) => {
   return h(Icon, {
     class: 'invisible',
     icon: 'mdi:dots-horizontal',
@@ -77,7 +72,7 @@ const createTagLeafSuffix = (tag: Tag) => {
         color: tag.color,
         class: 'mx-2',
       }),
-      creatOperateNodeBtn([
+      createOperateNodeBtn([
         {
           label: 'edit',
           onClick: () => tagCreateViewDialog({ tag }),
@@ -153,7 +148,7 @@ const data = ref<any[]>([
     isLeaf: false,
     children: treeProjectChildren,
     suffix: createRootNodeSuffix((e: Event) => {
-      // todo: 新建清单的按钮操作可以放在这里
+      projectViewRef.value.toggleShowModal()
       e.stopPropagation()
     }),
   },
@@ -216,25 +211,19 @@ const onExpandedKey = (key: number[]) => {
 
 <template>
   <NTree
-    v-model:selected-keys="projectSelectedStatusStore.selectedKey"
-    :default-expanded-keys="defaultExpandedKeys"
-    block-line
-    expand-on-click
-    :data="data"
-    :node-props="nodeProps"
-    @update:expanded-keys="onExpandedKey"
+    v-model:selected-keys="projectSelectedStatusStore.selectedKey" :default-expanded-keys="defaultExpandedKeys"
+    block-line expand-on-click :data="data" :node-props="nodeProps" @update:expanded-keys="onExpandedKey"
     @update:selected-keys="changeSelectedKey"
   />
   <ProjectCreateView ref="projectViewRef" />
 </template>
 
 <style>
-.n-tree.n-tree--block-line
-  .n-tree-node:not(.n-tree-node--disabled).n-tree-node--pending {
+.n-tree.n-tree--block-line .n-tree-node:not(.n-tree-node--disabled).n-tree-node--pending {
   background-color: transparent;
 }
-.n-tree.n-tree--block-line
-  .n-tree-node:not(.n-tree-node--disabled).n-tree-node--selected {
+
+.n-tree.n-tree--block-line .n-tree-node:not(.n-tree-node--disabled).n-tree-node--selected {
   background-color: var(--n-node-color-active);
 }
 
@@ -267,7 +256,7 @@ const onExpandedKey = (key: number[]) => {
   color: rgba(156, 163, 175, 0.5);
 }
 
-.n-tree.n-tree--block-line .n-tree-node:not(.n-tree-node--disabled):hover .iconify  {
+.n-tree.n-tree--block-line .n-tree-node:not(.n-tree-node--disabled):hover .iconify {
   visibility: visible;
 }
 </style>
