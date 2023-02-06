@@ -5,6 +5,7 @@ export interface TaskTable {
   projectId: number
   tagIds: number[]
   state: number
+  index: number
 }
 
 export interface ProjectTable {

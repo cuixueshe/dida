@@ -55,6 +55,7 @@ function handleCompleteTodo(e: Event) {
 
 <template>
   <div
+    :data-id="props.task.id"
     class="flex flex-row w-full items-center"
     @click.right="handleRightClickTask($event, task)"
   >
