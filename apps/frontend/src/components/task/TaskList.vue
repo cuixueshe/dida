@@ -79,13 +79,17 @@ function handleEndDrag(e: any) {
     }
   }
   else {
-    // console.log("往上拖拽", e.oldIndex, e.newIndex);
+    // console.log("往上拖拽");
     for (let i = e.newIndex + 1; i < e.oldIndex + 1; i++) {
       const exchangedIndex = taskStore.tasks.length - 1 - i
       updateTaskIndex(taskStore.tasks[i], exchangedIndex)
     }
   }
 }
+
+const disabledDrag = computed(() => {
+  return !(taskStore.currentActiveProject && taskStore.currentActiveProject.id > 0)
+})
 </script>
 
 <template>
@@ -141,6 +145,7 @@ function handleEndDrag(e: any) {
         name: !dragging ? 'flip-list' : null,
       }"
       class="flex flex-col gap-10px"
+      :disabled="disabledDrag"
       @start="dragging = true"
       @end="handleEndDrag"
     >
