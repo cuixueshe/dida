@@ -55,6 +55,7 @@ export async function loadTasks(category: Project | Tag) {
     tasks.unshift(task)
   })
   tasks.sort(_compareTaskIndex())
+  _updateTaskIndex()
 }
 
 export async function findAllTasksNotRemoved(): Promise<Task[]> {
@@ -95,6 +96,7 @@ export async function addTask(task: Task, projectId = -1, tags: number[] = []) {
   if (tId) {
     task.id = tId
     tasks.unshift(task)
+    _updateTaskIndex() // 正序
   }
 }
 
@@ -118,11 +120,7 @@ export function restoreTask(task: Task) {
 }
 
 export async function moveTask(task: Task, targetProjectId: number) {
-  const tasks = await findListProjectById(targetProjectId)?.loadTasks()
-  repository?.updateTask(task.id, {
-    projectId: targetProjectId,
-    index: tasks?.length,
-  })
+  repository?.updateTask(task.id, { projectId: targetProjectId, index: -1 })
   _removeTask(task)
   _updateTaskIndex()
 }
@@ -154,13 +152,13 @@ function _removeTask(task: Task) {
 
 function _compareTaskIndex() {
   return function (a: Task, b: Task) {
-    return b.index - a.index // desc
+    return a.index - b.index
   }
 }
 
 function _updateTaskIndex() {
   for (let i = 0; i < tasks.length; i++) {
-    tasks[i].index = tasks.length - 1 - i
+    tasks[i].index = i
     updateTaskIndex(tasks[i], tasks[i].index)
   }
 }

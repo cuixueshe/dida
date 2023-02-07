@@ -2,7 +2,6 @@ import { computed, reactive, ref } from 'vue'
 import { defineStore } from 'pinia'
 import type { Project, Task } from 'services/task'
 import * as taskService from 'services/task'
-import { findListProjectById } from 'services/task/listProject'
 import type { Tag } from '@/services/task/listTag'
 
 const listProjects = reactive<Project[]>([])
@@ -109,10 +108,7 @@ export const useTaskStore = defineStore('task', () => {
   async function addTask(title: string) {
     if (currentActiveProject.value) {
       const task = taskService.createTask(title)
-      const tasks = await findListProjectById(
-        currentActiveProject.value!.id,
-      )!.loadTasks()
-      task.index = tasks.length
+      task.index = 0
       taskService.addTask(task, currentActiveProject.value!.id)
       changeActiveTask(task)
     }

@@ -68,27 +68,24 @@ function handleEndDrag(e: any) {
   dragging.value = false
 
   const currentTask = taskStore.tasks[e.newIndex]
-  const currentIndex = taskStore.tasks.length - 1 - e.newIndex
-  updateTaskIndex(currentTask!, currentIndex)
+  updateTaskIndex(currentTask!, e.newIndex)
 
   if (e.newIndex > e.oldIndex) {
     // console.log("往下拖拽");
-    for (let i = e.oldIndex; i < e.newIndex; i++) {
-      const exchangedIndex = taskStore.tasks.length - 1 - i
-      updateTaskIndex(taskStore.tasks[i], exchangedIndex)
-    }
+    for (let i = e.oldIndex; i < e.newIndex; i++)
+      updateTaskIndex(taskStore.tasks[i], i)
   }
   else {
     // console.log("往上拖拽");
-    for (let i = e.newIndex + 1; i < e.oldIndex + 1; i++) {
-      const exchangedIndex = taskStore.tasks.length - 1 - i
-      updateTaskIndex(taskStore.tasks[i], exchangedIndex)
-    }
+    for (let i = e.newIndex + 1; i < e.oldIndex + 1; i++)
+      updateTaskIndex(taskStore.tasks[i], i)
   }
 }
 
 const disabledDrag = computed(() => {
-  return !(taskStore.currentActiveProject && taskStore.currentActiveProject.id > 0)
+  return !(
+    taskStore.currentActiveProject && taskStore.currentActiveProject.id > 0
+  )
 })
 </script>
 
