@@ -3,7 +3,7 @@ import type { Ref } from 'vue'
 import { computed, ref } from 'vue'
 import { Icon } from '@iconify/vue'
 import draggable from 'vuedraggable'
-import { isSmartProject, updateTaskIndex } from 'services/task'
+import { SmartProjectNames, isSmartProject, updateTaskIndex } from 'services/task'
 import Command from '../command/Command.vue'
 import TaskItem from './TaskItem.vue'
 import {
@@ -61,6 +61,12 @@ const shouldShowTodoAdd = computed(() => {
   const name = taskStore.currentActiveProject?.name || ''
   return !isSmartProject(name)
 })
+
+const shouldEnabledDrag = computed(() =>
+  !Object.values(SmartProjectNames).includes(
+    taskStore.currentActiveProject?.name as SmartProjectNames,
+  ),
+)
 
 const { inputRef, onFocus } = useInput()
 
@@ -141,6 +147,7 @@ function handleEndDrag(e: any) {
         name: !dragging ? 'flip-list' : null,
       }"
       class="flex flex-col gap-10px"
+      :disabled="!shouldEnabledDrag"
       @start="dragging = true"
       @end="handleEndDrag"
     >
