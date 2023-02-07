@@ -130,6 +130,13 @@ watchEffect(() => {
   treeTagChildren.value = generateTagChildrenNode(taskStore.listTags)
 })
 
+watchEffect(() => {
+  const key = treeProjectChildren.value.find(v =>
+    v.label === taskStore.currentActiveProject?.name,
+  )?.key
+  key && projectSelectedStatusStore.changeSelectedKey([+key])
+})
+
 onMounted(() => {
   defaultExpandedKeys.value = [
     ...new Set([
