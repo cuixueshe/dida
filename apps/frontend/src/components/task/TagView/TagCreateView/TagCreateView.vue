@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, defineEmits, nextTick, onMounted, ref } from 'vue'
+import { computed, nextTick, onMounted, ref } from 'vue'
 import type { FormInst } from 'naive-ui'
 import {
   NButton,
@@ -11,12 +11,13 @@ import {
   NSelect,
   NSpace,
 } from 'naive-ui'
-import { useProjectSelectedStatusStore, useTaskStore } from '@/store'
+import { useTaskStore } from '@/store'
 import type { Tag } from '@/services/task/listTag'
 
 interface TProps {
   show: boolean
   tag?: Omit<Tag, 'loadTasks'>
+  onOk?: (tag: Tag) => void
 }
 
 type Actions = 'close' | 'cancel' | 'confirm' | 'edited'
@@ -30,7 +31,6 @@ interface TFormModel {
 
 const taskStore = useTaskStore()
 const formRef = ref<FormInst | null>(null)
-const projectSelectedStatusStore = useProjectSelectedStatusStore()
 const generateRandomColor = () => {
   return `#${(`00000${(Math.random() * 0x1000000 << 0).toString(16)}`).slice(-6)}`
 }
@@ -71,11 +71,10 @@ const handleActions = (action: Actions) => {
 const handleCreateTag = async () => {
   const modelVal = Object.assign(model.value, {})
   modelVal.parentTagId === -1 && (modelVal.parentTagId = undefined)
-  await taskStore.addTag(modelVal)
+  const tag = await taskStore.addTag(modelVal)
   nextTick(() => {
     model.value = initModel()
-    projectSelectedStatusStore.listDefaultSelectedKey.push(200)
-    projectSelectedStatusStore.changeSelectedKey([200 + taskStore.listTags.length - 1])
+    props.onOk?.(tag)
     handleActions('confirm')
   })
 }

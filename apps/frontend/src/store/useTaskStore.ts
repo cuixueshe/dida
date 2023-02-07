@@ -23,14 +23,14 @@ const listProjectNames = computed(() => {
 
 async function init() {
   await taskService.loadProjects()
-  await iniTags()
+  await initTags()
   if (listProjects.length === 0)
     return
   currentActiveProject.value = listProjects[0]
   await taskService.loadTasks(currentActiveProject.value)
 }
 
-async function iniTags() {
+async function initTags() {
   await taskService.loadTags()
 }
 
@@ -55,6 +55,7 @@ function useProject() {
     const project = taskService.createListProject(name)
     await taskService.addListProject(project)
     await selectProject(project)
+    return project
   }
   return {
     addProject,
@@ -74,6 +75,7 @@ function useTag() {
     )
     await taskService.addListTag(tag)
     await selectCategory(tag)
+    return tag
   }
 
   async function editTag(tag: {

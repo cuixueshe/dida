@@ -16,6 +16,7 @@ import { useTaskStore } from '@/store'
 import { useTaskLeftListCreateProject } from '@/composable'
 import 'vue3-emoji-picker/css'
 
+const emit = defineEmits(['afterAddProject'])
 const inputElement = ref<HTMLInputElement>()
 const taskStore = useTaskStore()
 
@@ -38,12 +39,13 @@ const {
 
 const { EMOJI_STATIC_TEXTS, EMOJI_GROUPS_NAMES } = getDefaultEmojiConfig()
 
-function handleSave() {
+async function handleSave() {
   let projectName = formValue.value.projectName
   emojiValue.value && (projectName = emojiValue.value + projectName)
-  taskStore.addProject(projectName)
+  const project = await taskStore.addProject(projectName)
   isShowModal.value = false
   cleanupInput()
+  emit('afterAddProject', project)
 }
 
 function toggleShowModal() {

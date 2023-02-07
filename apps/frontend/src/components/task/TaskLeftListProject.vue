@@ -13,6 +13,7 @@ import { useProjectSelectedStatusStore, useTaskStore } from '@/store'
 import { findListTagByName } from '@/services/task/listTag'
 import ProjectCreateView from '@/components/task/ProjectCreatedView.vue'
 import type { Tag } from '@/services/task/listTag'
+import type { ListProject } from '@/services/task/listProject'
 
 const projectSelectedStatusStore = useProjectSelectedStatusStore()
 const taskStore = useTaskStore()
@@ -105,7 +106,7 @@ const generateTagChildrenNode = (tags: Tag[]) => {
     ]
   }
   return tags.map((tag, index) => ({
-    key: TreeRootKeys.TAG + index + 1,
+    key: TreeRootKeys.TAG + tag.id,
     label: tag.name,
     color: tag.color,
     prefix: createTagLeafPrefix(),
@@ -114,24 +115,27 @@ const generateTagChildrenNode = (tags: Tag[]) => {
   }))
 }
 
+const expandedKeys = ref<TreeRootKeys[]>([])
 const defaultExpandedKeys = ref<TreeRootKeys[]>([])
 const treeProjectChildren = ref<TreeOption[]>([])
 const treeTagChildren = ref<TreeOption[]>([])
 
 watchEffect(() => {
-  treeProjectChildren.value = taskStore.listProjectNames.map(
-    (projectname, index) => ({
-      key: TreeRootKeys.PROJECT + index + 1,
-      label: projectname,
+  treeProjectChildren.value = taskStore.listProjects.map(
+    (project, index) => ({
+      key: TreeRootKeys.PROJECT + project.id,
+      label: project.name,
       isleaf: true,
     }),
   )
 
   treeTagChildren.value = generateTagChildrenNode(taskStore.listTags)
+
+  expandedKeys.value = [...new Set(expandedKeys.value)]
 })
 
 onMounted(() => {
-  defaultExpandedKeys.value = [
+  defaultExpandedKeys.value = expandedKeys.value = [
     ...new Set([
       ...(taskStore.listProjectNames.length ? [] : [TreeRootKeys.PROJECT]),
       ...(taskStore.listTags.length ? [] : [TreeRootKeys.TAG]),
@@ -160,7 +164,14 @@ const data = ref<any[]>([
     children: treeTagChildren,
     suffix: createRootNodeSuffix((e: Event) => {
       e.stopPropagation()
-      tagCreateViewDialog().then(() => {
+      tagCreateViewDialog({
+        onOk: (tag: Tag) => {
+          projectSelectedStatusStore.changeSelectedKey(
+            [TreeRootKeys.TAG + tag.id],
+          )
+          expandedKeys.value.push(TreeRootKeys.TAG)
+        },
+      }).then(() => {
         // eslint-disable-next-line no-console
         console.log('done')
       })
@@ -173,8 +184,14 @@ const nodeProps = ({ option }: { option: TreeOption }) => {
       if (
         option.key === TreeRootKeys.PROJECT
         || option.key === TreeRootKeys.TAG
-      )
+      ) {
+        const index = expandedKeys.value.findIndex(key => key === option.key)
+        if (index !== -1)
+          expandedKeys.value.splice(index, 1)
+        else
+          expandedKeys.value.push(option.key)
         return
+      }
 
       if (option.key! < 200) {
         const project = findListProjectByName(option.label)
@@ -191,31 +208,29 @@ const nodeProps = ({ option }: { option: TreeOption }) => {
 }
 
 const changeSelectedKey = (key: number[]) => {
-  if (key[0] === TreeRootKeys.PROJECT) {
-    projectSelectedStatusStore.changePreSelectKey(
-      projectSelectedStatusStore.selectedKey,
-    )
-  }
-
-  projectSelectedStatusStore.changeSelectedKey(key)
+  if (!Object.values(TreeRootKeys).includes(key[0]))
+    projectSelectedStatusStore.changeSelectedKey(key)
 }
 
-const onExpandedKey = (key: number[]) => {
-  if (key.includes(TreeRootKeys.PROJECT)) {
-    projectSelectedStatusStore.changeSelectedKey(
-      projectSelectedStatusStore.preSelectKey,
-    )
-  }
+const afterAddProject = (project: ListProject) => {
+  projectSelectedStatusStore.changeSelectedKey(
+    [TreeRootKeys.PROJECT + project.id],
+  )
+  expandedKeys.value.push(TreeRootKeys.PROJECT)
 }
 </script>
 
 <template>
   <NTree
-    v-model:selected-keys="projectSelectedStatusStore.selectedKey" :default-expanded-keys="defaultExpandedKeys"
-    block-line expand-on-click :data="data" :node-props="nodeProps" @update:expanded-keys="onExpandedKey"
+    v-model:selected-keys="projectSelectedStatusStore.selectedKey"
+    v-model:expanded-keys="expandedKeys"
+    :default-expanded-keys="defaultExpandedKeys"
+    block-line
+    :data="data"
+    :node-props="nodeProps"
     @update:selected-keys="changeSelectedKey"
   />
-  <ProjectCreateView ref="projectViewRef" />
+  <ProjectCreateView ref="projectViewRef" @after-add-project="afterAddProject" />
 </template>
 
 <style>
