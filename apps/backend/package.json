@@ -40,6 +40,13 @@
     "typescript": "^4.9.5",
     "webpack": "^5.75.0"
   },
+  "eslintConfig": {
+    "extends": "@antfu",
+    "rules": {
+      "@typescript-eslint/consistent-type-imports": "off",
+      "@typescript-eslint/ban-ts-comment": "off"
+    }
+  },
   "jest": {
     "moduleFileExtensions": [
       "js",
