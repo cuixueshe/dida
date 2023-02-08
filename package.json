@@ -13,7 +13,7 @@
     "dev:be": "pnpm -F backend start",
     "build:fe": "pnpm -F frontend build",
     "build": "turbo build",
-    "test": "pnpm -F frontend test",
+    "test": "pnpm -F frontend test && pnpm -F backend test && pnpm -F backend test:e2e",
     "prepare": "simple-git-hooks",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
