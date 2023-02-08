@@ -11,7 +11,7 @@ export class DexieDB extends Dexie {
   constructor() {
     super('dida')
     this.version(1).stores({
-      tasks: '++id, title, content, projectId, state',
+      tasks: '++id, title, content, projectId, state, index',
       projects: '++id, name',
       tags: '++id, name, parentTagId, color',
     })
@@ -40,6 +40,7 @@ async function initProjectData() {
     projectId: 1,
     tagIds: [],
     state: TaskState.ACTIVE,
+    index: 0,
   })
   await db.tasks.add({
     title: '睡觉',
@@ -47,6 +48,7 @@ async function initProjectData() {
     projectId: 1,
     tagIds: [2],
     state: TaskState.ACTIVE,
+    index: 1,
   })
   await db.tasks.add({
     title: '写代码',
@@ -54,6 +56,7 @@ async function initProjectData() {
     projectId: 1,
     tagIds: [1],
     state: TaskState.ACTIVE,
+    index: 2,
   })
 
   await db.tasks.add({
@@ -62,6 +65,7 @@ async function initProjectData() {
     projectId: 2,
     tagIds: [1, 2],
     state: TaskState.ACTIVE,
+    index: 0,
   })
 
   await db.projects.add({
