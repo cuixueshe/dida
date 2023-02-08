@@ -24,10 +24,9 @@ export function useTaskLeftListCreateProject(
 ) {
   const { handleMouseOver, handleMouseLeave, isHover } = useMouse()
   const { formValue, formRules } = useForm()
-  const { cleanupInput, handleUpdateShow, handleClose } = useInput()
+  const { cleanupInput, handleUpdateShow } = useInput()
   const isSavable = computed(() => formValue.value.projectName?.trim() !== '')
   const isShowPopover = ref<boolean>(false)
-  const isShowModal = ref<boolean>(false)
   const {
     getDefaultEmojiConfig,
     emojiValue,
@@ -102,14 +101,9 @@ export function useTaskLeftListCreateProject(
       isShowPopover.value = show
       !show && inputElement.value?.focus()
     }
-    function handleClose() {
-      isShowModal.value = false
-      cleanupInput()
-    }
     return {
       cleanupInput,
       handleUpdateShow,
-      handleClose,
     }
   }
 
@@ -120,13 +114,11 @@ export function useTaskLeftListCreateProject(
     emojiValue,
     formRules,
     formValue,
-    handleClose,
     handleMouseLeave,
     handleMouseOver,
     handleUpdateShow,
     isHover,
     isSavable,
-    isShowModal,
     isShowPopover,
   }
 }

@@ -9,9 +9,10 @@ import { h, onMounted, ref, watchEffect } from 'vue'
 import 'vue3-emoji-picker/css'
 import { tagCreateViewDialog } from './TagView'
 import { tagRemoveAlert } from './TagView/TagRemoveAlert'
+import { projectCreatedViewModal } from './TagView/ProjectCreateView'
 import { useProjectSelectedStatusStore, useTaskStore } from '@/store'
 import { findListTagByName } from '@/services/task/listTag'
-import ProjectCreateView from '@/components/task/ProjectCreatedView.vue'
+import ProjectCreateView from '@/components/task/TagView/ProjectCreateView/ProjectCreatedView.vue'
 import type { Tag } from '@/services/task/listTag'
 
 const projectSelectedStatusStore = useProjectSelectedStatusStore()
@@ -20,15 +21,6 @@ const taskStore = useTaskStore()
 enum TreeRootKeys {
   PROJECT = 100,
   TAG = 200,
-}
-
-const { projectViewRef } = useCreateProjectButton()
-
-function useCreateProjectButton() {
-  const projectViewRef = ref()
-  return {
-    projectViewRef,
-  }
 }
 
 const createRootNodeSuffix = (onclick: (e: Event) => void) => {
@@ -148,8 +140,8 @@ const data = ref<any[]>([
     isLeaf: false,
     children: treeProjectChildren,
     suffix: createRootNodeSuffix((e: Event) => {
-      projectViewRef.value.toggleShowModal()
       e.stopPropagation()
+      projectCreatedViewModal()
     }),
   },
   {
@@ -215,7 +207,6 @@ const onExpandedKey = (key: number[]) => {
     block-line expand-on-click :data="data" :node-props="nodeProps" @update:expanded-keys="onExpandedKey"
     @update:selected-keys="changeSelectedKey"
   />
-  <ProjectCreateView ref="projectViewRef" />
 </template>
 
 <style>
