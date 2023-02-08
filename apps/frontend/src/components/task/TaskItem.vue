@@ -8,6 +8,7 @@ import { TaskState, useTaskStore, useThemeStore } from '@/store'
 interface Props {
   task: Task
   project: Project
+  isShowDragIcon: boolean
 }
 
 const props = defineProps<Props>()
@@ -60,6 +61,7 @@ function handleCompleteTodo(e: Event) {
     @click.right="handleRightClickTask($event, task)"
   >
     <i
+      v-if="props.isShowDragIcon"
       class="cursor-move text-gray-200 dark:text-#3B3B3B flex-shrink-0 i-mdi-format-align-justify text-sm"
     />
     <div

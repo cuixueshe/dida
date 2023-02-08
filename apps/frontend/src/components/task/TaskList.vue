@@ -156,6 +156,7 @@ function handleEndDrag(e: any) {
           :project="taskStore.currentActiveProject"
           :task="element"
           :index="index"
+          :is-show-drag-icon="shouldEnabledDrag"
           class="item"
         />
       </template>
