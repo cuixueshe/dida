@@ -10,12 +10,16 @@ import {
   NPopover,
   NSpace,
 } from 'naive-ui'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import EmojiPicker from 'vue3-emoji-picker'
+import { useTaskLeftListCreateProject } from './useTaskLeftListCreateProject'
 import { useTaskStore } from '@/store'
-import { useTaskLeftListCreateProject } from '@/composable'
 import 'vue3-emoji-picker/css'
 
+const props = defineProps({
+  show: { type: Boolean },
+})
+const emits = defineEmits(['update:show', 'close', 'closed', 'cancel', 'confirm'])
 const inputElement = ref<HTMLInputElement>()
 const taskStore = useTaskStore()
 
@@ -25,50 +29,46 @@ const {
   formRules,
   formValue,
   getDefaultEmojiConfig,
-  handleClose,
   handleMouseLeave,
   handleMouseOver,
   handleSelectEmoji,
   handleUpdateShow,
   isHover,
   isSavable,
-  isShowModal,
   isShowPopover,
 } = useTaskLeftListCreateProject(inputElement)
 
 const { EMOJI_STATIC_TEXTS, EMOJI_GROUPS_NAMES } = getDefaultEmojiConfig()
+type Actions = 'close' | 'cancel' | 'confirm'
+const isShowModal = computed({
+  get() {
+    return props.show
+  },
+  set(val) {
+    emits('update:show', val)
+  },
+})
+const handleActions = (action: Actions) => {
+  emits(action)
+  cleanupInput()
+  isShowModal.value = false
+  emits('closed')
+}
 
 function handleSave() {
   let projectName = formValue.value.projectName
   emojiValue.value && (projectName = emojiValue.value + projectName)
   taskStore.addProject(projectName)
-  isShowModal.value = false
-  cleanupInput()
+  handleActions('confirm')
 }
-
-function toggleShowModal() {
-  isShowModal.value = true
-}
-
-defineExpose({
-  toggleShowModal,
-})
 </script>
 
 <template>
   <NModal
-    v-model:show="isShowModal"
-    transform-origin="center"
-    :mask-closable="!isSavable"
-    @esc="cleanupInput"
+    v-model:show="isShowModal" transform-origin="center" :mask-closable="!isSavable" @esc="handleActions('close')"
+    @close="handleActions('close')"
   >
-    <NCard
-      style="width: 600px"
-      size="huge"
-      role="dialog"
-      aria-modal="true"
-      :bordered="false"
-    >
+    <NCard style="width: 600px" size="huge" role="dialog" aria-modal="true" :bordered="false">
       <template #header>
         <div class="flex font-bold justify-center">
           添加清单
@@ -78,18 +78,10 @@ defineExpose({
       <div @mouseover="handleMouseOver" @mouseleave="handleMouseLeave">
         <NForm :model="formValue" :rules="formRules">
           <NFormItem path="projectName">
-            <NInput
-              ref="inputElement"
-              v-model:value="formValue.projectName"
-              placeholder="名称"
-            >
+            <NInput ref="inputElement" v-model:value="formValue.projectName" placeholder="名称">
               <template #prefix>
                 <NPopover
-                  v-if="isHover"
-                  placement="bottom"
-                  trigger="click"
-                  :show="isShowPopover"
-                  :show-arrow="false"
+                  v-if="isHover" placement="bottom" trigger="click" :show="isShowPopover" :show-arrow="false"
                   @update:show="handleUpdateShow"
                 >
                   <template #trigger>
@@ -101,11 +93,8 @@ defineExpose({
                     </NButton>
                   </template>
                   <EmojiPicker
-                    picker-type="inputValue"
-                    :native="true"
-                    :static-texts="EMOJI_STATIC_TEXTS"
-                    :group-names="EMOJI_GROUPS_NAMES"
-                    @select="handleSelectEmoji"
+                    picker-type="inputValue" :native="true" :static-texts="EMOJI_STATIC_TEXTS"
+                    :group-names="EMOJI_GROUPS_NAMES" @select="handleSelectEmoji"
                   />
                 </NPopover>
                 <NButton v-else text>
@@ -121,7 +110,7 @@ defineExpose({
 
       <template #footer>
         <NSpace justify="end">
-          <NButton @click="handleClose">
+          <NButton @click="handleActions('cancel')">
             关闭
           </NButton>
           <NButton type="success" :disabled="!isSavable" @click="handleSave">
