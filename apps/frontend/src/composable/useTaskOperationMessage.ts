@@ -52,7 +52,7 @@ export function useTaskOperationMessage() {
 
     messageReactive = message.info(createMessageView(content, onClick), {
       icon: () => null,
-      duration: 1000,
+      duration: 2500,
     })
   }
 
