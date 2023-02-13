@@ -17,6 +17,7 @@ import type { Tag } from '@/services/task/listTag'
 interface TProps {
   show: boolean
   tag?: Omit<Tag, 'loadTasks'>
+  onOk?: (tag: Tag) => void
 }
 
 type Actions = 'close' | 'cancel' | 'confirm' | 'edited'
@@ -71,11 +72,10 @@ const handleActions = (action: Actions) => {
 const handleCreateTag = async () => {
   const modelVal = Object.assign(model.value, {})
   modelVal.parentTagId === -1 && (modelVal.parentTagId = undefined)
-  await taskStore.addTag(modelVal)
+  const tag = await taskStore.addTag(modelVal)
   nextTick(() => {
     model.value = initModel()
-    projectSelectedStatusStore.listDefaultSelectedKey.push(200)
-    projectSelectedStatusStore.changeSelectedKey([200 + taskStore.listTags.length - 1])
+    props.onOk?.(tag)
     handleActions('confirm')
   })
 }
