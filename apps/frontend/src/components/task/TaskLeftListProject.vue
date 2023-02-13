@@ -9,9 +9,9 @@ import { h, onMounted, ref, watchEffect } from 'vue'
 import 'vue3-emoji-picker/css'
 import { tagCreateViewDialog } from './TagView'
 import { tagRemoveAlert } from './TagView/TagRemoveAlert'
+import { projectCreatedViewModal } from './TagView/ProjectCreateView'
 import { useProjectSelectedStatusStore, useTaskStore } from '@/store'
 import { findListTagByName } from '@/services/task/listTag'
-import ProjectCreateView from '@/components/task/ProjectCreatedView.vue'
 import type { Tag } from '@/services/task/listTag'
 import type { ListProject } from '@/services/task/listProject'
 
@@ -21,15 +21,6 @@ const taskStore = useTaskStore()
 enum TreeRootKeys {
   PROJECT = 100,
   TAG = 200,
-}
-
-const { projectViewRef } = useCreateProjectButton()
-
-function useCreateProjectButton() {
-  const projectViewRef = ref()
-  return {
-    projectViewRef,
-  }
 }
 
 const createRootNodeSuffix = (onclick: (e: Event) => void) => {
@@ -116,7 +107,6 @@ const generateTagChildrenNode = (tags: Tag[]) => {
 }
 
 const expandedKeys = ref<TreeRootKeys[]>([])
-const defaultExpandedKeys = ref<TreeRootKeys[]>([])
 const treeProjectChildren = ref<TreeOption[]>([])
 const treeTagChildren = ref<TreeOption[]>([])
 
@@ -135,7 +125,7 @@ watchEffect(() => {
 })
 
 onMounted(() => {
-  defaultExpandedKeys.value = expandedKeys.value = [
+  expandedKeys.value = [
     ...new Set([
       ...(taskStore.listProjectNames.length ? [] : [TreeRootKeys.PROJECT]),
       ...(taskStore.listTags.length ? [] : [TreeRootKeys.TAG]),
@@ -143,7 +133,12 @@ onMounted(() => {
     ]),
   ]
 })
-
+const afterAddProject = (project: ListProject) => {
+  projectSelectedStatusStore.changeSelectedKey(
+    [TreeRootKeys.PROJECT + project.id],
+  )
+  expandedKeys.value.push(TreeRootKeys.PROJECT)
+}
 const data = ref<any[]>([
   {
     key: TreeRootKeys.PROJECT,
@@ -152,8 +147,10 @@ const data = ref<any[]>([
     isLeaf: false,
     children: treeProjectChildren,
     suffix: createRootNodeSuffix((e: Event) => {
-      projectViewRef.value.toggleShowModal()
       e.stopPropagation()
+      projectCreatedViewModal({
+        onOk: project => afterAddProject(project),
+      })
     }),
   },
   {
@@ -178,6 +175,7 @@ const data = ref<any[]>([
     }),
   },
 ])
+
 const nodeProps = ({ option }: { option: TreeOption }) => {
   return {
     onClick() {
@@ -211,26 +209,17 @@ const changeSelectedKey = (key: number[]) => {
   if (!Object.values(TreeRootKeys).includes(key[0]))
     projectSelectedStatusStore.changeSelectedKey(key)
 }
-
-const afterAddProject = (project: ListProject) => {
-  projectSelectedStatusStore.changeSelectedKey(
-    [TreeRootKeys.PROJECT + project.id],
-  )
-  expandedKeys.value.push(TreeRootKeys.PROJECT)
-}
 </script>
 
 <template>
   <NTree
     v-model:selected-keys="projectSelectedStatusStore.selectedKey"
     v-model:expanded-keys="expandedKeys"
-    :default-expanded-keys="defaultExpandedKeys"
     block-line
     :data="data"
     :node-props="nodeProps"
     @update:selected-keys="changeSelectedKey"
   />
-  <ProjectCreateView ref="projectViewRef" @after-add-project="afterAddProject" />
 </template>
 
 <style>

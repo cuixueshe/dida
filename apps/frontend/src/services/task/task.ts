@@ -83,17 +83,23 @@ export function changeTaskContent(task: Task, content: string) {
   task.content = content
 }
 
-export async function addTask(task: Task, projectId = -1, tags: number[] = []) {
+export async function addTask(
+  task: Task,
+  project: Project | undefined = undefined,
+  tags: number[] = [],
+) {
+  const pId = project?.id || -1
   const tId = await repository?.addTask(
     task.title,
     task.content,
     task.state,
-    projectId,
+    pId,
     tags,
     task.index,
   )
   if (tId) {
     task.id = tId
+    task.project = project
     tasks.unshift(task)
   }
 }

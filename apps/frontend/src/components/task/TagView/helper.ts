@@ -1,7 +1,7 @@
 import type { Component } from 'vue'
 import { createApp, h, reactive } from 'vue'
 
-export const mountCompoent = (component: Component, props: Record<string | symbol, any>, eventListener: Record<string, any>) => {
+export const mountComponent = (component: Component, props: Record<string | symbol, any>, eventListener: Record<string, any>) => {
   const app = createApp({
     setup() {
       return () => h(component, {
@@ -30,7 +30,7 @@ export const dialogInit = (component: Component, options: Record<any, any> = {})
     pRes = resolve
   })
   const reactiveOptions = reactive(Object.assign({ show: false }, options))
-  const { unmount } = mountCompoent(component, reactiveOptions, {
+  const { unmount } = mountComponent(component, reactiveOptions, {
     'onCancel': () => {
       pRes('cancel')
     },

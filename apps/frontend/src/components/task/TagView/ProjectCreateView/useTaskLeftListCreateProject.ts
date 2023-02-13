@@ -1,6 +1,7 @@
 import type { FormRules } from 'naive-ui'
 import type { Ref } from 'vue'
 import { computed, ref } from 'vue'
+import { findListProjectByName } from '@/services/task/listProject'
 
 enum SkinStone {
   NEUTRAL = 'neutral',
@@ -24,10 +25,10 @@ export function useTaskLeftListCreateProject(
 ) {
   const { handleMouseOver, handleMouseLeave, isHover } = useMouse()
   const { formValue, formRules } = useForm()
-  const { cleanupInput, handleUpdateShow, handleClose } = useInput()
-  const isSavable = computed(() => formValue.value.projectName?.trim() !== '')
+  const { cleanupInput, handleUpdateShow } = useInput()
+  const isDuplicate = ref(false)
+  const isSavable = computed(() => formValue.value.projectName?.trim() !== '' && !isDuplicate.value)
   const isShowPopover = ref<boolean>(false)
-  const isShowModal = ref<boolean>(false)
   const {
     getDefaultEmojiConfig,
     emojiValue,
@@ -40,8 +41,19 @@ export function useTaskLeftListCreateProject(
     })
     const formRules: FormRules = {
       projectName: {
-        validator: () => isSavable.value,
-        message: '清单名称不能为空',
+        validator: (_, value: string) => {
+          return new Promise<void>((resolve, reject) => {
+            isDuplicate.value = false
+            if (!isSavable.value) {
+              reject(Error('清单名称不能为空'))
+            }
+            else if (findListProjectByName(value)) {
+              isDuplicate.value = true
+              reject(Error('重复的清单名称'))
+            }
+            else { resolve() }
+          })
+        },
         trigger: ['input', 'blur'],
       },
     }
@@ -102,14 +114,9 @@ export function useTaskLeftListCreateProject(
       isShowPopover.value = show
       !show && inputElement.value?.focus()
     }
-    function handleClose() {
-      isShowModal.value = false
-      cleanupInput()
-    }
     return {
       cleanupInput,
       handleUpdateShow,
-      handleClose,
     }
   }
 
@@ -120,13 +127,11 @@ export function useTaskLeftListCreateProject(
     emojiValue,
     formRules,
     formValue,
-    handleClose,
     handleMouseLeave,
     handleMouseOver,
     handleUpdateShow,
     isHover,
     isSavable,
-    isShowModal,
     isShowPopover,
   }
 }
