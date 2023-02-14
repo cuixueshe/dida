@@ -67,7 +67,7 @@ export function useTaskRightContextMenu() {
   function getMoveListProjects() {
     return taskStore.listProjects.map((projectItem) => {
       const isCurrentProject
-        = taskStore.currentActiveTask?.project!.id === projectItem.id
+        = taskStore.currentActiveProject.id === projectItem.id
       return {
         label: isCurrentProject
           ? h(
