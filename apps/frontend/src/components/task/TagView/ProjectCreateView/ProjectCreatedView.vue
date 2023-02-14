@@ -15,10 +15,13 @@ import EmojiPicker from 'vue3-emoji-picker'
 import { useTaskLeftListCreateProject } from './useTaskLeftListCreateProject'
 import { useTaskStore } from '@/store'
 import 'vue3-emoji-picker/css'
+import type { ListProject } from '@/services/task/listProject'
 
-const props = defineProps({
-  show: { type: Boolean },
-})
+interface TProps {
+  show: boolean
+  onOk?: (project: ListProject) => void
+}
+const props = defineProps<TProps>()
 const emits = defineEmits(['update:show', 'close', 'closed', 'cancel', 'confirm'])
 const inputElement = ref<HTMLInputElement>()
 const taskStore = useTaskStore()
@@ -55,10 +58,11 @@ const handleActions = (action: Actions) => {
   emits('closed')
 }
 
-function handleSave() {
+async function handleSave() {
   let projectName = formValue.value.projectName
   emojiValue.value && (projectName = emojiValue.value + projectName)
-  taskStore.addProject(projectName)
+  const project = await taskStore.addProject(projectName)
+  props.onOk?.(project)
   handleActions('confirm')
 }
 </script>

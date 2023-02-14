@@ -43,6 +43,7 @@ export function createListTag(name: string, color?: string, parentTagId?: number
 
 export async function loadTags() {
   return repository!.loadTags().then((tags) => {
+    listTags.length = 0
     tags.forEach((tag) => {
       listTags.push(createListTag(tag.name, tag.color, tag.parentTagId || undefined, tag.id))
     })
