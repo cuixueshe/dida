@@ -3,7 +3,7 @@ import { onBeforeMount, ref } from 'vue'
 import TaskEditor from '@/components/task/TaskEditor.vue'
 import TaskLeftListView from '@/components/task/TaskLeftListView.vue'
 import TaskList from '@/components/task/TaskList.vue'
-import { useTaskSidebarDrag } from '@/composable'
+import { useTaskSidebarDrag } from '@/composables'
 import { useTaskLeftMenuStatusStore, useTaskStore, useThemeStore } from '@/store'
 
 const taskStore = useTaskStore()

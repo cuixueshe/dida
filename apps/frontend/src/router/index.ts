@@ -3,10 +3,14 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 import type { App } from 'vue'
 import { SettingsRoute } from './settings'
 import Task from '@/pages/Task.vue'
-import { getDiscreteApi } from '@/composable/useNaiveDiscreteApi'
+import { getDiscreteApi } from '@/composables/useNaiveDiscreteApi'
 
 export const routes: RouteRecordRaw[] = [
-  { path: '/', redirect: '/task' },
+  {
+    path: '/',
+    redirect: '/task',
+    name: 'Home',
+  },
   { path: '/task', component: Task, name: 'Task' },
   SettingsRoute,
 ]

@@ -3,7 +3,7 @@ import { NDropdown, NPopover } from 'naive-ui'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import Command from '@/components/command/Command.vue'
-import { useIsMac } from '@/composable'
+import { useIsMac } from '@/composables'
 
 const commandRef = ref<InstanceType<typeof Command>>()
 
