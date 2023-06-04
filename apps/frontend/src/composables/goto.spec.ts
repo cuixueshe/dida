@@ -1,8 +1,8 @@
 import { describe, expect, it, vi } from 'vitest'
-import { useSetup } from '../../tests/test-helper'
-import { useGoto } from './theHeader'
+import { useGoto } from './goto'
+import { useSetup } from '@/tests/test-helper'
 
-describe('theHeader', () => {
+describe('goto', () => {
   it('should be go to Settings', () => {
     const { router } = useSetup(() => {
       const { gotoSettings } = useGoto()
