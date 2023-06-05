@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import { NDropdown, NPopover } from 'naive-ui'
 import type { DropdownMixedOption } from 'naive-ui/es/dropdown/src/interface'
-import { useCommand } from '../command/command'
-import Command from '@/components/command/Command.vue'
+import { openCommandModal } from '../command/commandModal'
+import Command from '@/components/command/CommandModal.vue'
 import { useGoto } from '@/composables'
 
-const { showCommand } = useCommand()
 const { gotoSettings } = useGoto()
 
 const settingOptions: DropdownMixedOption[] = [
@@ -43,7 +42,7 @@ const activityIconOptions: ActivityIconOption[] = [
     label: '搜索面板',
     icon: 'carbon-search',
     onClick() {
-      showCommand()
+      openCommandModal()
     },
   },
 ]
@@ -61,7 +60,7 @@ const activityIconOptions: ActivityIconOption[] = [
     <div
       class="text-gray-4 flex flex-col justify-center items-center text-xl mt-10 gap-6 font-bold"
     >
-      <template v-for="(iconOption, i) in activityIconOptions" :key="i">
+      <!-- <template v-for="(iconOption, i) in activityIconOptions" :key="i">
         <NPopover placement="right">
           <template #trigger>
             <div
@@ -72,7 +71,44 @@ const activityIconOptions: ActivityIconOption[] = [
           </template>
           <span>{{ iconOption.label }}</span>
         </NPopover>
-      </template>
+      </template> -->
+      <NPopover placement="right">
+        <template #trigger>
+          <div
+            class="hover:text-gray-6 dark:hover:text-gray-2"
+            i="carbon-checkbox-checked-filled"
+          />
+        </template>
+        <span>任务</span>
+      </NPopover>
+      <NPopover placement="right">
+        <template #trigger>
+          <div
+            class="hover:text-gray-6 dark:hover:text-gray-2"
+            i="carbon-calendar-heat-map"
+          />
+        </template>
+        <span>日历</span>
+      </NPopover>
+      <NPopover placement="right">
+        <template #trigger>
+          <div
+            class="hover:text-gray-6 dark:hover:text-gray-2"
+            i="carbon-task-complete"
+          />
+        </template>
+        <span>打卡</span>
+      </NPopover>
+      <NPopover placement="right">
+        <template #trigger>
+          <div
+            class="hover:text-gray-6 dark:hover:text-gray-2 cursor-pointer"
+            i="carbon-search"
+            @click="() => openCommandModal()"
+          />
+        </template>
+        <span>搜索面板</span>
+      </NPopover>
     </div>
     <Command />
   </div>

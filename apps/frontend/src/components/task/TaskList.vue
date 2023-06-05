@@ -4,7 +4,7 @@ import { computed, ref } from 'vue'
 import { Icon } from '@iconify/vue'
 import draggable from 'vuedraggable'
 import { SmartProjectNames, isSmartProject, updateTaskIndex } from 'services/task'
-import Command from '../command/Command.vue'
+import Command from '../command/CommandModal.vue'
 import TaskItem from './TaskItem.vue'
 import {
   useTaskLeftMenuStatusStore,

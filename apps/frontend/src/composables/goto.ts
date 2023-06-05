@@ -15,6 +15,12 @@ export function useGoto() {
     })
   }
 
+  function gotoSettingsTheme() {
+    router.push({
+      name: 'SettingsTheme',
+    })
+  }
+
   function gotoGithub() {
     window.open('https://github.com/cuixueshe/dida')
   }
@@ -23,5 +29,6 @@ export function useGoto() {
     gotoHome,
     gotoSettings,
     gotoGithub,
+    gotoSettingsTheme,
   }
 }
