@@ -1,14 +1,8 @@
 <script setup lang="ts">
 import { NSpace } from 'naive-ui'
-import { useRouter } from 'vue-router'
+import { useGoto } from '@/composables'
 
-const router = useRouter()
-
-const goToHome = () => {
-  router.push({
-    path: '/',
-  })
-}
+const { gotoHome } = useGoto()
 </script>
 
 <template>
@@ -21,7 +15,7 @@ const goToHome = () => {
             w-100px h-40px rounded-md bg-blue-500 text-white text-16px
             hover:bg-blue-400 active:bg-blue-700 transition-colors
           "
-      @click="goToHome()"
+      @click="() => gotoHome()"
     >
       完成
     </button>
