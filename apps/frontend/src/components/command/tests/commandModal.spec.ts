@@ -1,10 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { computed } from 'vue'
 import { closeCommandModal, openCommandModal, registerKeyboardShortcut, showCommandModal } from '../commandModal'
-import { useIsMac } from '@/composables'
+import * as composables from '@/composables'
 import { useSetup } from '@/tests/test-helper'
-
-vi.mock('@/composables/misc')
 
 describe('CommandModal', () => {
   beforeEach(() => {
@@ -26,7 +24,7 @@ describe('CommandModal', () => {
 
   describe('KeyboardShortcut', () => {
     it('should be open command modal when use command + k on Mac', () => {
-      vi.mocked(useIsMac).mockImplementation(() => computed(() => true))
+      vi.spyOn(composables, 'useIsMac').mockImplementation(() => computed(() => true))
       useSetup(() => {
         registerKeyboardShortcut()
       })
@@ -41,7 +39,7 @@ describe('CommandModal', () => {
       expect(showCommandModal.value).toBe(true)
     })
     it('should be open command modal when use ctrl + k on Win', () => {
-      vi.mocked(useIsMac).mockImplementation(() => computed(() => false))
+      vi.spyOn(composables, 'useIsMac').mockImplementation(() => computed(() => false))
       useSetup(() => {
         registerKeyboardShortcut()
       })

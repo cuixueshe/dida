@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from 'vitest'
-import { commands, filteredCommands, resetSearchCommands, searchCommands } from './searchCommands'
+import { commands, filteredCommands, resetSearchCommands, searchCommands } from '../searchCommands'
 
 describe('SearchCommands', () => {
   beforeEach(() => {

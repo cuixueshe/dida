@@ -1,53 +1,77 @@
-import { describe, expect, it, vi } from 'vitest'
-import { nextTick } from 'vue'
-import { inputStateMachine, search } from './search'
+import { afterEach, beforeEach, describe, expect, it, test, vi } from 'vitest'
+import flushPromises from 'flush-promises'
+import { inputStateMachine, resetSearch, search } from '../search'
+import { resetSearchCommands, searchCommands } from '../searchCommands'
+import { resetSearchTasks, searchTasks } from '../searchTasks'
+
+vi.mock('../searchCommands.ts')
+vi.mock('../searchTasks.ts')
+
+async function flushWatch() {
+  // 这是为了处理 watch
+  await flushPromises() // 这是为了处理延迟 500ms
+  vi.advanceTimersToNextTimer()
+  // 这是为了处理内部的 await
+  await flushPromises()
+}
 
 describe('Search', () => {
-  // 这里其实只是检测了状态
-  // 其实还可以扩展一下, 在这里把 searchCommands 和 searchTasks 都测试上
-  it('should be that state is loadCompleted when input completed', async () => {
+  beforeEach(() => {
     vi.useFakeTimers()
-
-    search.value = 'code'
-
-    await nextTick()
-    // handle watchDebounced
-    // 下面2个 api 都可以
-    //     vi.advanceTimersByTime(500)
-    vi.advanceTimersToNextTimer()
-    // TODO 这里其实是我自己模拟了 delay , 后面换成调用真实的逻辑后 我们可以  mock 掉 ,或者使用其他的办法
-    // 所以下面两行代码是临时的
-    // for delay search data
-    await nextTick()
-    vi.advanceTimersToNextTimer()
-    // 这里还需要把最后一个 promise 解除掉才可以
-    await nextTick()
-    expect(inputStateMachine.state.value).toBe('loadCompleted')
+    vi.restoreAllMocks()
   })
 
-  it('reset', async () => {
-    vi.useFakeTimers()
+  afterEach(() => {
+    resetSearch()
+  })
 
-    search.value = 'code'
+  describe('input state machine', () => {
+    it('input state machine change', async () => {
+      search.value = 'code'
 
-    await nextTick()
-    // 下面2个 api 都可以
-    // handle watchDebounced
-    //     vi.advanceTimersByTime(500)
-    vi.advanceTimersToNextTimer()
-    // TODO 这里其实是我自己模拟了 delay , 后面换成调用真实的逻辑后 我们可以  mock 掉 ,或者使用其他的办法
-    // 所以下面两行代码是临时的
-    // for delay search data
-    await nextTick()
-    vi.advanceTimersToNextTimer()
-    // 这里还需要把最后一个 promise 解除掉才可以
-    await nextTick()
+      await flushPromises()
+      vi.advanceTimersToNextTimer()
+      expect(inputStateMachine.state.value).toBe('loading')
 
-    // -----------上面都是处理 watchDebounced 的---------------
-    // 现在处理 watch search.value = ""
+      await flushPromises()
+      expect(inputStateMachine.state.value).toBe('loadCompleted')
+    })
+
+    it('should be reset when search value is empty', async () => {
+      search.value = 'code'
+      await flushWatch()
+
+      search.value = ''
+      await flushWatch()
+
+      expect(inputStateMachine.state.value).toBe('waitingForInput')
+    })
+  })
+
+  test('should search commands when input contain \'>\'  ', async () => {
+    search.value = '>主页'
+
+    await flushWatch()
+
+    expect(searchCommands).toBeCalledWith('主页')
+  })
+
+  test('should search tasks ', async () => {
+    search.value = '吃饭'
+
+    await flushWatch()
+
+    expect(searchTasks).toBeCalledWith('吃饭')
+  })
+
+  test('should be reset when reset search', async () => {
+    search.value = '吃饭'
+    await flushWatch()
+
     search.value = ''
+    await flushWatch()
 
-    await nextTick()
-    expect(inputStateMachine.state.value).toBe('waitingForInput')
+    expect(resetSearchCommands).toBeCalled()
+    expect(resetSearchTasks).toBeCalled()
   })
 })

@@ -6,9 +6,6 @@ type State = 'waitingForInput' | 'inputCompleted' | 'loading' | 'loadCompleted'
 
 export const inputStateMachine = {
   state: ref<State>('waitingForInput'),
-  completeInput() {
-    this.state.value = 'inputCompleted'
-  },
   startLoading() {
     this.state.value = 'loading'
   },
@@ -30,18 +27,19 @@ export const isSearchCommand = computed(() => {
   return search.value.startsWith('>')
 })
 
+async function handleSearch(input: string) {
+  if (isSearchCommand.value)
+    searchCommands(input.slice(1))
+  else
+    await searchTasks(input)
+}
+
 watchDebounced(
   () => search.value,
   async (v) => {
     if (v) {
-      inputStateMachine.completeInput()
       inputStateMachine.startLoading()
-
-      if (isSearchCommand.value)
-        searchCommands(v.slice(1))
-      else
-        await searchTasks(v)
-
+      await handleSearch(v)
       inputStateMachine.completeLoad()
     }
   },

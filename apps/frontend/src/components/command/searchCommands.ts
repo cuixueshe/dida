@@ -24,7 +24,7 @@ export const commands: Command[] = [
   },
 ]
 
-// 默认显示所在的命令
+// 默认显示所有的命令
 export const filteredCommands = ref<Command[]>(commands)
 const fuse = new Fuse(commands, {
   keys: ['name'],
