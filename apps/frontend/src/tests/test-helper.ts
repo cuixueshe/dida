@@ -12,3 +12,10 @@ export function useSetup<V>(setup: () => V) {
     router: wrapper.router,
   }
 }
+
+export const fireEvent = {
+  keydown(options: KeyboardEventInit) {
+    const event = new KeyboardEvent('keydown', options)
+    window.dispatchEvent(event)
+  },
+}

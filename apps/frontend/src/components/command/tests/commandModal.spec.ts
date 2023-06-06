@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { computed } from 'vue'
 import { closeCommandModal, openCommandModal, registerKeyboardShortcut, showCommandModal } from '../commandModal'
 import * as composables from '@/composables'
-import { useSetup } from '@/tests/test-helper'
+import { fireEvent, useSetup } from '@/tests/test-helper'
 
 describe('CommandModal', () => {
   beforeEach(() => {
@@ -28,13 +28,11 @@ describe('CommandModal', () => {
       useSetup(() => {
         registerKeyboardShortcut()
       })
-      // 触发键盘事件
-      // TODO 按照 @testing-library/vue 的 api 来封装一下触发键盘事件的逻辑到 test-helper
-      const event = new KeyboardEvent('keydown', {
+
+      fireEvent.keydown({
         key: 'k',
         metaKey: true,
       })
-      window.dispatchEvent(event)
 
       expect(showCommandModal.value).toBe(true)
     })
@@ -43,12 +41,11 @@ describe('CommandModal', () => {
       useSetup(() => {
         registerKeyboardShortcut()
       })
-      // 触发键盘事件
-      const event = new KeyboardEvent('keydown', {
+
+      fireEvent.keydown({
         key: 'k',
         ctrlKey: true,
       })
-      window.dispatchEvent(event)
 
       expect(showCommandModal.value).toBe(true)
     })
