@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { useGoto } from './goto'
+import { useGoto } from '../goto'
 import { useSetup } from '@/tests/test-helper'
 
 describe('goto', () => {
