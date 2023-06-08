@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
-import { Document } from 'mongoose'
+import { Document, Types } from 'mongoose'
 import { TaskStatus } from '../const'
+import { Project } from '../../projects/schemas/project.schema'
 
 export type TaskDocument = Task & Document
 
@@ -15,8 +16,8 @@ export class Task {
   @Prop({ enum: Object.values(TaskStatus), default: TaskStatus.ACTIVE })
   status: 'ACTIVE' | 'COMPLETED' | 'REMOVED'
 
-  @Prop({ required: true, type: String })
-  projectId: string
+  @Prop({ required: true, type: Types.ObjectId, ref: Project.name })
+  projectId: Types.ObjectId
 
   @Prop({ type: Number })
   position: number

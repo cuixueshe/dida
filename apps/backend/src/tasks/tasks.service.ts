@@ -1,4 +1,4 @@
-import { Model } from 'mongoose'
+import { Model, Types } from 'mongoose'
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Task } from './schemas/task.schema'
@@ -18,12 +18,12 @@ export class TasksService {
 
   async findAll(projectId?: string, status?: string): Promise<Task[]> {
     const query: {
-      projectId?: string
+      projectId?: Types.ObjectId
       status?: string
     } = {}
 
     if (projectId)
-      query.projectId = projectId
+      query.projectId = new Types.ObjectId(projectId)
 
     if (status)
       query.status = status
