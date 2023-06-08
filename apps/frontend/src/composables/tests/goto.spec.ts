@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 import { useGoto } from '../goto'
-import { useSetup } from '@/tests/test-helper'
+import { useSetup } from '@/tests/helper'
 
 describe('goto', () => {
   it('should be go to Settings', () => {

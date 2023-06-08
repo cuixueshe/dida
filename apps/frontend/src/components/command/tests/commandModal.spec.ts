@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { computed } from 'vue'
 import { closeCommandModal, openCommandModal, registerKeyboardShortcut, showCommandModal } from '../commandModal'
 import * as composables from '@/composables'
-import { fireEvent, useSetup } from '@/tests/test-helper'
+import { fireEvent, useSetup } from '@/tests/helper'
 
 describe('CommandModal', () => {
   beforeEach(() => {

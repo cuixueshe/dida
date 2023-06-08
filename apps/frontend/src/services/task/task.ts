@@ -73,7 +73,7 @@ export function changeTaskTitle(task: Task, title: string) {
   task.title = title
 }
 
-export function updateTaskIndex(task: Task, newIndex: number) {
+export function updateTaskIndex(task: any, newIndex: number) {
   repository?.updateTask(task.id, { index: newIndex })
   task.index = newIndex
 }

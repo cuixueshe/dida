@@ -3,9 +3,11 @@ import ContextMenu from '@imengyu/vue3-context-menu'
 import type { MenuOptions } from '@imengyu/vue3-context-menu/index'
 import { useTaskOperationMessage } from './useTaskOperationMessage'
 import { useTaskStore } from '@/store'
+import { useTaskStore as useNewTaskStor } from '@/store/tasks'
 
 export function useTaskRightContextMenu() {
   const taskStore = useTaskStore()
+  const newTaskStore = useNewTaskStor()
   const { showRemoveMessage, showMoveMessage } = useTaskOperationMessage()
   const moveProjects: NonNullable<MenuOptions['items']> = [
     ...getSearchMenuItem(),
@@ -22,8 +24,8 @@ export function useTaskRightContextMenu() {
       {
         label: '删除',
         onClick: () => {
-          showRemoveMessage(taskStore.currentActiveTask!)
-          taskStore.removeTask(taskStore.currentActiveTask!)
+          showRemoveMessage(newTaskStore.currentActiveTask!)
+          newTaskStore.removeTask(newTaskStore.currentActiveTask!)
         },
       },
     ],

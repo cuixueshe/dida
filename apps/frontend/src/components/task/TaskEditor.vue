@@ -1,26 +1,31 @@
 <script setup lang="ts">
 import InkMde from 'ink-mde/vue'
-import { changeTaskContent, changeTaskTitle } from 'services/task'
-import { useTaskStore, useThemeStore } from '@/store'
+import { debounce } from 'lodash-es'
+import { useThemeStore } from '@/store'
+import { useTaskStore } from '@/store/tasks'
 
 const taskStore = useTaskStore()
 const themeStore = useThemeStore()
 
 function handleInput(e: Event) {
   if (taskStore.currentActiveTask)
-    changeTaskTitle(taskStore.currentActiveTask, (e.target as HTMLElement).innerText)
+    taskStore.updateTaskTitle(taskStore.currentActiveTask, (e.target as HTMLElement).innerText)
 }
 
 function handleAfterUpdate(doc: string) {
   if (taskStore.currentActiveTask)
-    changeTaskContent(taskStore.currentActiveTask, doc)
+    taskStore.updateTaskContent(taskStore.currentActiveTask, doc)
 }
+
+const waitTime = 700
+const debounceHandleInput = debounce(handleInput, waitTime)
+const debounceHandleAfterUpdate = debounce(handleAfterUpdate, waitTime)
 </script>
 
 <template>
   <div>
     <div v-if="taskStore.currentActiveTask">
-      <h1 contenteditable="true" class="text-3xl" @input="handleInput">
+      <h1 contenteditable="true" class="text-3xl" @input="debounceHandleInput">
         {{ taskStore.currentActiveTask.title }}
       </h1>
       <div class="mt-2">
@@ -31,7 +36,7 @@ function handleAfterUpdate(doc: string) {
               appearance: themeStore.isDark ? 'dark' : 'light',
             },
             hooks: {
-              afterUpdate: handleAfterUpdate,
+              afterUpdate: debounceHandleAfterUpdate,
             },
           }"
         />

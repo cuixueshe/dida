@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { NPopover } from 'naive-ui'
-import type { Project, Task } from 'services/task'
-import { changeTaskTitle } from 'services/task'
+import type { Project } from 'services/task'
 import { ref } from 'vue'
 import { useTaskOperationMessage, useTaskRightContextMenu } from '@/composables'
-import { TaskState, useTaskStore, useThemeStore } from '@/store'
+import { useTaskStore, useThemeStore } from '@/store'
+import { TaskStatus, useTaskStore as useNewTaskStore } from '@/store/tasks'
+import type { Task } from '@/store/tasks'
 
 interface Props {
   task: Task
@@ -13,18 +14,17 @@ interface Props {
 }
 
 const props = defineProps<Props>()
-const taskStore = useTaskStore()
+const newTaskStore = useNewTaskStore()
 const themeStore = useThemeStore()
 const { isHover, hoverEvents } = useHandleHover()
 
 const { showCompleteMessage } = useTaskOperationMessage()
 const { showContextMenu } = useTaskRightContextMenu()
 
-const checkboxColors: Record<TaskState, string> = {
-  [TaskState.ACTIVE]: 'bg-transparent',
-  [TaskState.COMPLETED]: 'bg-#007A78',
-  [TaskState.GIVE_UP]: 'bg-#FF2200',
-  [TaskState.REMOVED]: 'bg-#ccc',
+const checkboxColors: Record<TaskStatus, string> = {
+  [TaskStatus.ACTIVE]: 'bg-transparent',
+  [TaskStatus.COMPLETED]: 'bg-#007A78',
+  [TaskStatus.REMOVED]: 'bg-#ccc',
 }
 function useHandleHover() {
   const isHover = ref(false)
@@ -40,28 +40,28 @@ function useHandleHover() {
 }
 
 function handleRightClickTask(e: MouseEvent, task: Task) {
-  taskStore.changeActiveTask(task)
+  newTaskStore.changeActiveTask(task)
   showContextMenu(e)
 }
 
 function handleClickTask(task: Task) {
-  taskStore.changeActiveTask(task)
+  newTaskStore.changeActiveTask(task)
 }
 
 function handleInput(e: Event, task: Task) {
   const newTitle = (e.target as HTMLElement).innerText
-  changeTaskTitle(task, newTitle)
+  newTaskStore.changeTaskTitle(task, newTitle)
 }
 
 function handleCompleteTodo(e: Event) {
-  if (props.task.state === TaskState.ACTIVE) {
-    taskStore.completeTask(props.task)
+  if (props.task.status === TaskStatus.ACTIVE) {
+    newTaskStore.completeTask(props.task)
     showCompleteMessage(props.task, props.project)
   }
-  else if (props.task.state === TaskState.COMPLETED) {
-    taskStore.restoreTask(props.task)
+  else if (props.task.status === TaskStatus.COMPLETED) {
+    newTaskStore.restoreTask(props.task)
   }
-  else if (props.task.state === TaskState.REMOVED) {
+  else if (props.task.status === TaskStatus.REMOVED) {
     // eslint-disable-next-line no-console
     console.log('在垃圾桶里面的 task 不可以直接恢复')
   }
@@ -81,19 +81,19 @@ function handleCompleteTodo(e: Event) {
     <div
       flex justify-start items-center gap-5px h-40px py-5px flex-1 pl-10px :class="[
         themeStore.isDark ? 'hover:bg-[#474747]/50' : 'hover:bg-[#ECF1FF]/50',
-        taskStore.currentActiveTask?.id === task.id
+        newTaskStore.currentActiveTask?.id === task.id
           ? themeStore.isDark
             ? '!bg-[#474747]'
             : '!bg-[#ECF1FF]'
           : '',
       ]"
     >
-      <template v-if="task.state === TaskState.REMOVED">
+      <template v-if="task.status === TaskStatus.REMOVED">
         <!-- 临时加的提示 后面要去掉 -->
         <div class="flex justify-start items-center gap-5px">
           <NPopover trigger="hover">
             <template #trigger>
-              <button :class="[checkboxColors[task.state]]" class="w-5 h-5 rounded-1" @click="handleCompleteTodo" />
+              <button :class="[checkboxColors[task.status]]" class="w-5 h-5 rounded-1" @click="handleCompleteTodo" />
             </template>
             <div>在垃圾桶里面的 Task 是不可以直接被恢复的哦</div>
           </NPopover>
@@ -104,7 +104,7 @@ function handleCompleteTodo(e: Event) {
       </template>
       <template v-else>
         <button
-          :class="[checkboxColors[task.state]]"
+          :class="[checkboxColors[task.status]]"
           class="w-5 h-5 rounded-1 border border-solid border-black opacity-75 dark:border-white hover:opacity-100"
           @click="handleCompleteTodo"
         />

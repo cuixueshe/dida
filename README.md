@@ -153,3 +153,9 @@ isSmartProject 是基于 name 来判断是不是智能清单，不会影响到�
 ## Roadmap
 1. 支持 Vim 的方式通过快捷键来操作 类似于 [vimium](https://chrome.google.com/webstore/detail/vimium/dbepggeogbaibhgnhhndojpepiihcmeb?hl=en)
 2. 支持可以通过 github 账号登录，数据直接保存在自己的 github 上
+
+## TODO
+- [ ] task 拖拽排序问题 
+- [x] 创建 task 
+- [x] 修改 content
+- [x] 修改 title

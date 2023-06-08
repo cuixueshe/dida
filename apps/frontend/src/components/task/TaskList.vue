@@ -3,16 +3,15 @@ import type { Ref } from 'vue'
 import { computed, ref } from 'vue'
 import { Icon } from '@iconify/vue'
 import draggable from 'vuedraggable'
-import { SmartProjectNames, isSmartProject, updateTaskIndex } from 'services/task'
-import Command from '../command/CommandModal.vue'
+import { SmartProjectNames, isSmartProject, updateTaskPosition } from 'services/task'
 import TaskItem from './TaskItem.vue'
 import {
   useTaskLeftMenuStatusStore,
-  useTaskStore,
   useThemeStore,
 } from '@/store'
+import { useTaskStore as useNewTaskStore } from '@/store/tasks'
 
-const taskStore = useTaskStore()
+const newTaskStore = useNewTaskStore()
 const themeStore = useThemeStore()
 const taskLeftMenuStatusStore = useTaskLeftMenuStatusStore()
 
@@ -33,7 +32,7 @@ const taskTitle = ref('')
 const dragging = ref<boolean>(false)
 
 const placeholderText = computed(() => {
-  return `添加任务至“${taskStore.currentActiveProject?.name}”，回车即可保存`
+  return `添加任务至“${newTaskStore.currentActiveProject?.name}”，回车即可保存`
 })
 const isPlaceholder = computed(() => {
   return taskTitle.value.length === 0
@@ -42,9 +41,9 @@ const isPlaceholder = computed(() => {
 function addTask() {
   if (!taskTitle.value)
     return
-  if (Reflect.has(taskStore.currentActiveProject, 'color'))
-    taskStore.addTaskToTag(taskTitle.value)
-  else taskStore.addTask(taskTitle.value)
+  if (Reflect.has(newTaskStore.currentActiveProject, 'color'))
+    newTaskStore.addTaskToTag(taskTitle.value)
+  else newTaskStore.addTask(taskTitle.value)
 
   taskTitle.value = ''
 }
@@ -58,13 +57,13 @@ function handleInputChange(event: any) {
 }
 
 const shouldShowTodoAdd = computed(() => {
-  const name = taskStore.currentActiveProject?.name || ''
+  const name = newTaskStore.currentActiveProject?.name || ''
   return !isSmartProject(name)
 })
 
 const shouldEnabledDrag = computed(() =>
   !Object.values(SmartProjectNames).includes(
-    taskStore.currentActiveProject?.name as SmartProjectNames,
+    newTaskStore.currentActiveProject?.name as SmartProjectNames,
   ),
 )
 
@@ -73,22 +72,20 @@ const { inputRef, onFocus } = useInput()
 function handleEndDrag(e: any) {
   dragging.value = false
 
-  const currentTask = taskStore.tasks[e.newIndex]
-  const currentIndex = taskStore.tasks.length - 1 - e.newIndex
-  updateTaskIndex(currentTask!, currentIndex)
+  const currentTask = newTaskStore.tasks[e.newIndex]
+  const currentIndex = newTaskStore.tasks.length - 1 - e.newIndex
+  newTaskStore.updateTaskPosition(currentTask!, currentIndex)
 
   if (e.newIndex > e.oldIndex) {
-    // console.log("往下拖拽");
     for (let i = e.oldIndex; i < e.newIndex; i++) {
-      const exchangedIndex = taskStore.tasks.length - 1 - i
-      updateTaskIndex(taskStore.tasks[i], exchangedIndex)
+      const exchangedIndex = newTaskStore.tasks.length - 1 - i
+      newTaskStore.updateTaskPosition(newTaskStore.tasks[i], exchangedIndex)
     }
   }
   else {
-    // console.log("往上拖拽", e.oldIndex, e.newIndex);
     for (let i = e.newIndex + 1; i < e.oldIndex + 1; i++) {
-      const exchangedIndex = taskStore.tasks.length - 1 - i
-      updateTaskIndex(taskStore.tasks[i], exchangedIndex)
+      const exchangedIndex = newTaskStore.tasks.length - 1 - i
+      newTaskStore.updateTaskPosition(newTaskStore.tasks[i], exchangedIndex)
     }
   }
 }
@@ -107,7 +104,7 @@ function handleEndDrag(e: any) {
         @click="toggleLeftMenu()"
       />
       <h1 class="text-4xl ml-5px">
-        {{ taskStore.currentActiveProject?.name }}
+        {{ newTaskStore.currentActiveProject?.name }}
       </h1>
     </div>
     <div
@@ -136,7 +133,7 @@ function handleEndDrag(e: any) {
       </div>
     </div>
     <draggable
-      :list="taskStore.tasks"
+      :list="newTaskStore.tasks"
       :ghost-class="themeStore.isDark ? 'dark-ghost' : 'ghost'"
       :drag-class="themeStore.isDark ? 'dark-drag' : 'drag'"
       item-key="id"
@@ -153,7 +150,7 @@ function handleEndDrag(e: any) {
     >
       <template #item="{ element, index }">
         <TaskItem
-          :project="taskStore.currentActiveProject"
+          :project="newTaskStore.currentActiveProject"
           :task="element"
           :index="index"
           :is-show-drag-icon="shouldEnabledDrag"
@@ -163,7 +160,6 @@ function handleEndDrag(e: any) {
     </draggable>
     <!-- 暂时性修复 contenteditable 的 bug #9 -->
     <div class="w-full h-1px" contenteditable="false" />
-    <Command />
   </div>
 </template>
 
