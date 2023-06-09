@@ -19,7 +19,8 @@ export const useListProjectsStore = defineStore('newProjects', () => {
     const rawProjects: any = await fetchAllProjects()
     projects.value = rawProjects.map(normalizeProject)
 
-    tasksSelectorStore.setCurrentSelector(projects.value[0])
+    if (projects.value.length > 0)
+      tasksSelectorStore.setCurrentSelector(projects.value[0])
   }
 
   function selectProject(project: Project): void
