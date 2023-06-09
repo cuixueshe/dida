@@ -1,7 +1,7 @@
 import type { FormRules } from 'naive-ui'
 import type { Ref } from 'vue'
 import { computed, ref } from 'vue'
-import { findListProjectByName } from '@/services/task/listProject'
+import { useListProjectsStore } from '@/store'
 
 enum SkinStone {
   NEUTRAL = 'neutral',
@@ -23,6 +23,7 @@ interface EMoji {
 export function useTaskLeftListCreateProject(
   inputElement: Ref<HTMLInputElement | undefined>,
 ) {
+  const listProjectsStore = useListProjectsStore()
   const { handleMouseOver, handleMouseLeave, isHover } = useMouse()
   const { formValue, formRules } = useForm()
   const { cleanupInput, handleUpdateShow } = useInput()
@@ -47,7 +48,7 @@ export function useTaskLeftListCreateProject(
             if (!isSavable.value) {
               reject(Error('清单名称不能为空'))
             }
-            else if (findListProjectByName(value)) {
+            else if (listProjectsStore.checkProjectIsExist(value)) {
               isDuplicate.value = true
               reject(Error('重复的清单名称'))
             }

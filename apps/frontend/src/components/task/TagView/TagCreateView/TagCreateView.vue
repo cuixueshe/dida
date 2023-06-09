@@ -11,7 +11,7 @@ import {
   NSelect,
   NSpace,
 } from 'naive-ui'
-import { useProjectSelectedStatusStore, useTaskStore } from '@/store'
+import { useProjectSelectedStatusStore } from '@/store'
 import type { Tag } from '@/services/task/listTag'
 
 interface TProps {
@@ -28,7 +28,6 @@ interface TFormModel {
   parentTagId: number | undefined
 }
 
-const taskStore = useTaskStore()
 const formRef = ref<FormInst | null>(null)
 const projectSelectedStatusStore = useProjectSelectedStatusStore()
 const generateRandomColor = () => {
@@ -47,12 +46,12 @@ const nullOption = [{
   label: '',
   value: -1,
 }]
-const parentTagOptions = computed(() => {
-  return nullOption.concat(taskStore.listTags.map(tag => ({
-    label: tag.name,
-    value: tag.id,
-  })))
-})
+// const parentTagOptions = computed(() => {
+//   return nullOption.concat(taskStore.listTags.map(tag => ({
+//     label: tag.name,
+//     value: tag.id,
+//   })))
+// })
 
 const initModel = () => ({
   name: '',
@@ -71,17 +70,17 @@ const handleActions = (action: Actions) => {
 const handleCreateTag = async () => {
   const modelVal = Object.assign(model.value, {})
   modelVal.parentTagId === -1 && (modelVal.parentTagId = undefined)
-  await taskStore.addTag(modelVal)
+  // await taskStore.addTag(modelVal)
   nextTick(() => {
     model.value = initModel()
     projectSelectedStatusStore.listDefaultSelectedKey.push(200)
-    projectSelectedStatusStore.changeSelectedKey([200 + taskStore.listTags.length - 1])
+    // projectSelectedStatusStore.changeSelectedKey([200 + taskStore.listTags.length - 1])
     handleActions('confirm')
   })
 }
 
 const handleEditTag = () => {
-  taskStore.editTag({ ...model.value, id: props.tag!.id })
+  // taskStore.editTag({ ...model.value, id: props.tag!.id })
   handleActions('edited')
 }
 

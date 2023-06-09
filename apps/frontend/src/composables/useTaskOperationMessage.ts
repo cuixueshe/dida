@@ -1,8 +1,8 @@
 import type { MessageReactive } from 'naive-ui'
 import { createDiscreteApi } from 'naive-ui'
 import { h } from 'vue'
-import type { Task } from '@/store/tasks'
-import { useTaskStore as useNewTaskStore } from '@/store/tasks'
+import type { Task } from '@/store'
+import { useTasksStore } from '@/store'
 
 enum TaskOperationStatus {
   Complete = '已完成',
@@ -11,7 +11,7 @@ enum TaskOperationStatus {
 }
 
 export function useTaskOperationMessage() {
-  const newTaskStore = useNewTaskStore()
+  const tasksStore = useTasksStore()
   const { message } = createDiscreteApi(['message'])
 
   let messageReactive: MessageReactive | null = null
@@ -43,7 +43,7 @@ export function useTaskOperationMessage() {
 
   function showCompleteMessage(task: Task) {
     const onClick = () => {
-      newTaskStore.restoreTask(task)
+      tasksStore.cancelCompleteTask(task)
       removeMessage()
     }
     const content = `${task.title} ${TaskOperationStatus.Complete}`

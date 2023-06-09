@@ -2,18 +2,17 @@
 import { Icon } from '@iconify/vue'
 import { NPopover } from 'naive-ui'
 import { ref } from 'vue'
-import { findSmartProjectByName } from 'services/task'
-import type { SmartProjectNames } from '@/store'
+import type { SmartProjectName } from '@/store'
 import {
   useProjectSelectedStatusStore,
   useSettingsStore,
-  useTaskStore,
+  useSmartProjects,
 } from '@/store'
 
 export interface TaskListType {
   key: number
   icon: string
-  title: `${SmartProjectNames}`
+  title: `${SmartProjectName}`
   option?: string
 }
 
@@ -35,7 +34,7 @@ function useProjectMoreActions() {
 const settingsStore = useSettingsStore()
 const selected = 'bg-[#E7F5EE] dark:bg-[#233633]'
 
-const taskStore = useTaskStore()
+const smartProjects = useSmartProjects()
 const projectSelectedStatusStore = useProjectSelectedStatusStore()
 const {
   showMoreIconIndex,
@@ -44,7 +43,7 @@ const {
 } = useProjectMoreActions()
 
 const handleTaskItemClick = (projectName: string, key: number) => {
-  taskStore.selectProject(findSmartProjectByName(projectName))
+  smartProjects.selectProject(projectName as SmartProjectName)
   projectSelectedStatusStore.changeSelectedKey([key])
 }
 </script>
@@ -68,11 +67,9 @@ const handleTaskItemClick = (projectName: string, key: number) => {
       <div flex>
         <Icon
           :icon="item.icon"
-          width="20"
-          class="color-[#9D9FA3]"
+          width="20" class="color-[#9D9FA3]"
           dark="color-white-b"
-        />
-        <span class="ml-2">{{ item.title }}</span>
+        /> <span class="ml-2">{{ item.title }}</span>
       </div>
 
       <NPopover

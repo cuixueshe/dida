@@ -4,14 +4,13 @@ import TaskEditor from '@/components/task/TaskEditor.vue'
 import TaskLeftListView from '@/components/task/TaskLeftListView.vue'
 import TaskList from '@/components/task/TaskList.vue'
 import { useTaskSidebarDrag } from '@/composables'
-import { useTaskLeftMenuStatusStore, useTaskStore, useThemeStore } from '@/store'
-import { useTaskStore as useNewTaskStore } from '@/store/tasks'
+import { useListProjectsStore, useTaskLeftMenuStatusStore, useThemeStore } from '@/store'
 
-const newTaskStore = useNewTaskStore()
 const themeStore = useThemeStore()
+const projectsStore = useListProjectsStore()
 
 onBeforeMount(async () => {
-  await newTaskStore.init()
+  await projectsStore.init()
 })
 
 const AREA_MIN_WIDTH = 240
@@ -47,7 +46,7 @@ const taskLeftMenuStatusStore = useTaskLeftMenuStatusStore()
       ref="leftContainerElement"
       :style="leftWidthFlex"
     >
-      <!-- <TaskLeftListView /> -->
+      <TaskLeftListView />
     </div>
     <div
       v-if="taskLeftMenuStatusStore.visible"

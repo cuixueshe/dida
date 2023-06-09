@@ -18,7 +18,7 @@ export default defineConfig({
     transformMode: {
       web: [/\.[jt]sx$/],
     },
-    environment: 'jsdom',
+    environment: 'happy-dom',
     setupFiles: path.resolve(__dirname, './scripts/vitest.setup.ts'),
   },
   plugins: [vueJsx(), vue(), Unocss()],

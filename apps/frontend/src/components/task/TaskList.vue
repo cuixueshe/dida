@@ -3,15 +3,16 @@ import type { Ref } from 'vue'
 import { computed, ref } from 'vue'
 import { Icon } from '@iconify/vue'
 import draggable from 'vuedraggable'
-import { SmartProjectNames, isSmartProject, updateTaskPosition } from 'services/task'
 import TaskItem from './TaskItem.vue'
 import {
   useTaskLeftMenuStatusStore,
+  useTasksSelectorStore,
+  useTasksStore,
   useThemeStore,
 } from '@/store'
-import { useTaskStore as useNewTaskStore } from '@/store/tasks'
 
-const newTaskStore = useNewTaskStore()
+const tasksStore = useTasksStore()
+const tasksSelectorStore = useTasksSelectorStore()
 const themeStore = useThemeStore()
 const taskLeftMenuStatusStore = useTaskLeftMenuStatusStore()
 
@@ -32,7 +33,7 @@ const taskTitle = ref('')
 const dragging = ref<boolean>(false)
 
 const placeholderText = computed(() => {
-  return `添加任务至“${newTaskStore.currentActiveProject?.name}”，回车即可保存`
+  return `添加任务至“${tasksSelectorStore.currentSelector?.name}”，回车即可保存`
 })
 const isPlaceholder = computed(() => {
   return taskTitle.value.length === 0
@@ -41,9 +42,9 @@ const isPlaceholder = computed(() => {
 function addTask() {
   if (!taskTitle.value)
     return
-  if (Reflect.has(newTaskStore.currentActiveProject, 'color'))
-    newTaskStore.addTaskToTag(taskTitle.value)
-  else newTaskStore.addTask(taskTitle.value)
+  // if (Reflect.has(tasksStore.currentActiveProject, 'color'))
+  //   tasksStore.addTaskToTag(taskTitle.value)
+  else tasksStore.addTask(taskTitle.value)
 
   taskTitle.value = ''
 }
@@ -57,14 +58,12 @@ function handleInputChange(event: any) {
 }
 
 const shouldShowTodoAdd = computed(() => {
-  const name = newTaskStore.currentActiveProject?.name || ''
-  return !isSmartProject(name)
+  return tasksSelectorStore.currentSelector?.type === 'listProject'
 })
 
-const shouldEnabledDrag = computed(() =>
-  !Object.values(SmartProjectNames).includes(
-    newTaskStore.currentActiveProject?.name as SmartProjectNames,
-  ),
+const shouldEnabledDrag = computed(() => {
+  return tasksSelectorStore.currentSelector?.type === 'listProject'
+},
 )
 
 const { inputRef, onFocus } = useInput()
@@ -72,20 +71,20 @@ const { inputRef, onFocus } = useInput()
 function handleEndDrag(e: any) {
   dragging.value = false
 
-  const currentTask = newTaskStore.tasks[e.newIndex]
-  const currentIndex = newTaskStore.tasks.length - 1 - e.newIndex
-  newTaskStore.updateTaskPosition(currentTask!, currentIndex)
+  const currentTask = tasksStore.tasks[e.newIndex]
+  const currentIndex = tasksStore.tasks.length - 1 - e.newIndex
+  tasksStore.updateTaskPosition(currentTask!, currentIndex)
 
   if (e.newIndex > e.oldIndex) {
     for (let i = e.oldIndex; i < e.newIndex; i++) {
-      const exchangedIndex = newTaskStore.tasks.length - 1 - i
-      newTaskStore.updateTaskPosition(newTaskStore.tasks[i], exchangedIndex)
+      const exchangedIndex = tasksStore.tasks.length - 1 - i
+      tasksStore.updateTaskPosition(tasksStore.tasks[i], exchangedIndex)
     }
   }
   else {
     for (let i = e.newIndex + 1; i < e.oldIndex + 1; i++) {
-      const exchangedIndex = newTaskStore.tasks.length - 1 - i
-      newTaskStore.updateTaskPosition(newTaskStore.tasks[i], exchangedIndex)
+      const exchangedIndex = tasksStore.tasks.length - 1 - i
+      tasksStore.updateTaskPosition(tasksStore.tasks[i], exchangedIndex)
     }
   }
 }
@@ -104,7 +103,7 @@ function handleEndDrag(e: any) {
         @click="toggleLeftMenu()"
       />
       <h1 class="text-4xl ml-5px">
-        {{ newTaskStore.currentActiveProject?.name }}
+        {{ tasksSelectorStore.currentSelector?.name }}
       </h1>
     </div>
     <div
@@ -133,7 +132,7 @@ function handleEndDrag(e: any) {
       </div>
     </div>
     <draggable
-      :list="newTaskStore.tasks"
+      :list="tasksStore.tasks"
       :ghost-class="themeStore.isDark ? 'dark-ghost' : 'ghost'"
       :drag-class="themeStore.isDark ? 'dark-drag' : 'drag'"
       item-key="id"
@@ -150,7 +149,6 @@ function handleEndDrag(e: any) {
     >
       <template #item="{ element, index }">
         <TaskItem
-          :project="newTaskStore.currentActiveProject"
           :task="element"
           :index="index"
           :is-show-drag-icon="shouldEnabledDrag"

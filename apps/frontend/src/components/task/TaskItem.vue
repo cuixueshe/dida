@@ -1,20 +1,17 @@
 <script setup lang="ts">
 import { NPopover } from 'naive-ui'
-import type { Project } from 'services/task'
 import { ref } from 'vue'
 import { useTaskOperationMessage, useTaskRightContextMenu } from '@/composables'
-import { useTaskStore, useThemeStore } from '@/store'
-import { TaskStatus, useTaskStore as useNewTaskStore } from '@/store/tasks'
-import type { Task } from '@/store/tasks'
+import { TaskStatus, useTasksStore, useThemeStore } from '@/store'
+import type { Project, Task } from '@/store'
 
 interface Props {
   task: Task
-  project: Project
   isShowDragIcon: boolean
 }
 
 const props = defineProps<Props>()
-const newTaskStore = useNewTaskStore()
+const tasksStore = useTasksStore()
 const themeStore = useThemeStore()
 const { isHover, hoverEvents } = useHandleHover()
 
@@ -40,26 +37,26 @@ function useHandleHover() {
 }
 
 function handleRightClickTask(e: MouseEvent, task: Task) {
-  newTaskStore.changeActiveTask(task)
+  tasksStore.changeActiveTask(task)
   showContextMenu(e)
 }
 
 function handleClickTask(task: Task) {
-  newTaskStore.changeActiveTask(task)
+  tasksStore.changeActiveTask(task)
 }
 
 function handleInput(e: Event, task: Task) {
   const newTitle = (e.target as HTMLElement).innerText
-  newTaskStore.changeTaskTitle(task, newTitle)
+  tasksStore.updateTaskTitle(task, newTitle)
 }
 
 function handleCompleteTodo(e: Event) {
   if (props.task.status === TaskStatus.ACTIVE) {
-    newTaskStore.completeTask(props.task)
-    showCompleteMessage(props.task, props.project)
+    tasksStore.completeTask(props.task)
+    showCompleteMessage(props.task)
   }
   else if (props.task.status === TaskStatus.COMPLETED) {
-    newTaskStore.restoreTask(props.task)
+    tasksStore.restoreTask(props.task)
   }
   else if (props.task.status === TaskStatus.REMOVED) {
     // eslint-disable-next-line no-console
@@ -81,7 +78,7 @@ function handleCompleteTodo(e: Event) {
     <div
       flex justify-start items-center gap-5px h-40px py-5px flex-1 pl-10px :class="[
         themeStore.isDark ? 'hover:bg-[#474747]/50' : 'hover:bg-[#ECF1FF]/50',
-        newTaskStore.currentActiveTask?.id === task.id
+        tasksStore.currentActiveTask?.id === task.id
           ? themeStore.isDark
             ? '!bg-[#474747]'
             : '!bg-[#ECF1FF]'

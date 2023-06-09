@@ -1,20 +1,19 @@
 <script setup lang="ts">
 import InkMde from 'ink-mde/vue'
 import { debounce } from 'lodash-es'
-import { useThemeStore } from '@/store'
-import { useTaskStore } from '@/store/tasks'
+import { useTasksStore, useThemeStore } from '@/store'
 
-const taskStore = useTaskStore()
+const tasksStore = useTasksStore()
 const themeStore = useThemeStore()
 
 function handleInput(e: Event) {
-  if (taskStore.currentActiveTask)
-    taskStore.updateTaskTitle(taskStore.currentActiveTask, (e.target as HTMLElement).innerText)
+  if (tasksStore.currentActiveTask)
+    tasksStore.updateTaskTitle(tasksStore.currentActiveTask, (e.target as HTMLElement).innerText)
 }
 
 function handleAfterUpdate(doc: string) {
-  if (taskStore.currentActiveTask)
-    taskStore.updateTaskContent(taskStore.currentActiveTask, doc)
+  if (tasksStore.currentActiveTask)
+    tasksStore.updateTaskContent(tasksStore.currentActiveTask, doc)
 }
 
 const waitTime = 700
@@ -24,13 +23,13 @@ const debounceHandleAfterUpdate = debounce(handleAfterUpdate, waitTime)
 
 <template>
   <div>
-    <div v-if="taskStore.currentActiveTask">
+    <div v-if="tasksStore.currentActiveTask">
       <h1 contenteditable="true" class="text-3xl" @input="debounceHandleInput">
-        {{ taskStore.currentActiveTask.title }}
+        {{ tasksStore.currentActiveTask.title }}
       </h1>
       <div class="mt-2">
         <InkMde
-          v-model="taskStore.currentActiveTask.content"
+          v-model="tasksStore.currentActiveTask.content"
           :options="{
             interface: {
               appearance: themeStore.isDark ? 'dark' : 'light',

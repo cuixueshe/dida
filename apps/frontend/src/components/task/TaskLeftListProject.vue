@@ -4,19 +4,17 @@ import type { MenuItem } from '@imengyu/vue3-context-menu'
 import ContextMenu from '@imengyu/vue3-context-menu'
 import type { TreeOption } from 'naive-ui'
 import { NTree } from 'naive-ui'
-import { findListProjectByName } from 'services/task'
 import { h, onMounted, ref, watchEffect } from 'vue'
 import 'vue3-emoji-picker/css'
-import { tagCreateViewDialog } from './TagView'
-import { tagRemoveAlert } from './TagView/TagRemoveAlert'
+// import { tagCreateViewDialog } from './TagView'
+// import { tagRemoveAlert } from './TagView/TagRemoveAlert'
 import { projectCreatedViewModal } from './TagView/ProjectCreateView'
-import { useProjectSelectedStatusStore, useTaskStore } from '@/store'
-import { findListTagByName } from '@/services/task/listTag'
-import ProjectCreateView from '@/components/task/TagView/ProjectCreateView/ProjectCreatedView.vue'
-import type { Tag } from '@/services/task/listTag'
+import { useProjectSelectedStatusStore } from '@/store'
+// import type { Tag } from '@/services/task/listTag'
+import { useListProjectsStore } from '@/store'
 
 const projectSelectedStatusStore = useProjectSelectedStatusStore()
-const taskStore = useTaskStore()
+const listProjectsStore = useListProjectsStore()
 
 enum TreeRootKeys {
   PROJECT = 100,
@@ -55,79 +53,77 @@ const createOperateNodeBtn = (items: MenuItem[]) => {
   })
 }
 
-const createTagLeafSuffix = (tag: Tag) => {
-  return () => h('div', { class: 'flex flex-row items-center' },
-    [
-      h(Icon, {
-        icon: 'carbon:circle-solid',
-        width: '8',
-        color: tag.color,
-        class: 'mx-2',
-      }),
-      createOperateNodeBtn([
-        {
-          label: 'edit',
-          onClick: () => tagCreateViewDialog({ tag }),
-        },
-        {
-          label: 'remove',
-          onClick: () => {
-            tagRemoveAlert({
-              tagName: tag.name,
-            }).then((action) => {
-              // eslint-disable-next-line no-console
-              console.log(action)
-              if (action === 'confirm')
-                taskStore.deleteTag(tag.id)
-            })
-          },
-        },
-      ]),
-    ],
-  )
-}
+// const createTagLeafSuffix = (tag: Tag) => {
+//   return () => h('div', { class: 'flex flex-row items-center' },
+//     [
+//       h(Icon, {
+//         icon: 'carbon:circle-solid',
+//         width: '8',
+//         color: tag.color,
+//         class: 'mx-2',
+//       }),
+//       createOperateNodeBtn([
+//         {
+//           label: 'edit',
+//           onClick: () => tagCreateViewDialog({ tag }),
+//         },
+//         {
+//           label: 'remove',
+//           onClick: () => {
+//             tagRemoveAlert({
+//               tagName: tag.name,
+//             }).then((action) => {
 
-const generateTagChildrenNode = (tags: Tag[]) => {
-  if (!tags.length) {
-    return [
-      {
-        label: '以标签的维度展示不同清单的任务。在添加任务时输入“#”可快速选择标签',
-        placeholder: true,
-      },
-    ]
-  }
-  return tags.map((tag, index) => ({
-    key: TreeRootKeys.TAG + index + 1,
-    label: tag.name,
-    color: tag.color,
-    prefix: createTagLeafPrefix(),
-    suffix: createTagLeafSuffix(tag),
-    isleaf: true,
-  }))
-}
+//               // if (action === 'confirm')
+//               //   taskStore.deleteTag(tag.id)
+//             })
+//           },
+//         },
+//       ]),
+//     ],
+//   )
+// }
+
+// const generateTagChildrenNode = (tags: Tag[]) => {
+//   if (!tags.length) {
+//     return [
+//       {
+//         label: '以标签的维度展示不同清单的任务。在添加任务时输入“#”可快速选择标签',
+//         placeholder: true,
+//       },
+//     ]
+//   }
+//   return tags.map((tag, index) => ({
+//     key: TreeRootKeys.TAG + index + 1,
+//     label: tag.name,
+//     color: tag.color,
+//     prefix: createTagLeafPrefix(),
+//     suffix: createTagLeafSuffix(tag),
+//     isleaf: true,
+//   }))
+// }
 
 const defaultExpandedKeys = ref<TreeRootKeys[]>([])
 const treeProjectChildren = ref<TreeOption[]>([])
-const treeTagChildren = ref<TreeOption[]>([])
+// const treeTagChildren = ref<TreeOption[]>([])
 
 watchEffect(() => {
-  treeProjectChildren.value = taskStore.listProjectNames.map(
-    (projectname, index) => ({
+  treeProjectChildren.value = listProjectsStore.projects.map((project, index) => {
+    return {
       key: TreeRootKeys.PROJECT + index + 1,
-      label: projectname,
+      label: project.name,
       isleaf: true,
-    }),
-  )
-
-  treeTagChildren.value = generateTagChildrenNode(taskStore.listTags)
+    }
+  })
+  // treeTagChildren.value = generateTagChildrenNode(taskStore.listTags)
 })
 
 onMounted(() => {
   defaultExpandedKeys.value = [
     ...new Set([
-      ...(taskStore.listProjectNames.length ? [] : [TreeRootKeys.PROJECT]),
-      ...(taskStore.listTags.length ? [] : [TreeRootKeys.TAG]),
       ...projectSelectedStatusStore.listDefaultSelectedKey,
+      ...(listProjectsStore.projects.length ? [] : [TreeRootKeys.PROJECT]),
+      // ...(taskStore.listTags.length ? [] : [TreeRootKeys.TAG]),
     ]),
   ]
 })
@@ -144,20 +140,20 @@ const data = ref<any[]>([
       projectCreatedViewModal()
     }),
   },
-  {
-    key: TreeRootKeys.TAG,
-    label: '标签',
-    checkboxDisabled: false,
-    isLeaf: false,
-    children: treeTagChildren,
-    suffix: createRootNodeSuffix((e: Event) => {
-      e.stopPropagation()
-      tagCreateViewDialog().then(() => {
-        // eslint-disable-next-line no-console
-        console.log('done')
-      })
-    }),
-  },
+  // {
+  //   key: TreeRootKeys.TAG,
+  //   label: '标签',
+  //   checkboxDisabled: false,
+  //   isLeaf: false,
+  //   children: treeTagChildren,
+  //   suffix: createRootNodeSuffix((e: Event) => {
+  //     e.stopPropagation()
+  //     tagCreateViewDialog().then(() => {
+  //       // eslint-disable-next-line no-console
+  //       console.log('done')
+  //     })
+  //   }),
+  // },
 ])
 const nodeProps = ({ option }: { option: TreeOption }) => {
   return {
@@ -168,15 +164,14 @@ const nodeProps = ({ option }: { option: TreeOption }) => {
       )
         return
 
-      if (option.key! < 200) {
-        const project = findListProjectByName(option.label)
-        if (project)
-          taskStore.selectProject(project)
-      }
+      // if (option.key! < 200) {
+      const projectName = `${option.label}`
+      listProjectsStore.selectProject(projectName)
+      // }
 
-      const tag = findListTagByName(option.label)
-      if (tag)
-        taskStore.selectCategory(tag)
+      // const tag = findListTagByName(option.label)
+      // if (tag)
+      //   taskStore.selectCategory(tag)
     },
     class: option.placeholder ? 'placeholder' : '',
   }

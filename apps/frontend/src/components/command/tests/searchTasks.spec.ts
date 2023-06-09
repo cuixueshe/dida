@@ -1,13 +1,13 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { filteredTasks, resetSearchTasks, searchTasks } from '../searchTasks'
-import * as TaskService from '@/services/task'
 
 describe('SearchTasks', () => {
   beforeEach(() => {
-    vi.spyOn(TaskService, 'findAllTasksNotRemoved').mockResolvedValue([
-      createMockTask('吃饭'),
-      createMockTask('写代码', '一杯茶，一包烟，一行代码写一天'),
-    ])
+    // TODO 不在使用 TaskService
+    // vi.spyOn(TaskService, 'findAllTasksNotRemoved').mockResolvedValue([
+    //   createMockTask('吃饭'),
+    //   createMockTask('写代码', '一杯茶，一包烟，一行代码写一天'),
+    // ])
   })
 
   afterEach(() => {
@@ -43,13 +43,12 @@ describe('SearchTasks', () => {
   })
 })
 
-function createMockTask(title: string, content = '') {
-  return {
-    id: 0,
-    title,
-    content,
-    state: TaskService.TaskState.ACTIVE,
-    project: undefined,
-    index: 1,
-  }
-}
+// function createMockTask(title: string, content = '') {
+//   return {
+//     id: 0,
+//     title,
+//     content,
+//     project: undefined,
+//     index: 1,
+//   }
+// }

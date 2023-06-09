@@ -1,8 +1,8 @@
 import { http } from './http'
-import type { Task } from '@/store/tasks'
-import { TaskStatus } from '@/store/tasks'
+import type { Task } from '@/store'
+import { TaskStatus } from '@/store'
 
-export function fetchAllTasks(pId?: string, status?: TaskStatus) {
+export function fetchAllTasks({ pId, status }: { pId?: string; status?: TaskStatus }) {
   return http.get('/tasks', {
     params: {
       projectId: pId,
@@ -38,6 +38,12 @@ export function fetchCompleteTask(taskId: Task['id']) {
 export function fetchRestoreTask(taskId: Task['id']) {
   return http.patch(`/tasks/${taskId}`, {
     status: TaskStatus.ACTIVE,
+  })
+}
+
+export function fetchMoveTaskToProject(taskId: Task['id'], projectId: string) {
+  return http.patch(`/tasks/${taskId}`, {
+    projectId,
   })
 }
 

@@ -3,7 +3,7 @@ import type { MenuOption } from 'naive-ui'
 import { NMenu } from 'naive-ui'
 import { h } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
-import { sidebars } from '@/services/settings'
+import { sidebars } from '@/composables/settings'
 
 const options: MenuOption[] = sidebars.map(sidebar => ({
   label: () => h(RouterLink, { to: `/settings${sidebar.path}` }, { default: () => sidebar.title }),

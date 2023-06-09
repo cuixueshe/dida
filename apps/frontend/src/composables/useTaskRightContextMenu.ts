@@ -2,12 +2,11 @@ import { h, reactive } from 'vue'
 import ContextMenu from '@imengyu/vue3-context-menu'
 import type { MenuOptions } from '@imengyu/vue3-context-menu/index'
 import { useTaskOperationMessage } from './useTaskOperationMessage'
-import { useTaskStore } from '@/store'
-import { useTaskStore as useNewTaskStor } from '@/store/tasks'
+import { useListProjectsStore, useTasksStore } from '@/store'
 
 export function useTaskRightContextMenu() {
-  const taskStore = useTaskStore()
-  const newTaskStore = useNewTaskStor()
+  const tasksStore = useTasksStore()
+  const listProjectsStore = useListProjectsStore()
   const { showRemoveMessage, showMoveMessage } = useTaskOperationMessage()
   const moveProjects: NonNullable<MenuOptions['items']> = [
     ...getSearchMenuItem(),
@@ -24,8 +23,8 @@ export function useTaskRightContextMenu() {
       {
         label: '删除',
         onClick: () => {
-          showRemoveMessage(newTaskStore.currentActiveTask!)
-          newTaskStore.removeTask(newTaskStore.currentActiveTask!)
+          showRemoveMessage(tasksStore.currentActiveTask!)
+          tasksStore.removeTask(tasksStore.currentActiveTask!)
         },
       },
     ],
@@ -67,9 +66,8 @@ export function useTaskRightContextMenu() {
   }
 
   function getMoveListProjects() {
-    return taskStore.listProjects.map((projectItem) => {
-      const isCurrentProject
-        = taskStore.currentActiveTask?.project!.id === projectItem.id
+    return listProjectsStore.projects.map((project) => {
+      const isCurrentProject = tasksStore.currentActiveTask?.projectId === project.id
       return {
         label: isCurrentProject
           ? h(
@@ -79,14 +77,14 @@ export function useTaskRightContextMenu() {
                 color: '#567dfa',
               },
             },
-            projectItem.name,
+            project.name,
           )
-          : projectItem.name,
+          : project.name,
         onClick: () => {
           if (isCurrentProject)
             return
-          showMoveMessage(projectItem.name)
-          taskStore.moveTask(taskStore.currentActiveTask!, projectItem.id)
+          showMoveMessage(project.name)
+          tasksStore.moveTaskToProject(tasksStore.currentActiveTask!, project.id)
         },
       }
     })

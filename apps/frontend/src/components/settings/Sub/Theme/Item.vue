@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import Selected from './Selected.vue'
 import { useThemeStore } from '@/store'
-import type { Theme } from '@/services/settings'
+import type { Theme } from '@/composables/settings'
 
 const props = defineProps<{
   color: string
