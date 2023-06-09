@@ -11,6 +11,10 @@ export class UpdateTaskDto {
   content?: string
 
   @IsOptional()
+  @IsString()
+  projectId?: string
+
+  @IsOptional()
   @IsEnum(TaskStatus)
   status?: TaskStatus
 

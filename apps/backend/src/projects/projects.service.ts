@@ -18,4 +18,8 @@ export class ProjectsService {
   async findAll(): Promise<Project[]> {
     return this.projectModel.find().exec()
   }
+
+  async findOne(id: string): Promise<Project> {
+    return this.projectModel.findById(id).exec()
+  }
 }

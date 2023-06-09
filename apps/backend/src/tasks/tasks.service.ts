@@ -10,9 +10,14 @@ export class TasksService {
 
   async create(createTaskDto: CreateTaskDto): Promise<Task> {
     const position = await this.generatePosition(createTaskDto)
+    const projectId = new Types.ObjectId(createTaskDto.projectId)
 
     // eslint-disable-next-line new-cap
-    const createdTask = new this.taskModel({ ...createTaskDto, position })
+    const createdTask = new this.taskModel({
+      ...createTaskDto,
+      projectId,
+      position,
+    })
     return createdTask.save()
   }
 
@@ -40,8 +45,13 @@ export class TasksService {
   }
 
   async update(id: string, updateTaskDto: UpdateTaskDto): Promise<Task> {
+    const update: { projectId?: Types.ObjectId } = {}
+
+    if (updateTaskDto.projectId)
+      update.projectId = new Types.ObjectId(updateTaskDto.projectId)
+
     const updatedTask = await this.taskModel
-      .findByIdAndUpdate(id, { $set: updateTaskDto }, { new: true })
+      .findByIdAndUpdate(id, { $set: { ...updateTaskDto, ...update } }, { new: true })
       .exec()
 
     if (!updatedTask)
@@ -51,7 +61,10 @@ export class TasksService {
   }
 
   async generatePosition(createTaskDto: CreateTaskDto) {
-    const highestPositionTask = await this.taskModel.findOne({ projectId: createTaskDto.projectId }).sort({ position: -1 }).exec()
+    const highestPositionTask = await this.taskModel
+      .findOne({ projectId: new Types.ObjectId(createTaskDto.projectId) })
+      .sort({ position: -1 })
+      .exec()
     return highestPositionTask ? highestPositionTask.position + 1 : 0
   }
 }
