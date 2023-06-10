@@ -8,10 +8,6 @@
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
-    "test": "",
-    "test:watch": "vitest",
-    "test:cov": "vitest run --coverage",
-    "test:e2e": "vitest run --config test/vitest-e2e.config.ts",
     "docker:start": "docker-compose up --build"
   },
   "dependencies": {
