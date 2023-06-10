@@ -9,9 +9,8 @@ import 'vue3-emoji-picker/css'
 // import { tagCreateViewDialog } from './TagView'
 // import { tagRemoveAlert } from './TagView/TagRemoveAlert'
 import { projectCreatedViewModal } from './TagView/ProjectCreateView'
-import { useProjectSelectedStatusStore } from '@/store'
+import { useListProjectsStore, useProjectSelectedStatusStore } from '@/store'
 // import type { Tag } from '@/services/task/listTag'
-import { useListProjectsStore } from '@/store'
 
 const projectSelectedStatusStore = useProjectSelectedStatusStore()
 const listProjectsStore = useListProjectsStore()
