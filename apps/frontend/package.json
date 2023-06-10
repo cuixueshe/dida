@@ -7,13 +7,7 @@
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
     "preview": "vite preview",
-    "test": "pnpm test-unit-run",
-    "test-unit": "vitest",
-    "test-component": "cypress open --component",
-    "test-e2e": "cross-env NODE_ENV=developer cypress open --e2e",
-    "test-unit-run": "vitest --run",
-    "test-component-run": "cypress run --component",
-    "test-e2e-run": "cross-env NODE_ENV=developer cypress run --e2e"
+    "test": "vitest"
   },
   "dependencies": {
     "@imengyu/vue3-context-menu": "^1.1.10",
@@ -40,8 +34,6 @@
     "@vue/test-utils": "^2.2.10",
     "@vueuse/core": "^9.10.0",
     "cross-env": "^7.0.3",
-    "cypress": "^12.3.0",
-    "cypress-promise": "^1.1.0",
     "flush-promises": "^1.0.2",
     "happy-dom": "^8.1.3",
     "typescript": "^4.9.5",

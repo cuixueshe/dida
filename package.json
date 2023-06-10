@@ -8,9 +8,10 @@
     "node": ">=16.14.0"
   },
   "scripts": {
-    "bootstrap": "cross-env CYPRESS_INSTALL_BINARY=0 pnpm i",
+    "bootstrap": "pnpm i",
     "dev:fe": "pnpm -F frontend dev",
-    "dev:be": "pnpm -F backend start",
+    "dev:be": "pnpm -F backend start:dev",
+    "docker:be": "pnpm -F backend docker:start",
     "build:fe": "pnpm -F frontend build",
     "build": "turbo build",
     "test": "pnpm -F frontend test && pnpm -F backend test && pnpm -F backend test:e2e",
