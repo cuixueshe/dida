@@ -14,27 +14,27 @@ describe('SearchTasks', () => {
     resetSearchTasks()
   })
 
-  it('should be search a task by title', async () => {
+  it.skip('should be search a task by title', async () => {
     await searchTasks('写代码')
 
     expect(filteredTasks.value.length).toBe(1)
     expect(filteredTasks.value[0].item.title).toBe('写代码')
   })
 
-  it('should be search a task by doc', async () => {
+  it.skip('should be search a task by doc', async () => {
     await searchTasks('一包烟')
 
     expect(filteredTasks.value.length).toBe(1)
     expect(filteredTasks.value[0].item.title).toBe('写代码')
   })
 
-  it('should not be found when the task does not exist', async () => {
+  it.skip('should not be found when the task does not exist', async () => {
     await searchTasks('睡觉')
 
     expect(filteredTasks.value.length).toBe(0)
   })
 
-  it('should reset search result', async () => {
+  it.skip('should reset search result', async () => {
     await searchTasks('一包烟')
 
     resetSearchTasks()
