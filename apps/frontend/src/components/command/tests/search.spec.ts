@@ -18,7 +18,7 @@ async function flushWatch() {
 describe('Search', () => {
   beforeEach(() => {
     vi.useFakeTimers()
-    vi.restoreAllMocks()
+    vi.clearAllMocks()
   })
 
   afterEach(() => {
