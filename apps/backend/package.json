@@ -11,10 +11,12 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:cov": "vitest run --coverage",
-    "test:e2e": "vitest run --config test/vitest-e2e.config.ts"
+    "test:e2e": "vitest run --config test/vitest-e2e.config.ts",
+    "docker:start": "docker-compose up --build"
   },
   "dependencies": {
     "@nestjs/common": "^9.3.5",
+    "@nestjs/config": "^2.3.2",
     "@nestjs/core": "^9.3.5",
     "@nestjs/mongoose": "^9.2.2",
     "@nestjs/platform-express": "^9.3.5",
