@@ -1,9 +1,13 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import type { Project, SmartProject } from '@/store'
+import type { ListProject, SmartProject } from '@/store'
 import { loadListProjectTasks, loadSmartProjectTasks, useTasksStore } from '@/store'
 
-export type TasksSelector = Project | SmartProject | undefined
+export type TasksSelector = ListProject | SmartProject
+export enum TasksSelectorType {
+  listProject = 'listProject',
+  smartProject = 'smartProject',
+}
 
 export const useTasksSelectorStore = defineStore('tasksSelectorStore', () => {
   const tasksStore = useTasksStore()

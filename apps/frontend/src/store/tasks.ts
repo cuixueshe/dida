@@ -41,7 +41,6 @@ export const useTasksStore = defineStore('tasksStore', () => {
   async function addTask(title: string) {
     if (!tasksSelectorStore.currentSelector)
       return
-
     if (tasksSelectorStore.currentSelector.type !== 'listProject')
       return
 
