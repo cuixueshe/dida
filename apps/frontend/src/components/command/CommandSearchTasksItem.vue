@@ -8,7 +8,7 @@ const props = defineProps<{
   title: string
   desc: string
   done: boolean
-  from: TasksSelector
+  from: TasksSelector | undefined
   id: string
 }>()
 
