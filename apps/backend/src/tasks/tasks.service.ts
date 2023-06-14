@@ -21,7 +21,11 @@ export class TasksService {
     return createdTask.save()
   }
 
-  async findAll(projectId?: string, status?: string): Promise<Task[]> {
+  async findAll(
+    projectId?: string,
+    status?: string,
+    sortBy = 'position',
+  ): Promise<Task[]> {
     const query: {
       projectId?: Types.ObjectId
       status?: string
@@ -33,7 +37,10 @@ export class TasksService {
     if (status)
       query.status = status
 
-    return this.taskModel.find(query).sort({ position: -1 }).exec()
+    return this.taskModel
+      .find(query)
+      .sort({ [sortBy]: -1 })
+      .exec()
   }
 
   async findOne(id: string): Promise<Task> {
@@ -51,7 +58,11 @@ export class TasksService {
       update.projectId = new Types.ObjectId(updateTaskDto.projectId)
 
     const updatedTask = await this.taskModel
-      .findByIdAndUpdate(id, { $set: { ...updateTaskDto, ...update } }, { new: true })
+      .findByIdAndUpdate(
+        id,
+        { $set: { ...updateTaskDto, ...update } },
+        { new: true },
+      )
       .exec()
 
     if (!updatedTask)

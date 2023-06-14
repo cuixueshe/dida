@@ -3,7 +3,7 @@ import { Document } from 'mongoose'
 
 export type ProjectDocument = Project & Document
 
-@Schema({ timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' } })
+@Schema({ timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt' } })
 export class Project {
   @Prop({ required: true })
   name: string

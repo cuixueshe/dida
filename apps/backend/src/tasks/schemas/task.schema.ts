@@ -5,7 +5,7 @@ import { Project } from '../../projects/schemas/project.schema'
 
 export type TaskDocument = Task & Document
 
-@Schema({ timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' } })
+@Schema({ timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt' } })
 export class Task {
   @Prop({ required: true })
   title: string

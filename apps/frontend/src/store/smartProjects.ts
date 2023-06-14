@@ -42,8 +42,10 @@ export const useSmartProjects = defineStore('smartProjects', () => {
 
 export async function loadSmartProjectTasks(smartProjectName: string) {
   const status = smartProjectName === '已完成' ? TaskStatus.COMPLETED : TaskStatus.REMOVED
+  // 基于 updatedAt 来做排序
   const rawTasks = await fetchAllTasks({
     status,
+    sortBy: 'updatedAt',
   })
   return rawTasks
 }
