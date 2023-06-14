@@ -3,11 +3,12 @@ import type { TaskResponse } from './types'
 import type { Task } from '@/store'
 import { TaskStatus } from '@/store'
 
-export function fetchAllTasks({ pId, status }: { pId?: string; status?: TaskStatus }) {
+export function fetchAllTasks({ pId, status, sortBy }: { pId?: string; status?: TaskStatus; sortBy?: string }) {
   return http.get<TaskResponse[], TaskResponse[]>('/tasks', {
     params: {
       projectId: pId,
       status,
+      sortBy,
     },
   })
 }

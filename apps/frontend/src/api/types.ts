@@ -7,13 +7,13 @@ export interface TaskResponse {
   projectId: string
   position: number
   _id: string
-  created_at: string
-  updated_at: string
+  createdAt: string
+  updatedAt: string
 }
 
 export interface ProjectResponse {
-  created_at: string
+  createdAt: string
   name: string
-  updated_at: string
+  updatedAt: string
   _id: string
 }
