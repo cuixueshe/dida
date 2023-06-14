@@ -18,14 +18,11 @@ export const useTasksSelectorStore = defineStore('tasksSelectorStore', () => {
     if (!currentSelector.value)
       return
 
-    let rawTasks
     if (currentSelector.value.type === 'listProject')
-      rawTasks = await loadListProjectTasks(currentSelector.value.id)
+      tasksStore.updateTasks(await loadListProjectTasks(currentSelector.value.id))
 
     else if (currentSelector.value.type === 'smartProject')
-      rawTasks = await loadSmartProjectTasks(currentSelector.value.name)
-
-    tasksStore.updateTasks(rawTasks)
+      tasksStore.updateTasks(await loadSmartProjectTasks(currentSelector.value.name))
   }
 
   async function setCurrentSelector(selector: TasksSelector) {
