@@ -18,10 +18,10 @@ export const useTasksSelectorStore = defineStore('tasksSelectorStore', () => {
     if (!currentSelector.value)
       return
 
-    if (currentSelector.value.type === 'listProject')
+    if (currentSelector.value.type === TasksSelectorType.listProject)
       tasksStore.updateTasks(await loadListProjectTasks(currentSelector.value.id))
 
-    else if (currentSelector.value.type === 'smartProject')
+    else if (currentSelector.value.type === TasksSelectorType.smartProject)
       tasksStore.updateTasks(await loadSmartProjectTasks(currentSelector.value.name))
   }
 
