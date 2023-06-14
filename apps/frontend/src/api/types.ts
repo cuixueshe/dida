@@ -10,3 +10,10 @@ export interface TaskResponse {
   created_at: string
   updated_at: string
 }
+
+export interface ProjectResponse {
+  created_at: string
+  name: string
+  updated_at: string
+  _id: string
+}
