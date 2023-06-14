@@ -20,8 +20,8 @@ export async function searchTasks(input: string) {
   const tasksStore = useTasksStore()
   const projectsStore = useListProjectsStore()
 
-  const rawTasks = await tasksStore.findAllTasksNotRemoved()
-  const tasks = rawTasks.map((task) => {
+  const tasks = await tasksStore.findAllTasksNotRemoved()
+  const fuseTasks = tasks.map((task) => {
     const done = task.status === TaskStatus.COMPLETED
     const from = done ? completeSmartProject : projectsStore.findProject(task.projectId)
     return {
@@ -32,7 +32,7 @@ export async function searchTasks(input: string) {
       from,
     }
   })
-  fuse.setCollection(tasks)
+  fuse.setCollection(fuseTasks)
 
   filteredTasks.value = fuse.search(input)
 }
