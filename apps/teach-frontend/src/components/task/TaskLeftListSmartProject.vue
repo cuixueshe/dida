@@ -2,9 +2,9 @@
 import { Icon } from '@iconify/vue'
 import { NPopover } from 'naive-ui'
 import { ref } from 'vue'
+import { useTaskLeftListStore } from './taskLeftList'
 import type { SmartProjectName } from '@/store'
 import {
-  useProjectSelectedStatusStore,
   useSettingsStore,
   useSmartProjects,
 } from '@/store'
@@ -31,20 +31,17 @@ function useProjectMoreActions() {
   }
 }
 
+const taskLeftListStore = useTaskLeftListStore()
 const settingsStore = useSettingsStore()
 const selected = 'bg-[#E7F5EE] dark:bg-[#233633]'
 
 const smartProjects = useSmartProjects()
-const projectSelectedStatusStore = useProjectSelectedStatusStore()
-const {
-  showMoreIconIndex,
-  showWitchPopover,
-  openPopover,
-} = useProjectMoreActions()
+const { showMoreIconIndex, showWitchPopover, openPopover }
+  = useProjectMoreActions()
 
-const handleTaskItemClick = (projectName: string, key: number) => {
+const handleTaskItemClick = (projectName: string) => {
   smartProjects.selectProject(projectName as SmartProjectName)
-  projectSelectedStatusStore.changeSelectedKey([key])
+  taskLeftListStore.selectedKey = projectName
 }
 </script>
 
@@ -57,19 +54,19 @@ const handleTaskItemClick = (projectName: string, key: number) => {
       pl-4
       pr-2
       hover="bg-[#F3F3F5] dark:bg-[#2D2D30]"
-      :class="
-        projectSelectedStatusStore.selectedKey[0] === key ? selected : ''
-      "
-      @click="handleTaskItemClick(item.title, key)"
+      :class="taskLeftListStore.selectedKey === item.title ? selected : ''"
+      @click="handleTaskItemClick(item.title)"
       @mouseenter="showMoreIconIndex = key"
       @mouseleave="showMoreIconIndex = -1"
     >
       <div flex>
         <Icon
           :icon="item.icon"
-          width="20" class="color-[#9D9FA3]"
+          width="20"
+          class="color-[#9D9FA3]"
           dark="color-white-b"
-        /> <span class="ml-2">{{ item.title }}</span>
+        />
+        <span class="ml-2">{{ item.title }}</span>
       </div>
 
       <NPopover
@@ -82,10 +79,7 @@ const handleTaskItemClick = (projectName: string, key: number) => {
       >
         <template #trigger>
           <Icon
-            v-show="
-              projectSelectedStatusStore.selectedKey[0] === key
-                || showMoreIconIndex === key
-            "
+            v-show="showMoreIconIndex === key"
             icon="material-symbols:more-horiz"
             width="20"
             class="color-[#9D9FA3]"

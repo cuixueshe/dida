@@ -2,22 +2,24 @@
 import { NCheckbox, NEllipsis } from 'naive-ui'
 import { closeCommandModal } from './commandModal'
 import type { TasksSelector } from '@/store'
-import { useTasksSelectorStore } from '@/store'
+import { useTasksSelectorStore, useTasksStore } from '@/store'
 
 const props = defineProps<{
   title: string
   desc: string
   done: boolean
-  from: TasksSelector
+  from: TasksSelector | undefined
   id: string
 }>()
 
+const tasksStore = useTasksStore()
 const tasksSelectorStore = useTasksSelectorStore()
 
 const goTo = async () => {
-  if (props.from)
+  if (props.from) {
     await tasksSelectorStore.setCurrentSelector(props.from)
-    // TODO 还应该跳转到对应的 task 上
+    tasksStore.changeActiveTask(props.id)
+  }
 
   closeCommandModal()
 }
