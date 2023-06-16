@@ -1,33 +1,24 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { useRouter } from 'vue-router'
+import { describe, expect, it } from 'vitest'
 import { useGoto } from './theHeader'
+import { useSetup } from '@/tests/helper'
 
-vi.mock('vue-router')
-
-const pushFn = vi.fn()
-vi.mocked(useRouter as () => { push: Function }).mockImplementation(() => {
-  return {
-    push: pushFn,
-  }
-})
-
-describe('theHeader', () => {
-  beforeEach(() => {
-    pushFn.mockClear()
-  })
+describe('the header', () => {
   it('should be go to home page', () => {
-    const { goToHome } = useGoto()
+    const { router } = useSetup(() => {
+      const { goToHome } = useGoto()
+      goToHome()
+    })
 
-    goToHome()
-
-    expect(pushFn).toBeCalledWith({ name: 'Home' })
+    expect(router.push).toBeCalledWith({ name: 'Home' })
   })
 
   it('should be go to settings page', () => {
-    const { goToSettings } = useGoto()
+    const { router } = useSetup(() => {
+      const { goToSettings } = useGoto()
 
-    goToSettings()
+      goToSettings()
+    })
 
-    expect(pushFn).toBeCalledWith({ name: 'Settings' })
+    expect(router.push).toBeCalledWith({ name: 'Settings' })
   })
 })
