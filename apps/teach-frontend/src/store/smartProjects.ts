@@ -1,17 +1,18 @@
 import { defineStore } from 'pinia'
 import { TaskStatus } from './tasks'
+import { TasksSelectorType } from './tasksSelector'
 import { fetchAllTasks } from '@/api'
 import { useTasksSelectorStore } from '@/store'
 
 export interface SmartProject {
   name: string
-  type: 'smartProject'
+  type: TasksSelectorType.smartProject
 }
 
 function createSmartProject(name: string): SmartProject {
   return {
     name,
-    type: 'smartProject',
+    type: TasksSelectorType.smartProject,
   }
 }
 
@@ -41,8 +42,10 @@ export const useSmartProjects = defineStore('smartProjects', () => {
 
 export async function loadSmartProjectTasks(smartProjectName: string) {
   const status = smartProjectName === '已完成' ? TaskStatus.COMPLETED : TaskStatus.REMOVED
+  // 基于 updatedAt 来做排序
   const rawTasks = await fetchAllTasks({
     status,
+    sortBy: 'updatedAt',
   })
   return rawTasks
 }

@@ -3,7 +3,7 @@ import { NPopover } from 'naive-ui'
 import { ref } from 'vue'
 import { useTaskOperationMessage, useTaskRightContextMenu } from '@/composables'
 import { TaskStatus, useTasksStore, useThemeStore } from '@/store'
-import type { Project, Task } from '@/store'
+import type { Task } from '@/store'
 
 interface Props {
   task: Task

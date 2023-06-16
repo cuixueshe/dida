@@ -1,9 +1,13 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import type { Project, SmartProject } from '@/store'
+import type { ListProject, SmartProject } from '@/store'
 import { loadListProjectTasks, loadSmartProjectTasks, useTasksStore } from '@/store'
 
-export type TasksSelector = Project | SmartProject | undefined
+export type TasksSelector = ListProject | SmartProject
+export enum TasksSelectorType {
+  listProject = 'listProject',
+  smartProject = 'smartProject',
+}
 
 export const useTasksSelectorStore = defineStore('tasksSelectorStore', () => {
   const tasksStore = useTasksStore()
@@ -14,14 +18,11 @@ export const useTasksSelectorStore = defineStore('tasksSelectorStore', () => {
     if (!currentSelector.value)
       return
 
-    let rawTasks
-    if (currentSelector.value.type === 'listProject')
-      rawTasks = await loadListProjectTasks(currentSelector.value.id)
+    if (currentSelector.value.type === TasksSelectorType.listProject)
+      tasksStore.updateTasks(await loadListProjectTasks(currentSelector.value.id))
 
-    else if (currentSelector.value.type === 'smartProject')
-      rawTasks = await loadSmartProjectTasks(currentSelector.value.name)
-
-    tasksStore.updateTasks(rawTasks)
+    else if (currentSelector.value.type === TasksSelectorType.smartProject)
+      tasksStore.updateTasks(await loadSmartProjectTasks(currentSelector.value.name))
   }
 
   async function setCurrentSelector(selector: TasksSelector) {

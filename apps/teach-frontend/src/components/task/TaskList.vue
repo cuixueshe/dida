@@ -5,6 +5,7 @@ import { Icon } from '@iconify/vue'
 import draggable from 'vuedraggable'
 import TaskItem from './TaskItem.vue'
 import {
+  TasksSelectorType,
   useTaskLeftMenuStatusStore,
   useTasksSelectorStore,
   useTasksStore,
@@ -58,11 +59,11 @@ function handleInputChange(event: any) {
 }
 
 const shouldShowTodoAdd = computed(() => {
-  return tasksSelectorStore.currentSelector?.type === 'listProject'
+  return tasksSelectorStore.currentSelector?.type === TasksSelectorType.listProject
 })
 
 const shouldEnabledDrag = computed(() => {
-  return tasksSelectorStore.currentSelector?.type === 'listProject'
+  return tasksSelectorStore.currentSelector?.type === TasksSelectorType.listProject
 },
 )
 
