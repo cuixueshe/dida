@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { useGoto } from '@/composables/goto'
+import { openGithub, useGoto } from '@/composables/goto'
 
-const { gotoHome, gotoGithub, gotoSettings } = useGoto()
+const { gotoHome, gotoSettings } = useGoto()
 </script>
 
 <template>
@@ -13,7 +13,7 @@ const { gotoHome, gotoGithub, gotoSettings } = useGoto()
       <button class="mx-2 !outline-none" @click="gotoSettings()">
         <div i="carbon-settings" />
       </button>
-      <button class="mx-2 !outline-none" @click="gotoGithub()">
+      <button class="mx-2 !outline-none" @click="openGithub()">
         <div i="mdi-github" />
       </button>
     </div>
