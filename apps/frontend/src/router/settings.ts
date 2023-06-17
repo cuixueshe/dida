@@ -1,5 +1,6 @@
 import type { RouteRecordRaw } from 'vue-router'
 import type { Component } from 'vue'
+import { RouteNames } from './const'
 import Settings from '@/pages/Settings.vue'
 import { sidebars } from '@/composables/settings'
 
@@ -19,7 +20,7 @@ const subRoutes: RouteRecordRaw[] = sidebars.map(sidebar => ({
 export const SettingsRoute = {
   path: `/${SETTINGS_PATH}`,
   component: Settings,
-  name: 'Settings',
+  name: RouteNames.SETTINGS,
   meta: { title: '设置' },
   children: subRoutes,
   redirect: subRoutes[0].path,
