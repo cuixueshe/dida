@@ -11,12 +11,12 @@ interface SearchTaskItem {
   from: TasksSelector | undefined
 }
 
-export const filteredTasks = ref<Fuse.FuseResult<SearchTaskItem>[]>([])
+const filteredTasks = ref<Fuse.FuseResult<SearchTaskItem>[]>([])
 const fuse = new Fuse([] as SearchTaskItem[], {
   keys: ['title', 'desc'],
 })
 
-export async function searchTasks(input: string) {
+async function searchTasks(input: string) {
   const tasksStore = useTasksStore()
   const projectsStore = useListProjectsStore()
 
@@ -37,6 +37,14 @@ export async function searchTasks(input: string) {
   filteredTasks.value = fuse.search(input)
 }
 
-export function resetSearchTasks() {
+function resetSearchTasks() {
   filteredTasks.value = []
+}
+
+export function useSearchTasks() {
+  return {
+    filteredTasks,
+    searchTasks,
+    resetSearchTasks,
+  }
 }

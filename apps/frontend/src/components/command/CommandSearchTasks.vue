@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { NEmpty, NScrollbar } from 'naive-ui'
 import SearchItem from './CommandSearchTasksItem.vue'
-import { filteredTasks } from './searchTasks'
+import { useSearchTasks } from './searchTasks'
+
+const { filteredTasks } = useSearchTasks()
 </script>
 
 <template>
