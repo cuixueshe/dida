@@ -1,34 +1,28 @@
 import { useRouter } from 'vue-router'
+import { RouteNames } from '@/router/const'
 
 export function useGoto() {
   const router = useRouter()
 
-  function gotoHome() {
+  function goToHome() {
     router.push({
-      name: 'Home',
+      name: RouteNames.HOME,
     })
   }
 
-  function gotoSettings() {
+  function goToSettings() {
     router.push({
-      name: 'Settings',
+      name: RouteNames.SETTINGS,
     })
-  }
-
-  function gotoSettingsTheme() {
-    router.push({
-      name: 'SettingsTheme',
-    })
-  }
-
-  function gotoGithub() {
-    window.open('https://github.com/cuixueshe/dida')
   }
 
   return {
-    gotoHome,
-    gotoSettings,
-    gotoGithub,
-    gotoSettingsTheme,
+    goToHome,
+    goToSettings,
   }
+}
+
+export const GITHUB_URL = 'https://github.com/cuixueshe/dida'
+export function openGithub() {
+  window.open(GITHUB_URL)
 }
