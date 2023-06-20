@@ -4,21 +4,28 @@ import { RouteNames } from '@/router/const'
 export function useGoto() {
   const router = useRouter()
 
-  function goToHome() {
+  function gotoHome() {
     router.push({
       name: RouteNames.HOME,
     })
   }
 
-  function goToSettings() {
+  function gotoSettings() {
     router.push({
       name: RouteNames.SETTINGS,
     })
   }
 
+  function gotoSettingsTheme() {
+    router.push({
+      name: RouteNames.SETTINGS_THEME,
+    })
+  }
+
   return {
-    goToHome,
-    goToSettings,
+    gotoHome,
+    gotoSettings,
+    gotoSettingsTheme,
   }
 }
 

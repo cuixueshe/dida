@@ -1,41 +1,33 @@
 import Fuse from 'fuse.js'
 import { ref } from 'vue'
+import type { Command } from '@/composables/command'
+import { useCommand } from '@/composables/command'
 
-interface Command {
-  id: number
-  name: string
-  execute: (...args: any[]) => void
-}
-
-export const commands: Command[] = [
-  {
-    id: 0,
-    name: '切换皮肤',
-    execute: (goto) => {
-      goto.gotoSettingsTheme()
-    },
-  },
-  {
-    id: 1,
-    name: '前往主页',
-    execute: (goto) => {
-      goto.gotoHome()
-    },
-  },
-]
-
-// 默认显示所有的命令
-export const filteredCommands = ref<Command[]>(commands)
-const fuse = new Fuse(commands, {
+const filteredCommands = ref<Command[]>([])
+const fuse = new Fuse([] as Command[], {
   keys: ['name'],
 })
 
-export function searchCommands(input: string) {
-  if (!input)
-    return
-  filteredCommands.value = fuse.search(input).map(i => i.item)
-}
+export function useSearchCommands() {
+  const { commands } = useCommand()
 
-export function resetSearchCommands() {
-  filteredCommands.value = commands
+  function searchCommands(input: string) {
+    if (!input) {
+      resetSearchCommands()
+      return
+    }
+
+    fuse.setCollection(commands)
+    filteredCommands.value = fuse.search(input).map(i => i.item)
+  }
+
+  function resetSearchCommands() {
+    filteredCommands.value = commands
+  }
+
+  return {
+    filteredCommands,
+    searchCommands,
+    resetSearchCommands,
+  }
 }
