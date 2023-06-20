@@ -1,11 +1,26 @@
-import { beforeEach, describe, expect, it } from 'vitest'
-import { commands, filteredCommands, resetSearchCommands, searchCommands } from '../searchCommands'
+import { afterAll, beforeAll, describe, expect, it } from 'vitest'
+import { useSearchCommands } from '../searchCommands'
+import { useCommand } from '@/composables/command'
 
 describe('SearchCommands', () => {
-  beforeEach(() => {
-    resetSearchCommands()
+  beforeAll(() => {
+    const { addCommand } = useCommand()
+
+    const mockCommand = {
+      name: '前往主页',
+      execute() {},
+    }
+
+    addCommand(mockCommand)
   })
+
+  afterAll(() => {
+    const { resetCommand } = useCommand()
+    resetCommand()
+  })
+
   it('Should search for the go to home command', () => {
+    const { searchCommands, filteredCommands } = useSearchCommands()
     searchCommands('前往主页')
 
     expect(filteredCommands.value.length).toBe(1)
@@ -13,6 +28,9 @@ describe('SearchCommands', () => {
   })
 
   it('should be reset filtered commands', () => {
+    const { commands } = useCommand()
+    const { resetSearchCommands, searchCommands, filteredCommands } = useSearchCommands()
+
     searchCommands('前往主页')
 
     resetSearchCommands()
@@ -21,6 +39,9 @@ describe('SearchCommands', () => {
   })
 
   it('should return all commands when input is empty', () => {
+    const { commands } = useCommand()
+    const { searchCommands, filteredCommands } = useSearchCommands()
+
     searchCommands('')
 
     expect(filteredCommands.value.length).toBe(commands.length)

@@ -16,32 +16,32 @@ const fuse = new Fuse([] as SearchTaskItem[], {
   keys: ['title', 'desc'],
 })
 
-async function searchTasks(input: string) {
-  const tasksStore = useTasksStore()
-  const projectsStore = useListProjectsStore()
-
-  const tasks = await tasksStore.findAllTasksNotRemoved()
-  const fuseTasks = tasks.map((task) => {
-    const done = task.status === TaskStatus.COMPLETED
-    const from = done ? completeSmartProject : projectsStore.findProject(task.projectId)
-    return {
-      id: task.id!,
-      title: task.title,
-      desc: task.content,
-      done,
-      from,
-    }
-  })
-  fuse.setCollection(fuseTasks)
-
-  filteredTasks.value = fuse.search(input)
-}
-
-function resetSearchTasks() {
-  filteredTasks.value = []
-}
-
 export function useSearchTasks() {
+  async function searchTasks(input: string) {
+    const tasksStore = useTasksStore()
+    const projectsStore = useListProjectsStore()
+
+    const tasks = await tasksStore.findAllTasksNotRemoved()
+    const fuseTasks = tasks.map((task) => {
+      const done = task.status === TaskStatus.COMPLETED
+      const from = done ? completeSmartProject : projectsStore.findProject(task.projectId)
+      return {
+        id: task.id!,
+        title: task.title,
+        desc: task.content,
+        done,
+        from,
+      }
+    })
+    fuse.setCollection(fuseTasks)
+
+    filteredTasks.value = fuse.search(input)
+  }
+
+  function resetSearchTasks() {
+    filteredTasks.value = []
+  }
+
   return {
     filteredTasks,
     searchTasks,

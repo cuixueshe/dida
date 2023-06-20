@@ -14,7 +14,7 @@ const handleClick = (command: Command) => {
 
 <template>
   <div>
-    <div v-for="item in filteredCommands" :key="item.id" class="hover:bg-gray-400/5 leading-30px px-2 cursor-pointer" @click="handleClick(item)">
+    <div v-for="(item, key) in filteredCommands" :key="key" class="hover:bg-gray-400/5 leading-30px px-2 cursor-pointer" @click="handleClick(item)">
       {{ item.name }}
     </div>
   </div>
