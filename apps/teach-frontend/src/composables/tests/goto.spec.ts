@@ -6,8 +6,8 @@ import { RouteNames } from '@/router/const'
 describe('the header', () => {
   it('should be go to home page', () => {
     const { router } = useSetup(() => {
-      const { goToHome } = useGoto()
-      goToHome()
+      const { gotoHome } = useGoto()
+      gotoHome()
     })
 
     expect(router.push).toBeCalledWith({ name: RouteNames.HOME })
@@ -15,9 +15,9 @@ describe('the header', () => {
 
   it('should be go to settings page', () => {
     const { router } = useSetup(() => {
-      const { goToSettings } = useGoto()
+      const { gotoSettings } = useGoto()
 
-      goToSettings()
+      gotoSettings()
     })
 
     expect(router.push).toBeCalledWith({ name: RouteNames.SETTINGS })

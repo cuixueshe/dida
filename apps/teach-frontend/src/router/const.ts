@@ -1,5 +1,6 @@
-export const enum RouteNames {
+export enum RouteNames {
   HOME = 'Home',
-  SETTINGS = 'Settings',
   TASK = 'Task',
+  SETTINGS = 'Settings',
+  SETTINGS_THEME = 'SettingsTheme',
 }

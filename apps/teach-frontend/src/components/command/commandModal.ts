@@ -3,7 +3,7 @@ import { useIsMac } from '@/composables'
 
 const showCommandModal = ref(false)
 
-export function useCommandModel() {
+export function useCommandModal() {
   function openCommandModal() {
     showCommandModal.value = true
   }
