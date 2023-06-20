@@ -15,26 +15,50 @@ const ignoreList = [
   '**/package.json',
   '**/vite.config.ts',
   '**/vitest.setup.ts',
+  '**/scripts/syncFrontend.js',
 ]
 
 function shouldIgnore(filePath) {
   return ignoreList.some(p => minimatch(filePath, p))
 }
 
-async function syncFiles(input, output) {
-  const files = glob.sync('**/*', { cwd: input, nodir: true })
+function getIncludeFiles(directoryPath) {
+  const files = glob.sync('**/*', { cwd: directoryPath, nodir: true })
+
+  return files.reduce((result, current) => {
+    if (!shouldIgnore(current))
+      result.push(current)
+
+    return result
+  }, [])
+}
+
+const frontendPath = path.resolve(__dirname, '../../frontend')
+const teachPath = path.resolve(__dirname, '../')
+
+async function updateFileContent() {
+  const files = getIncludeFiles(frontendPath)
 
   for (const file of files) {
-    const sourcePath = path.resolve(input, file)
-    if (!shouldIgnore(sourcePath)) {
-      const destinationPath = path.join(output, file)
-      await fs.ensureDir(path.dirname(destinationPath))
-      await fs.copyFile(sourcePath, destinationPath)
+    const sourcePath = path.resolve(frontendPath, file)
+    const destinationPath = path.join(teachPath, file)
+    await fs.ensureDir(path.dirname(destinationPath))
+    await fs.copyFile(sourcePath, destinationPath)
+  }
+}
+
+async function removeDiscardedFile() {
+  const files = getIncludeFiles(teachPath)
+
+  for (const file of files) {
+    const frontendFile = path.resolve(frontendPath, file)
+    const exists = await fs.pathExists(frontendFile)
+    if (!exists) {
+      const teachFile = path.resolve(teachPath, file)
+      fs.removeSync(teachFile)
     }
   }
 }
 
-const inputDir = path.resolve(__dirname, '../../frontend')
-const outputDir = path.resolve(__dirname, '../')
-
-syncFiles(inputDir, outputDir)
+updateFileContent()
+removeDiscardedFile()
