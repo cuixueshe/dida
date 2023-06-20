@@ -5,7 +5,7 @@ export interface Command {
   execute: () => void
 }
 
-const commands: Command[] = []
+let commands: Command[] = []
 
 export function useCommand() {
   function initCommands() {
@@ -13,8 +13,18 @@ export function useCommand() {
     commands.push(new CommandGoToSettingsTheme())
   }
 
+  function resetCommand() {
+    commands = []
+  }
+
+  function addCommand(command: Command) {
+    commands.push(command)
+  }
+
   return {
     commands,
     initCommands,
+    resetCommand,
+    addCommand,
   }
 }

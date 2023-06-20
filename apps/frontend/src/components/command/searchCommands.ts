@@ -3,14 +3,14 @@ import { ref } from 'vue'
 import type { Command } from '@/composables/command'
 import { useCommand } from '@/composables/command'
 
-const { commands } = useCommand()
-
-const filteredCommands = ref<any[]>()
+const filteredCommands = ref<Command[]>([])
 const fuse = new Fuse([] as Command[], {
   keys: ['name'],
 })
 
 export function useSearchCommands() {
+  const { commands } = useCommand()
+
   function searchCommands(input: string) {
     if (!input) {
       resetSearchCommands()
@@ -24,6 +24,7 @@ export function useSearchCommands() {
   function resetSearchCommands() {
     filteredCommands.value = commands
   }
+
   return {
     filteredCommands,
     searchCommands,
