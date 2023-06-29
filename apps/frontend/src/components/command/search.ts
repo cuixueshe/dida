@@ -35,7 +35,7 @@ export function useSearch() {
         () => search.value,
         (v) => {
           if (v === '') {
-            searchIng.value = false
+            resetSearch()
             resetSearchCommands()
             resetSearchTasks()
           }
@@ -50,6 +50,8 @@ export function useSearch() {
 
   function resetSearch() {
     search.value = ''
+    loading.value = false
+    searchIng.value = false
   }
 
   async function handleSearch(input: string) {
