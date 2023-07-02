@@ -6,7 +6,7 @@ import { delay } from '@/utils'
 
 const search = ref('')
 const loading = ref(false)
-const searchIng = ref(false)
+const searching = ref(false)
 
 let isInitialized = false
 
@@ -25,7 +25,7 @@ export function useSearch() {
             loading.value = true
             await handleSearch(v)
             loading.value = false
-            searchIng.value = true
+            searching.value = true
           }
         },
         { debounce: 500 },
@@ -51,7 +51,7 @@ export function useSearch() {
   function resetSearch() {
     search.value = ''
     loading.value = false
-    searchIng.value = false
+    searching.value = false
   }
 
   async function handleSearch(input: string) {
@@ -68,7 +68,7 @@ export function useSearch() {
 
   return {
     loading,
-    searchIng,
+    searching,
     search,
     isSearchCommand,
     resetSearch,
