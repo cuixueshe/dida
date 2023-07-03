@@ -5,7 +5,7 @@ import { useSearch } from './search'
 import CommandSearchCommands from './CommandSearchCommands.vue'
 import CommandSearchTasks from './CommandSearchTasks.vue'
 
-const { isSearchCommand, search, loading, searchIng } = useSearch()
+const { isSearchCommand, search, loading, searching } = useSearch()
 </script>
 
 <template>
@@ -20,7 +20,7 @@ const { isSearchCommand, search, loading, searchIng } = useSearch()
       />
     </div>
     <div class="mt-6">
-      <NEmpty v-if="!searchIng" description="搜索任务，标签或查看命令。">
+      <NEmpty v-if="!searching" description="搜索任务，标签或查看命令。">
         <template #icon />
       </NEmpty>
       <div v-else>
