@@ -30,7 +30,7 @@ describe('CommandModal', () => {
       vi.spyOn(misc, 'useIsMac').mockImplementation(() => computed(() => true))
       const { registerKeyboardShortcut, showCommandModal } = useCommandModal()
 
-      useSetup(() => {
+      const { wrapper } = useSetup(() => {
         registerKeyboardShortcut()
       })
 
@@ -40,12 +40,14 @@ describe('CommandModal', () => {
       })
 
       expect(showCommandModal.value).toBe(true)
+
+      wrapper.unmount()
     })
     it('should be open command modal when use ctrl + k on Win', () => {
       vi.spyOn(misc, 'useIsMac').mockImplementation(() => computed(() => false))
       const { registerKeyboardShortcut, showCommandModal } = useCommandModal()
 
-      useSetup(() => {
+      const { wrapper } = useSetup(() => {
         registerKeyboardShortcut()
       })
 
@@ -55,6 +57,8 @@ describe('CommandModal', () => {
       })
 
       expect(showCommandModal.value).toBe(true)
+
+      wrapper.unmount()
     })
   })
 })
