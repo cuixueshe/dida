@@ -87,6 +87,7 @@ importers:
       '@iconify-json/mdi': ^1.1.41
       '@iconify/vue': ^4.0.2
       '@imengyu/vue3-context-menu': ^1.1.10
+      '@pinia/testing': ^0.1.2
       '@types/lodash-es': ^4.17.6
       '@unocss/reset': ^0.48.3
       '@vitejs/plugin-vue': ^4.0.0
@@ -130,6 +131,7 @@ importers:
       '@iconify-json/carbon': 1.1.14
       '@iconify-json/mdi': 1.1.46
       '@iconify/vue': 4.1.0_vue@3.2.47
+      '@pinia/testing': 0.1.2_pinia@2.0.30+vue@3.2.47
       '@types/lodash-es': 4.17.6
       '@unocss/reset': 0.48.5
       '@vitejs/plugin-vue': 4.0.0_vite@4.1.1+vue@3.2.47
