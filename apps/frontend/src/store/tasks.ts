@@ -39,16 +39,20 @@ export const useTasksStore = defineStore('tasksStore', () => {
     tasks.value = rawTasks.map(mapTaskResponseToTask)
   }
 
-  async function addTask(title: string) {
+  async function addTask(title: string): Promise<Task | undefined> {
     if (!tasksSelectorStore.currentSelector)
       return
     if (tasksSelectorStore.currentSelector.type !== 'listProject')
       return
 
-    const newRawTask = await fetchCreateTask(title, tasksSelectorStore.currentSelector.id)
+    const newRawTask = await fetchCreateTask(
+      title,
+      tasksSelectorStore.currentSelector.id,
+    )
     const task = mapTaskResponseToTask(newRawTask)
     tasks.value.unshift(task)
     changeActiveTask(task)
+    return task
   }
 
   function changeActiveTask(taskId: Task['id']): void
@@ -58,9 +62,7 @@ export const useTasksStore = defineStore('tasksStore', () => {
 
     if (typeof taskOrTaskId === 'string')
       task = tasks.value.find(t => t.id === taskOrTaskId)
-
-    else
-      task = taskOrTaskId
+    else task = taskOrTaskId
 
     currentActiveTask.value = task
   }
@@ -136,11 +138,16 @@ export const useTasksStore = defineStore('tasksStore', () => {
     task.position = newPosition
   }
 
-  async function findAllTasksNotRemoved() {
+  async function findAllTasksNotRemoved(): Promise<Task[]> {
     const activeTasks = await fetchAllTasks({ status: TaskStatus.ACTIVE })
-    const completedTasks = await fetchAllTasks({ status: TaskStatus.COMPLETED })
+    const completedTasks = await fetchAllTasks({
+      status: TaskStatus.COMPLETED,
+    })
 
-    return [...activeTasks.map(mapTaskResponseToTask), ...completedTasks.map(mapTaskResponseToTask)]
+    return [
+      ...activeTasks.map(mapTaskResponseToTask),
+      ...completedTasks.map(mapTaskResponseToTask),
+    ]
   }
 
   async function moveTaskToProject(task: Task, projectId: string) {
