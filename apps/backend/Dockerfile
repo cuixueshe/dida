@@ -9,7 +9,7 @@ COPY package*.json ./
 
 # 安装依赖
 RUN npm install -g pnpm@7.17.0
-Run pnpm install --prod
+Run pnpm install --prod --registry https://registry.npm.taobao.org
 
 # 复制项目文件到工作目录
 COPY . .
