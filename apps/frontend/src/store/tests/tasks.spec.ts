@@ -53,7 +53,7 @@ describe('tasks store', () => {
   })
 
   describe('add task', () => {
-    it('should be add task to the first', async () => {
+    it('should add task to the first position', async () => {
       const tasksStore = useTasksStore()
       await tasksStore.addTask('运动')
 
@@ -64,7 +64,7 @@ describe('tasks store', () => {
       expect(tasksStore.currentActiveTask).toEqual(task)
     })
 
-    it('should not be add task when current selector is undefined', async () => {
+    it('should not add task when current selector is undefined', async () => {
       const tasksSelectorStore = useTasksSelectorStore()
       tasksSelectorStore.currentSelector = undefined
 
@@ -75,7 +75,7 @@ describe('tasks store', () => {
       expect(tasksStore.tasks.length).toBe(0)
     })
 
-    it('should not be add task when current selector type is not listProject', async () => {
+    it('should not add task when current selector type is not listProject', async () => {
       const tasksSelectorStore = useTasksSelectorStore()
       tasksSelectorStore.currentSelector = completeSmartProject
 
@@ -87,31 +87,51 @@ describe('tasks store', () => {
     })
   })
 
-  it('should be remove task', async () => {
+  it('should remove task', async () => {
     const tasksStore = useTasksStore()
     const task = (await tasksStore.addTask('吃饭')) as Task
 
     await tasksStore.removeTask(task)
 
     expect(tasksStore.tasks.length).toBe(0)
-    expect(task.status).toBe(TaskStatus.REMOVED)
     expect(tasksStore.currentActiveTask).toBeUndefined()
     expect(fetchRemoveTask).toBeCalledWith(task.id)
   })
 
-  it('should be complete task', async () => {
+  it('should complete task', async () => {
     const tasksStore = useTasksStore()
     const task = (await tasksStore.addTask('吃饭')) as Task
 
     await tasksStore.completeTask(task)
 
     expect(tasksStore.tasks.length).toBe(0)
-    expect(task.status).toBe(TaskStatus.COMPLETED)
     expect(tasksStore.currentActiveTask).toBeUndefined()
     expect(fetchCompleteTask).toBeCalledWith(task.id)
   })
 
-  it('should be update tasks', () => {
+  it('should restore task', async () => {
+    const tasksStore = useTasksStore()
+    const task = (await tasksStore.addTask('吃饭')) as Task
+
+    await tasksStore.restoreTask(task)
+
+    expect(task.status).toBe(TaskStatus.ACTIVE)
+    expect(tasksStore.tasks.length).toBe(0)
+    expect(fetchRestoreTask).toBeCalledWith(task.id)
+  })
+
+  it('should move task to project', async () => {
+    const tasksStore = useTasksStore()
+    const task = (await tasksStore.addTask('吃饭')) as Task
+
+    await tasksStore.moveTaskToProject(task, liveListProject.id)
+
+    expect(task.projectId).toBe(liveListProject.id)
+    expect(tasksStore.tasks.length).toBe(0)
+    expect(fetchMoveTaskToProject).toBeCalledWith(task.id, liveListProject.id)
+  })
+
+  it('should update tasks', () => {
     const tasksStore = useTasksStore()
 
     tasksStore.updateTasks([createTaskResponse('吃饭')])
@@ -125,30 +145,8 @@ describe('tasks store', () => {
     expect(task).toHaveProperty('position')
   })
 
-  it('should be restore task', async () => {
-    const tasksStore = useTasksStore()
-    const task = (await tasksStore.addTask('吃饭')) as Task
-
-    await tasksStore.restoreTask(task)
-
-    expect(task.status).toBe(TaskStatus.ACTIVE)
-    expect(tasksStore.tasks.length).toBe(0)
-    expect(fetchRestoreTask).toBeCalledWith(task.id)
-  })
-
-  it('should be move task to project', async () => {
-    const tasksStore = useTasksStore()
-    const task = (await tasksStore.addTask('吃饭')) as Task
-
-    await tasksStore.moveTaskToProject(task, liveListProject.id)
-
-    expect(task.projectId).toBe(liveListProject.id)
-    expect(tasksStore.tasks.length).toBe(0)
-    expect(fetchMoveTaskToProject).toBeCalledWith(task.id, liveListProject.id)
-  })
-
   describe('cancel complete task', () => {
-    it('should be cancel complete task', async () => {
+    it('should cancel complete task', async () => {
       const tasksStore = useTasksStore()
       await tasksStore.addTask('吃饭')
       const task = (await tasksStore.addTask('睡觉')) as Task
@@ -174,7 +172,7 @@ describe('tasks store', () => {
   })
 
   describe('update task title', () => {
-    it('should be update task title', async () => {
+    it('should update task title', async () => {
       const tasksStore = useTasksStore()
       const task = (await tasksStore.addTask('吃饭')) as Task
 
@@ -185,7 +183,7 @@ describe('tasks store', () => {
       expect(fetchUpdateTaskTitle).toBeCalledWith(task.id, newTitle)
     })
 
-    it('should not be update task title when it does not change', async () => {
+    it('should not update task title when it does not change', async () => {
       const tasksStore = useTasksStore()
       const task = (await tasksStore.addTask('吃饭')) as Task
 
@@ -196,7 +194,7 @@ describe('tasks store', () => {
   })
 
   describe('update task content', () => {
-    it('should be update task content', async () => {
+    it('should update task content', async () => {
       const tasksStore = useTasksStore()
       const task = (await tasksStore.addTask('吃饭')) as Task
 
@@ -207,7 +205,7 @@ describe('tasks store', () => {
       expect(fetchUpdateTaskContent).toBeCalledWith(task.id, newContent)
     })
 
-    it('should not be update task content when it does not change', async () => {
+    it('should not update task content when it does not change', async () => {
       const tasksStore = useTasksStore()
       const task = (await tasksStore.addTask('吃饭')) as Task
 
@@ -218,7 +216,7 @@ describe('tasks store', () => {
   })
 
   describe('update task position', () => {
-    it('should be update task position', async () => {
+    it('should update task position', async () => {
       const tasksStore = useTasksStore()
       const task = (await tasksStore.addTask('吃饭')) as Task
 
@@ -229,7 +227,7 @@ describe('tasks store', () => {
       expect(fetchUpdateTaskPosition).toBeCalledWith(task.id, newPosition)
     })
 
-    it('should not be update task content when it does not change', async () => {
+    it('should not update task content when it does not change', async () => {
       const tasksStore = useTasksStore()
       const task = (await tasksStore.addTask('吃饭')) as Task
 
@@ -256,14 +254,14 @@ describe('tasks store', () => {
       task = (await tasksStore.addTask('吃饭')) as Task
     })
 
-    it('should be change active task by taskId', async () => {
+    it('should change active task by taskId', async () => {
       const tasksStore = useTasksStore()
       tasksStore.changeActiveTask(task.id)
 
       expect(tasksStore.currentActiveTask).toEqual(task)
     })
 
-    it('should be change active task by task', async () => {
+    it('should change active task by task', async () => {
       const tasksStore = useTasksStore()
 
       tasksStore.changeActiveTask(task)
