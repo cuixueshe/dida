@@ -11,7 +11,7 @@ import {
   fetchUpdateTaskPosition,
   fetchUpdateTaskTitle,
 } from '@/api'
-import { useTasksSelectorStore } from '@/store'
+import { TasksSelectorType, useTasksSelectorStore } from '@/store'
 import type { TaskResponse } from '@/api/types'
 
 export enum TaskStatus {
@@ -42,7 +42,8 @@ export const useTasksStore = defineStore('tasksStore', () => {
   async function addTask(title: string): Promise<Task | undefined> {
     if (!tasksSelectorStore.currentSelector)
       return
-    if (tasksSelectorStore.currentSelector.type !== 'listProject')
+
+    if (tasksSelectorStore.currentSelector.type === TasksSelectorType.smartProject)
       return
 
     const newRawTask = await fetchCreateTask(
