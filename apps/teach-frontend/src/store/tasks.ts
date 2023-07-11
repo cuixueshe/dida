@@ -82,6 +82,13 @@ export const useTasksStore = defineStore('tasksStore', () => {
 
   async function cancelCompleteTask(task: Task) {
     function taskPositionRestorer(task: Task) {
+      // only one task
+      if (tasks.value.length === 0) {
+        tasks.value.push(task)
+        return
+      }
+
+      // add to last position
       const lastTask = tasks.value[tasks.value.length - 1]
       if (task.position < lastTask.position) {
         tasks.value.push(task)
@@ -168,8 +175,8 @@ export const useTasksStore = defineStore('tasksStore', () => {
 
     updateTasks,
     changeActiveTask,
-    cancelCompleteTask,
     findAllTasksNotRemoved,
+    cancelCompleteTask,
     updateTaskTitle,
     updateTaskContent,
     updateTaskPosition,
