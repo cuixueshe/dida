@@ -159,6 +159,7 @@ export const useTasksStore = defineStore('tasksStore', () => {
   async function moveTaskToProject(task: Task, projectId: string) {
     await fetchMoveTaskToProject(task.id, projectId)
     _removeTask(task)
+    changeActiveTask(undefined)
   }
 
   function _removeTask(task: Task) {
