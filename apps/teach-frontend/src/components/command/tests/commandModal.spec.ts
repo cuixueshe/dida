@@ -6,8 +6,8 @@ import * as misc from '@/composables/misc'
 
 describe('command modal', () => {
   beforeEach(() => {
-    const { closeCommandModal } = useCommandModal()
-    closeCommandModal()
+    const { showCommandModal } = useCommandModal()
+    showCommandModal.value = false
   })
   it('should be open command modal', () => {
     const { openCommandModal, showCommandModal } = useCommandModal()
@@ -18,7 +18,8 @@ describe('command modal', () => {
   })
 
   it('should be close command modal', () => {
-    const { closeCommandModal, showCommandModal } = useCommandModal()
+    const { openCommandModal, closeCommandModal, showCommandModal } = useCommandModal()
+    openCommandModal()
 
     closeCommandModal()
 
