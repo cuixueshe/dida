@@ -15,14 +15,16 @@ import {
 
 vi.mock('@/api')
 
+let id = 0
+let position = 0
 function createTaskResponse(title: string) {
   return {
     title,
     content: '这是一个内容',
     status: TaskStatus.ACTIVE,
     projectId: '1',
-    position: 1,
-    _id: '1',
+    position: position++,
+    _id: String(id++),
     createdAt: new Date().toString(),
     updatedAt: new Date().toString(),
   }
@@ -38,6 +40,8 @@ vi.mocked(fetchAllTasks).mockResolvedValue([])
 describe('tasks store', () => {
   beforeEach(() => {
     setActivePinia(createPinia())
+    id = 0
+    position = 0
 
     const tasksSelectorStore = useTasksSelectorStore()
     tasksSelectorStore.currentSelector = liveListProject
@@ -169,6 +173,51 @@ describe('tasks store', () => {
     expect(fetchAllTasks).toBeCalledWith({ status: TaskStatus.COMPLETED })
 
     // expectTaskDataStructure(tasks[0])
+  })
+
+  describe('cancel complete task', () => {
+    it('should cancel complete task', async () => {
+      const tasksStore = useTasksStore()
+
+      await tasksStore.addTask('吃饭')
+      const task = (await tasksStore.addTask('睡觉'))!
+      await tasksStore.addTask('写代码')
+      await tasksStore.completeTask(task)
+
+      await tasksStore.cancelCompleteTask(task)
+
+      expect(tasksStore.tasks[1]).toEqual(task)
+      expect(tasksStore.tasks[1].status).toBe(TaskStatus.ACTIVE)
+      expect(fetchRestoreTask).toBeCalledWith(task.id)
+    })
+
+    it('should cancel complete the last task ', async () => {
+      const tasksStore = useTasksStore()
+
+      const task = (await tasksStore.addTask('吃饭'))!
+      await tasksStore.addTask('睡觉')
+      await tasksStore.addTask('写代码')
+      await tasksStore.completeTask(task)
+
+      await tasksStore.cancelCompleteTask(task)
+
+      expect(tasksStore.tasks[2]).toEqual(task)
+      expect(tasksStore.tasks[2].status).toBe(TaskStatus.ACTIVE)
+      expect(fetchRestoreTask).toBeCalledWith(task.id)
+    })
+
+    it('should cancel complete task when only one', async () => {
+      const tasksStore = useTasksStore()
+
+      const task = (await tasksStore.addTask('吃饭'))!
+      await tasksStore.completeTask(task)
+
+      await tasksStore.cancelCompleteTask(task)
+
+      expect(tasksStore.tasks[0]).toEqual(task)
+      expect(tasksStore.tasks[0].status).toBe(TaskStatus.ACTIVE)
+      expect(fetchRestoreTask).toBeCalledWith(task.id)
+    })
   })
 })
 
