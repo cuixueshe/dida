@@ -4,7 +4,7 @@ import { TaskStatus, useTasksStore } from '../tasks'
 import { useTasksSelectorStore } from '../tasksSelector'
 import { completeSmartProject } from '../smartProjects'
 import { liveListProject } from '@/tests/fixture'
-import { fetchCreateTask } from '@/api'
+import { fetchCompleteTask, fetchCreateTask, fetchMoveTaskToProject, fetchRemoveTask, fetchRestoreTask } from '@/api'
 
 vi.mock('@/api')
 
@@ -25,13 +25,13 @@ describe('tasks store', () => {
   beforeEach(() => {
     setActivePinia(createPinia())
 
+    const tasksSelectorStore = useTasksSelectorStore()
+    tasksSelectorStore.currentSelector = liveListProject
+
     vi.clearAllMocks()
   })
   describe('add task', () => {
     it('should add task to the first position', async () => {
-      const tasksSelectorStore = useTasksSelectorStore()
-      tasksSelectorStore.currentSelector = liveListProject
-
       const tasksStore = useTasksStore()
       await tasksStore.addTask('运动')
 
@@ -70,5 +70,50 @@ describe('tasks store', () => {
       expect(tasksStore.currentActiveTask).toBeUndefined()
       expect(fetchCreateTask).not.toBeCalled()
     })
+  })
+
+  it('should remove task', async () => {
+    const tasksStore = useTasksStore()
+    const task = (await tasksStore.addTask('吃饭'))!
+
+    await tasksStore.removeTask(task)
+
+    expect(tasksStore.tasks.length).toBe(0)
+    expect(tasksStore.currentActiveTask).toBeUndefined()
+    expect(fetchRemoveTask).toBeCalledWith(task.id)
+  })
+
+  it('should complete task', async () => {
+    const tasksStore = useTasksStore()
+    const task = (await tasksStore.addTask('吃饭'))!
+
+    await tasksStore.completeTask(task)
+
+    expect(tasksStore.tasks.length).toBe(0)
+    expect(tasksStore.currentActiveTask).toBeUndefined()
+    expect(fetchCompleteTask).toBeCalledWith(task.id)
+  })
+
+  it('should restoreTask task', async () => {
+    const tasksStore = useTasksStore()
+    const task = (await tasksStore.addTask('吃饭'))!
+
+    await tasksStore.restoreTask(task)
+
+    expect(tasksStore.tasks.length).toBe(0)
+    expect(tasksStore.currentActiveTask).toBeUndefined()
+    expect(fetchRestoreTask).toBeCalledWith(task.id)
+  })
+
+  it('should move task to project', async () => {
+    const tasksStore = useTasksStore()
+    const task = (await tasksStore.addTask('吃饭'))!
+
+    const projectId = '2'
+    await tasksStore.moveTaskToProject(task, projectId)
+
+    expect(tasksStore.tasks.length).toBe(0)
+    expect(tasksStore.currentActiveTask).toBeUndefined()
+    expect(fetchMoveTaskToProject).toBeCalledWith(task.id, projectId)
   })
 })
