@@ -269,4 +269,74 @@ describe('tasks store', () => {
       expect(tasksStore.currentActiveTask).toEqual(task)
     })
   })
+
+  describe('update title of task', () => {
+    it('should update title of task', async () => {
+      const tasksStore = useTasksStore()
+      const task = (await tasksStore.addTask('吃饭')) as Task
+
+      const newTitle = '写代码'
+      await tasksStore.updateTaskTitle(task, newTitle)
+
+      expect(fetchUpdateTaskTitle).toBeCalledWith(task.id, newTitle)
+      expect(task.title).toBe(newTitle)
+    })
+
+    it('should not update title of task when the title has not changed', async () => {
+      const tasksStore = useTasksStore()
+      const task = (await tasksStore.addTask('吃饭')) as Task
+
+      const newTitle = '吃饭'
+      await tasksStore.updateTaskTitle(task, newTitle)
+
+      expect(fetchUpdateTaskTitle).not.toBeCalled()
+      expect(task.title).toBe(newTitle)
+    })
+  })
+
+  describe('update content of task ', () => {
+    it('should update content of task', async () => {
+      const tasksStore = useTasksStore()
+      const task = (await tasksStore.addTask('吃饭')) as Task
+
+      const newContent = '今天吃什么好呢'
+      await tasksStore.updateTaskContent(task, newContent)
+
+      expect(fetchUpdateTaskContent).toBeCalledWith(task.id, newContent)
+      expect(task.content).toBe(newContent)
+    })
+
+    it('should not update content of task when the content has not changed', async () => {
+      const tasksStore = useTasksStore()
+      const task = (await tasksStore.addTask('吃饭')) as Task
+
+      await tasksStore.updateTaskTitle(task, task.content)
+
+      expect(fetchUpdateTaskContent).not.toBeCalled()
+      expect(task.content).toBe(task.content)
+    })
+  })
+
+  describe('update position of task ', () => {
+    it('should update position of task', async () => {
+      const tasksStore = useTasksStore()
+      const task = (await tasksStore.addTask('吃饭')) as Task
+
+      const newPosition = 5
+      await tasksStore.updateTaskPosition(task, newPosition)
+
+      expect(fetchUpdateTaskPosition).toBeCalledWith(task.id, newPosition)
+      expect(task.position).toBe(newPosition)
+    })
+
+    it('should not update position of task when the position has not changed', async () => {
+      const tasksStore = useTasksStore()
+      const task = (await tasksStore.addTask('吃饭')) as Task
+
+      await tasksStore.updateTaskPosition(task, task.position)
+
+      expect(fetchUpdateTaskPosition).not.toBeCalled()
+      expect(task.position).toBe(task.position)
+    })
+  })
 })
