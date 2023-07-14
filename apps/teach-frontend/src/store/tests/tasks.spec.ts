@@ -11,6 +11,10 @@ import {
   fetchMoveTaskToProject,
   fetchRemoveTask,
   fetchRestoreTask,
+  fetchUpdateTaskContent,
+  fetchUpdateTaskPosition,
+  // fetchUpdateTaskProperties,
+  fetchUpdateTaskTitle,
 } from '@/api'
 
 vi.mock('@/api')
@@ -219,6 +223,87 @@ describe('tasks store', () => {
       expect(fetchRestoreTask).toBeCalledWith(task.id)
     })
   })
+
+  describe('update task title', () => {
+    it('should update task title', async () => {
+      const tasksStore = useTasksStore()
+      const task = (await tasksStore.addTask('吃饭'))!
+
+      const newTitle = '写代码'
+      await tasksStore.updateTaskTitle(task, newTitle)
+
+      expect(task.title).toBe(newTitle)
+      expect(fetchUpdateTaskTitle).toBeCalledWith(task.id, newTitle)
+    })
+
+    it('should not update task title when the title has not changed', async () => {
+      const tasksStore = useTasksStore()
+      const task = (await tasksStore.addTask('吃饭'))!
+
+      await tasksStore.updateTaskTitle(task, task.title)
+
+      expect(task.title).toBe(task.title)
+      expect(fetchUpdateTaskTitle).not.toBeCalled()
+    })
+  })
+
+  describe('update task content', () => {
+    it('should update task content', async () => {
+      const tasksStore = useTasksStore()
+      const task = (await tasksStore.addTask('吃饭'))!
+
+      const newContent = '今天吃什么'
+      await tasksStore.updateTaskContent(task, newContent)
+
+      expect(task.content).toBe(newContent)
+      expect(fetchUpdateTaskContent).toBeCalledWith(task.id, newContent)
+    })
+
+    it('should not update task content when the content has not changed', async () => {
+      const tasksStore = useTasksStore()
+      const task = (await tasksStore.addTask('吃饭'))!
+
+      await tasksStore.updateTaskContent(task, task.content)
+
+      expect(task.content).toBe(task.content)
+      expect(fetchUpdateTaskContent).not.toBeCalled()
+    })
+  })
+
+  describe('update task position', () => {
+    it('should update task position', async () => {
+      const tasksStore = useTasksStore()
+      const task = (await tasksStore.addTask('吃饭'))!
+
+      const newPosition = 5
+      await tasksStore.updateTaskPosition(task, newPosition)
+
+      expect(task.position).toBe(newPosition)
+      expect(fetchUpdateTaskPosition).toBeCalledWith(task.id, newPosition)
+    })
+
+    it('should not update task position when the position has not changed', async () => {
+      const tasksStore = useTasksStore()
+      const task = (await tasksStore.addTask('吃饭'))!
+
+      await tasksStore.updateTaskPosition(task, task.position)
+
+      expect(task.position).toBe(task.position)
+      expect(fetchUpdateTaskPosition).not.toBeCalled()
+    })
+  })
+
+  // it('should update task property', async () => {
+  //   const tasksStore = useTasksStore()
+  //   const task = (await tasksStore.addTask('吃饭'))!
+
+  //   await tasksStore.updateTaskProperties(task, {
+  //     title: 'new title',
+  //   })
+
+  //   expect(task.title).toBe('new title')
+  //   expect(fetchUpdateTaskProperties).toBeCalledWith(task.id, { title: 'new title' })
+  // })
 })
 
 // function expectTaskDataStructure(task: any) {
