@@ -32,6 +32,7 @@
     "@unocss/reset": "^0.48.3",
     "@vitejs/plugin-vue": "^4.0.0",
     "@vitejs/plugin-vue-jsx": "^3.0.0",
+    "@vitest/coverage-c8": "^0.28.4",
     "@vue/test-utils": "^2.2.10",
     "@vueuse/core": "^9.10.0",
     "cross-env": "^7.0.3",

@@ -9,9 +9,10 @@ import {
   fetchRestoreTask,
   fetchUpdateTaskContent,
   fetchUpdateTaskPosition,
+  // fetchUpdateTaskProperties,
   fetchUpdateTaskTitle,
 } from '@/api'
-import { useTasksSelectorStore } from '@/store'
+import { TasksSelectorType, useTasksSelectorStore } from '@/store'
 import type { TaskResponse } from '@/api/types'
 
 export enum TaskStatus {
@@ -39,16 +40,22 @@ export const useTasksStore = defineStore('tasksStore', () => {
     tasks.value = rawTasks.map(mapTaskResponseToTask)
   }
 
-  async function addTask(title: string) {
+  async function addTask(title: string): Promise<Task | undefined> {
     if (!tasksSelectorStore.currentSelector)
       return
-    if (tasksSelectorStore.currentSelector.type !== 'listProject')
+
+    if (tasksSelectorStore.currentSelector.type === TasksSelectorType.smartProject)
       return
 
-    const newRawTask = await fetchCreateTask(title, tasksSelectorStore.currentSelector.id)
+    const newRawTask = await fetchCreateTask(
+      title,
+      tasksSelectorStore.currentSelector.id,
+    )
+
     const task = mapTaskResponseToTask(newRawTask)
     tasks.value.unshift(task)
     changeActiveTask(task)
+    return task
   }
 
   function changeActiveTask(taskId: Task['id']): void
@@ -58,29 +65,32 @@ export const useTasksStore = defineStore('tasksStore', () => {
 
     if (typeof taskOrTaskId === 'string')
       task = tasks.value.find(t => t.id === taskOrTaskId)
-
-    else
-      task = taskOrTaskId
+    else task = taskOrTaskId
 
     currentActiveTask.value = task
   }
 
   async function completeTask(task: Task) {
     await fetchCompleteTask(task.id)
-    task.status = TaskStatus.COMPLETED
-    tasks.value = tasks.value.filter(t => t.id !== task.id)
+    _removeTask(task)
     changeActiveTask(undefined)
   }
 
   async function restoreTask(task: Task) {
     await fetchRestoreTask(task.id)
-    task.status = TaskStatus.ACTIVE
-
-    tasks.value = tasks.value.filter(t => t.id !== task.id)
+    _removeTask(task)
+    changeActiveTask(undefined)
   }
 
   async function cancelCompleteTask(task: Task) {
     function taskPositionRestorer(task: Task) {
+      // only one task
+      if (tasks.value.length === 0) {
+        tasks.value.push(task)
+        return
+      }
+
+      // add to last position
       const lastTask = tasks.value[tasks.value.length - 1]
       if (task.position < lastTask.position) {
         tasks.value.push(task)
@@ -104,8 +114,7 @@ export const useTasksStore = defineStore('tasksStore', () => {
 
   async function removeTask(task: Task) {
     await fetchRemoveTask(task.id)
-    task.status = TaskStatus.REMOVED
-    tasks.value = tasks.value.filter(t => t.id !== task.id)
+    _removeTask(task)
     changeActiveTask(undefined)
   }
 
@@ -136,35 +145,58 @@ export const useTasksStore = defineStore('tasksStore', () => {
     task.position = newPosition
   }
 
-  async function findAllTasksNotRemoved() {
+  async function findAllTasksNotRemoved(): Promise<Task[]> {
     const activeTasks = await fetchAllTasks({ status: TaskStatus.ACTIVE })
-    const completedTasks = await fetchAllTasks({ status: TaskStatus.COMPLETED })
+    const completedTasks = await fetchAllTasks({
+      status: TaskStatus.COMPLETED,
+    })
 
-    return [...activeTasks.map(mapTaskResponseToTask), ...completedTasks.map(mapTaskResponseToTask)]
+    return [
+      ...activeTasks.map(mapTaskResponseToTask),
+      ...completedTasks.map(mapTaskResponseToTask),
+    ]
   }
 
   async function moveTaskToProject(task: Task, projectId: string) {
     await fetchMoveTaskToProject(task.id, projectId)
-    task.projectId = projectId
+    _removeTask(task)
+    changeActiveTask(undefined)
+  }
 
+  function _removeTask(task: Task) {
     tasks.value = tasks.value.filter(t => t.id !== task.id)
   }
+
+  // function updateTaskProperties(task: Task, properties: Partial<Pick<Task, 'content' | 'title' | 'position'>>) {
+  //   let key: keyof typeof properties
+  //   for (key in properties) {
+  //     const newValue = properties[key]
+  //     const oldValue = task[key]
+
+  //     if (newValue !== oldValue) {
+  //       Reflect.set(task, key, newValue)
+  //       fetchUpdateTaskProperties(task.id, { [key]: newValue })
+  //     }
+  //   }
+  // }
 
   return {
     tasks,
     currentActiveTask,
+    // updateTaskProperties,
     addTask,
     removeTask,
-    updateTasks,
-    changeActiveTask,
     completeTask,
     restoreTask,
     moveTaskToProject,
+
+    updateTasks,
+    changeActiveTask,
+    findAllTasksNotRemoved,
     cancelCompleteTask,
     updateTaskTitle,
     updateTaskContent,
     updateTaskPosition,
-    findAllTasksNotRemoved,
   }
 })
 
