@@ -3,4 +3,5 @@ export enum RouteNames {
   TASK = 'Task',
   SETTINGS = 'Settings',
   SETTINGS_THEME = 'SettingsTheme',
+  LOGIN = 'Login',
 }
