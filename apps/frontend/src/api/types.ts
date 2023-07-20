@@ -17,3 +17,8 @@ export interface ProjectResponse {
   updatedAt: string
   _id: string
 }
+
+export interface UserResponse {
+  username: string
+  token: string
+}

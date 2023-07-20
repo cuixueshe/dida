@@ -16,3 +16,4 @@ export {
   SmartProjectName,
 } from './smartProjects'
 export { useListProjectsStore, loadListProjectTasks } from './listProjects'
+export { useUserStore } from './user'
