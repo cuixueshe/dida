@@ -28,7 +28,7 @@ export const useTaskLeftListStore = defineStore('taskLeftList', () => {
   watchOnce(
     () => listProjectChildrenNodes.value,
     (value) => {
-      selectedKey.value = value[0].name
+      selectedKey.value = value[0]?.name || ''
     },
   )
 
