@@ -6,6 +6,7 @@ import {
   injectRouterMock,
 } from 'vue-router-mock'
 import { beforeEach, vi } from 'vitest'
+import { setRouterInstance } from './src/router'
 
 function setupRouterMock() {
   const router = createRouterMock({
@@ -14,6 +15,8 @@ function setupRouterMock() {
       reset: spy => spy.mockClear(),
     },
   })
+
+  setRouterInstance(router)
 
   beforeEach(() => {
     router.reset()
