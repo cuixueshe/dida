@@ -1,9 +1,10 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import MockAdapter from 'axios-mock-adapter'
 import { http } from '../http'
-import { router } from '@/router'
-import * as messageModule from '@/composables/message'
+import { messageError, messageRedirectToSignIn } from '@/composables/message'
 import { setToken } from '@/utils/token'
+
+vi.mock('@/composables/message')
 
 interface ResponseData {
   code?: number
@@ -35,11 +36,10 @@ describe('http', () => {
     mock.reset()
   })
 
-  it('should set headers Authorization when token is exist', async () => {
+  it('should set headers Authorization when token exists', async () => {
     const token = 'mynameistoken'
     setToken(token)
     mockReply(200, { code: 0 })
-
     await triggerApiRequest()
 
     expect(mock.history.get[0].headers?.Authorization).toBe(`Bearer ${token}`)
@@ -55,22 +55,18 @@ describe('http', () => {
   })
 
   it('should throw an error when code is not  0', async () => {
-    vi.spyOn(messageModule, 'messageError')
     const message = 'an error'
 
     mockReply(200, { code: -1, message })
 
     await expect(() => triggerApiRequest()).rejects.toThrowError(message)
-    expect(messageModule.messageError).toBeCalledWith(message)
+    expect(messageError).toBeCalledWith(message)
   })
 
   it('should redirect to signin when http code is 401', async () => {
-    vi.spyOn(messageModule, 'messageRedirectToSignIn')
-    const redirectPath = (router.currentRoute.value.fullPath = 'login')
-
     mockReply(401)
 
     await expect(() => http.get('/tasks')).rejects.toThrow()
-    expect(messageModule.messageRedirectToSignIn).toBeCalledWith(redirectPath)
+    expect(messageRedirectToSignIn).toBeCalled()
   })
 })
