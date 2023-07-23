@@ -9,3 +9,7 @@ export function checkHaveToken() {
 export function setToken(token: string) {
   localStorage.setItem('token', token)
 }
+
+export function cleanToken() {
+  localStorage.removeItem('token')
+}
