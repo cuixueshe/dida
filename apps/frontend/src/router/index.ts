@@ -34,7 +34,7 @@ export const routes: RouteRecordRaw[] = [
   SettingsRoute,
 ]
 
-const setupRouterGuard = (router: Router) => {
+export function setupRouterGuard(router: Router) {
   router.beforeEach(() => {
     startLoading()
   })
@@ -47,8 +47,9 @@ const setupRouterGuard = (router: Router) => {
     if (to.matched.some(record => record.meta.requiresAuth)) {
       if (checkHaveToken())
         next()
+
       else
-        messageRedirectToSignIn(to.fullPath)
+        messageRedirectToSignIn(() => next({ name: RouteNames.LOGIN }))
     }
     else {
       next()
@@ -56,8 +57,7 @@ const setupRouterGuard = (router: Router) => {
   })
 }
 
-// eslint-disable-next-line import/no-mutable-exports
-export let router: Router
+let router: Router
 export const setupRouter = async (app: App) => {
   router = createRouter({
     history: createWebHashHistory(),
@@ -71,4 +71,8 @@ export const setupRouter = async (app: App) => {
 
 export function setRouterInstance(routerInstance: Router) {
   router = routerInstance
+}
+
+export function getRouterInstance() {
+  return router
 }
