@@ -6,7 +6,6 @@ import {
   injectRouterMock,
 } from 'vue-router-mock'
 import { beforeEach, vi } from 'vitest'
-import { setRouterInstance } from './src/router'
 
 function setupRouterMock() {
   const router = createRouterMock({
@@ -15,8 +14,6 @@ function setupRouterMock() {
       reset: spy => spy.mockClear(),
     },
   })
-
-  setRouterInstance(router)
 
   beforeEach(() => {
     router.reset()
@@ -27,3 +24,9 @@ function setupRouterMock() {
 }
 
 setupRouterMock()
+
+const originalConsoleWarn = console.warn
+console.warn = (log: string) => {
+  if (!log.includes('[Vue Router warn]'))
+    originalConsoleWarn(log)
+}
