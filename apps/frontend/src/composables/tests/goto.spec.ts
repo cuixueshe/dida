@@ -1,7 +1,8 @@
 import { describe, expect, it, vi } from 'vitest'
-import { GITHUB_URL, openGithub, useGoto } from '../goto'
+import { GITHUB_URL, goToLogin, openGithub, useGoto } from '../goto'
 import { useSetup } from '@/tests/helper'
 import { RouteNames } from '@/router/const'
+import { setupRouterMock } from '@/tests/helper/router'
 
 describe('goto', () => {
   it('should be go to Settings', () => {
@@ -37,5 +38,11 @@ describe('goto', () => {
     openGithub()
 
     expect(window.open).toBeCalledWith(GITHUB_URL)
+  })
+
+  it('should be go to login', async () => {
+    const router = setupRouterMock()
+    goToLogin()
+    expect(router.replace).toBeCalledWith({ name: RouteNames.LOGIN })
   })
 })
