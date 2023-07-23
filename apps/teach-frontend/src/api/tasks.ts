@@ -59,7 +59,3 @@ export function fetchUpdateTaskPosition(taskId: Task['id'], position: number) {
     position,
   })
 }
-
-// export function fetchUpdateTaskProperties(taskId: Task['id'], properties: any) {
-
-// }
