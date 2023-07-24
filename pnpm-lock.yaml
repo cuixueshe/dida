@@ -176,6 +176,7 @@ importers:
       axios: ^1.4.0
       cross-env: ^7.0.3
       dexie: ^3.2.2
+      fake-indexeddb: ^4.0.2
       flush-promises: ^1.0.2
       fs-extra: ^11.1.0
       fuse.js: ^6.6.2
@@ -221,6 +222,7 @@ importers:
       '@vue/test-utils': 2.2.10_vue@3.2.47
       '@vueuse/core': 9.12.0_vue@3.2.47
       cross-env: 7.0.3
+      fake-indexeddb: 4.0.2
       flush-promises: 1.0.2
       fs-extra: 11.1.0
       glob: 8.1.0
