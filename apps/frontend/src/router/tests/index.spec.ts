@@ -7,7 +7,7 @@ import { cleanToken, setToken } from '@/utils/token'
 import { setupRouterMock } from '@/tests/helper'
 
 vi.mock('@/composables/message')
-vi.mocked(messageRedirectToSignIn).mockImplementation(fn => fn())
+vi.mocked(messageRedirectToSignIn).mockImplementation(fn => fn && fn())
 
 describe('router', () => {
   let router: RouterMock
