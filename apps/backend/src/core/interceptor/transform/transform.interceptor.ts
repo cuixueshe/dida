@@ -9,7 +9,7 @@ export class TransformInterceptor implements NestInterceptor {
         return {
           data,
           code: 0,
-          msg: 'Request successful',
+          message: 'Request successful',
         }
       }),
     )
