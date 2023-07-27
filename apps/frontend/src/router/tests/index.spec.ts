@@ -1,71 +1,69 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import type { RouterMock } from 'vue-router-mock'
-import { setupRouterGuard } from '../index'
+import { createRouterMock } from 'vue-router-mock'
+import { routes, setupRouterGuard } from '../index'
 import { RouteNames } from '../const'
-import { messageRedirectToSignIn } from '@/composables/message'
 import { cleanToken, setToken } from '@/utils/token'
-import { setupRouterMock } from '@/tests/helper'
 
-vi.mock('@/composables/message')
-vi.mocked(messageRedirectToSignIn).mockImplementation(fn => fn && fn())
-
-describe('router', () => {
-  let router: RouterMock
+describe('router ', () => {
   beforeEach(() => {
     cleanToken()
+  })
 
-    router = setupRouterMock({
+  describe('requires auth', async () => {
+    it('go to task page when have token', async () => {
+      setToken('token')
+
+      const router = createRouterMock({
+        spy: {
+          create: fn => vi.fn(fn),
+          reset: spy => spy.mockClear(),
+        },
+        useRealNavigation: true,
+        routes,
+      })
+
+      setupRouterGuard(router)
+
+      await router.push({ name: RouteNames.TASK })
+
+      expect(router.currentRoute.value.name).toBe(RouteNames.TASK)
+    })
+
+    it('go to login page when have not token', async () => {
+      vi.useFakeTimers()
+
+      const router = createRouterMock({
+        spy: {
+          create: fn => vi.fn(fn),
+          reset: spy => spy.mockClear(),
+        },
+        useRealNavigation: true,
+        routes,
+      })
+
+      setupRouterGuard(router)
+
+      router.push({ name: RouteNames.TASK })
+      await vi.runAllTimersAsync()
+
+      expect(router.currentRoute.value.name).toBe(RouteNames.LOGIN)
+    })
+  })
+
+  it('go to login page when do not requires auth', async () => {
+    const router = createRouterMock({
+      spy: {
+        create: fn => vi.fn(fn),
+        reset: spy => spy.mockClear(),
+      },
       useRealNavigation: true,
+      routes,
     })
 
     setupRouterGuard(router)
-  })
-  it('should go to next route when the route has requiresAuth and token', async () => {
-    router.addRoute({
-      name: RouteNames.TASK,
-      meta: { requiresAuth: true },
-      path: '/task',
-      redirect: '',
-      component: null as any,
-    })
 
-    setToken('token')
-
-    await router.push({ name: RouteNames.TASK })
-
-    expect(router.currentRoute.value.name).toBe(RouteNames.TASK)
-  })
-
-  it('should go to signin when the route has requiresAuth and does not have token', async () => {
-    router.addRoute({
-      name: RouteNames.TASK,
-      meta: { requiresAuth: true },
-      path: '/task',
-      redirect: '',
-      component: null as any,
-    })
-
-    router.addRoute({
-      path: '/login',
-      component: null as any,
-      name: RouteNames.LOGIN,
-    })
-
-    await router.push({ name: RouteNames.TASK })
+    await router.push({ name: RouteNames.LOGIN })
 
     expect(router.currentRoute.value.name).toBe(RouteNames.LOGIN)
-  })
-
-  it('should go to next route when the route does not need to check auth ', async () => {
-    router.addRoute({
-      name: RouteNames.TASK,
-      path: '/task',
-      redirect: '',
-      component: null as any,
-    })
-
-    await router.push({ name: RouteNames.TASK })
-
-    expect(router.currentRoute.value.name).toBe(RouteNames.TASK)
   })
 })

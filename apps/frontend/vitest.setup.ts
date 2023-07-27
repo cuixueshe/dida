@@ -28,5 +28,5 @@ setupRouterMock()
 const originalConsoleWarn = console.warn
 console.warn = (log: string) => {
   if (!log.includes('[Vue Router warn]'))
-    originalConsoleWarn(log)
+    return originalConsoleWarn(log)
 }
