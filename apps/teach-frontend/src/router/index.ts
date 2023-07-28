@@ -67,10 +67,10 @@ export const setupRouter = async (app: App) => {
   await router.isReady()
 }
 
-export function setRouterInstance(routerInstance: Router) {
-  router = routerInstance
-}
-
 export function getRouterInstance() {
   return router
+}
+
+export function setRouterInstance(routerInstance: Router) {
+  router = routerInstance
 }

@@ -1,7 +1,8 @@
 import { describe, expect, it, vi } from 'vitest'
-import { GITHUB_URL, openGithub, useGoto } from '../goto'
-import { useSetup } from '@/tests/helper'
+import { GITHUB_URL, goToLogin, openGithub, useGoto } from '../goto'
+import { setupRouter, useSetup } from '@/tests/helper'
 import { RouteNames } from '@/router/const'
+import { routes } from '@/router'
 
 describe('the header', () => {
   it('should be go to home page', () => {
@@ -29,5 +30,13 @@ describe('the header', () => {
     openGithub()
 
     expect(window.open).toBeCalledWith(GITHUB_URL)
+  })
+
+  it('should go to the login page ', async () => {
+    const router = setupRouter({ routes })
+
+    goToLogin()
+
+    expect(router.replace).toBeCalledWith({ name: RouteNames.LOGIN })
   })
 })

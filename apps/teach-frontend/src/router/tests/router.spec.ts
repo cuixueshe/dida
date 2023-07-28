@@ -1,29 +1,18 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import type { RouterMock } from 'vue-router-mock'
-import { createRouterMock } from 'vue-router-mock'
-import { routes, setupRouterGuard } from '../index'
+import { routes } from '../index'
 import { RouteNames } from '../const'
 import { cleanToken, setToken } from '@/utils/token'
+import { setupRouter } from '@/tests/helper'
 
-function setupRouter() {
-  const router = createRouterMock({
-    spy: {
-      create: fn => vi.fn(fn),
-      reset: spy => spy.mockClear(),
-    },
-    routes,
-    useRealNavigation: true,
-  })
-
-  setupRouterGuard(router)
-
-  return router
-}
 describe('router', () => {
   let router: RouterMock
   beforeEach(() => {
     cleanToken()
-    router = setupRouter()
+    router = setupRouter({
+      routes,
+      useRealNavigation: true,
+    })
   })
 
   describe('requires auth', () => {
