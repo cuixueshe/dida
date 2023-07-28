@@ -43,11 +43,9 @@ export function setupRouterGuard(router: Router) {
   })
 
   router.beforeEach((to, from, next) => {
-    // 判断该路由是否需要登录权限
-    if (to.matched.some(record => record.meta.requiresAuth)) {
+    if (to.matched.some(r => r.meta.requiresAuth)) {
       if (checkHaveToken())
         next()
-
       else
         messageRedirectToSignIn(() => next({ name: RouteNames.LOGIN }))
     }
