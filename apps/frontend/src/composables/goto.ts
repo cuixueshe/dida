@@ -37,7 +37,7 @@ export function openGithub() {
 
 // 服务于在 setup 之外调用的场景
 export function goToLogin() {
-  getRouterInstance().replace({
+  return getRouterInstance().replace({
     name: RouteNames.LOGIN,
   })
 }
