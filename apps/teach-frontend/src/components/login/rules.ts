@@ -12,7 +12,7 @@ export function createUsernameRule() {
       validator(rule: FormItemRule, value: string) {
         return validateUsernameLength(value)
       },
-      message: '长度要大于 6 小于 30',
+      message: '长度要大于 5 小于 25',
       trigger: 'blur',
     },
   ]
