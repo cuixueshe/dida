@@ -41,21 +41,21 @@ const { useDividerLeftDrag, useDividerRightDrag } = useTaskSidebarDrag(
     ref="boxContainerElement"
     class="!h-[calc(100vh-40px)] flex p-10px pt-0 overflow-hidden base-color"
   >
-    <div
-      v-if="taskLeftMenuVisible"
-      ref="leftContainerElement"
-      :style="leftWidthFlex"
-    >
-      <TaskLeftListView />
-    </div>
-    <div
-      v-if="taskLeftMenuVisible"
-      ref="leftResizeElement"
-      class="border-solid cursor-w-resize h-screen border-l-2px opacity-60 hover-opacity-100"
-      style="flex: 0 0 6px"
-      title="收缩侧边栏"
-      @mousedown.prevent="useDividerLeftDrag"
-    />
+    <template v-if="taskLeftMenuVisible">
+      <div
+        ref="leftContainerElement"
+        :style="leftWidthFlex"
+      >
+        <TaskLeftListView />
+      </div>
+      <div
+        ref="leftResizeElement"
+        class="border-solid cursor-w-resize h-screen border-l-2px opacity-60 hover-opacity-100"
+        style="flex: 0 0 6px"
+        title="收缩侧边栏"
+        @mousedown.prevent="useDividerLeftDrag"
+      />
+    </template>
     <div class="flex-1 flex w-full h-full p-24px min-w-300px">
       <TaskList class="w-full" />
     </div>

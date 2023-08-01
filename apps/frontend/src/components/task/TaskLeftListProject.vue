@@ -4,11 +4,12 @@ import type { TreeOption } from 'naive-ui'
 import { NTree } from 'naive-ui'
 import { computed, h, ref, watchEffect } from 'vue'
 import 'vue3-emoji-picker/css'
-import { projectCreatedViewModal } from './TagView/ProjectCreateView'
+import ProjectCreatedView from './ProjectCreatedView.vue'
 import { useTaskLeftListStore } from './taskLeftList'
 
 const taskLeftListStore = useTaskLeftListStore()
 const treeListProjectChildren = ref<TreeOption[]>([])
+const showProjectCreatedView = ref(false)
 
 const selectedKey = computed({
   get() {
@@ -49,7 +50,7 @@ const data = ref<any[]>([
     children: treeListProjectChildren,
     suffix: createRootNodeSuffix((e: Event) => {
       e.stopPropagation()
-      projectCreatedViewModal()
+      showProjectCreatedView.value = true
     }),
   },
 ])
@@ -66,6 +67,7 @@ const nodeProps = ({ option }: { option: TreeOption }) => {
     v-model:selected-keys="selectedKey" :default-expanded-keys="defaultExpandedKeys"
     block-line expand-on-click :data="data" :node-props="nodeProps"
   />
+  <ProjectCreatedView v-model:show="showProjectCreatedView" />
 </template>
 
 <style>

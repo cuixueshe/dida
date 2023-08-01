@@ -31,7 +31,7 @@ function useInput() {
 }
 
 const taskTitle = ref('')
-const dragging = ref<boolean>(false)
+const dragging = ref(false)
 
 const placeholderText = computed(() => {
   return `添加任务至“${tasksSelectorStore.currentSelector?.name}”，回车即可保存`
@@ -43,8 +43,6 @@ const isPlaceholder = computed(() => {
 function addTask() {
   if (!taskTitle.value)
     return
-  // if (Reflect.has(tasksStore.currentActiveProject, 'color'))
-  //   tasksStore.addTaskToTag(taskTitle.value)
   else tasksStore.addTask(taskTitle.value)
 
   taskTitle.value = ''
