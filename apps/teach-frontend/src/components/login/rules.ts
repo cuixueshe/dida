@@ -4,7 +4,7 @@ import { validatePasswordLength, validatePasswordSame, validateUsernameLength } 
 export function createUsernameRule() {
   return [
     {
-      required: true,
+      required: false,
       message: '请输入帐号',
       trigger: 'blur',
     },
