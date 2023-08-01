@@ -1,3 +1,4 @@
+export { useTaskLeftMenu } from './taskLeftMenu'
 export { useTaskOperationMessage } from './useTaskOperationMessage'
 export { useTaskRightContextMenu } from './useTaskRightContextMenu'
 export { useTaskSidebarDrag } from './useTaskSidebarDrag'

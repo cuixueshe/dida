@@ -3,11 +3,12 @@ import { onBeforeMount, ref } from 'vue'
 import TaskEditor from '@/components/task/TaskEditor.vue'
 import TaskLeftListView from '@/components/task/TaskLeftListView.vue'
 import TaskList from '@/components/task/TaskList.vue'
-import { useTaskSidebarDrag } from '@/composables'
-import { useListProjectsStore, useTaskLeftMenuStatusStore, useThemeStore } from '@/store'
+import { useTaskLeftMenu, useTaskSidebarDrag } from '@/composables'
+import { useListProjectsStore, useThemeStore } from '@/store'
 
 const themeStore = useThemeStore()
 const projectsStore = useListProjectsStore()
+const { taskLeftMenuVisible } = useTaskLeftMenu()
 
 onBeforeMount(async () => {
   await projectsStore.init()
@@ -33,7 +34,6 @@ const { useDividerLeftDrag, useDividerRightDrag } = useTaskSidebarDrag(
   rightWidthFlex,
   themeStore,
 )
-const taskLeftMenuStatusStore = useTaskLeftMenuStatusStore()
 </script>
 
 <template>
@@ -42,14 +42,14 @@ const taskLeftMenuStatusStore = useTaskLeftMenuStatusStore()
     class="!h-[calc(100vh-40px)] flex p-10px pt-0 overflow-hidden base-color"
   >
     <div
-      v-if="taskLeftMenuStatusStore.visible"
+      v-if="taskLeftMenuVisible"
       ref="leftContainerElement"
       :style="leftWidthFlex"
     >
       <TaskLeftListView />
     </div>
     <div
-      v-if="taskLeftMenuStatusStore.visible"
+      v-if="taskLeftMenuVisible"
       ref="leftResizeElement"
       class="border-solid cursor-w-resize h-screen border-l-2px opacity-60 hover-opacity-100"
       style="flex: 0 0 6px"
