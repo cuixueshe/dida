@@ -12,7 +12,7 @@ import {
 } from 'naive-ui'
 import { computed, ref } from 'vue'
 import EmojiPicker from 'vue3-emoji-picker'
-import { useTaskLeftListCreateProject } from './useTaskLeftListCreateProject'
+import { useProjectCreatedView } from './projectCreatedView'
 import { useListProjectsStore } from '@/store'
 import 'vue3-emoji-picker/css'
 
@@ -36,7 +36,7 @@ const {
   isHover,
   isSavable,
   isShowPopover,
-} = useTaskLeftListCreateProject(inputElement)
+} = useProjectCreatedView(inputElement)
 
 const { EMOJI_STATIC_TEXTS, EMOJI_GROUPS_NAMES } = getDefaultEmojiConfig()
 type Actions = 'close' | 'cancel' | 'confirm'

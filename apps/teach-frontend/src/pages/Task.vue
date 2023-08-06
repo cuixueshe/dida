@@ -1,39 +1,71 @@
 <script setup lang="ts">
-import { onBeforeMount, ref } from 'vue'
+import type { Ref } from 'vue'
+import { computed, onBeforeMount, onMounted, ref } from 'vue'
+import { useDrag, useTaskLeftMenu } from '@/composables'
 import TaskEditor from '@/components/task/TaskEditor.vue'
 import TaskLeftListView from '@/components/task/TaskLeftListView.vue'
 import TaskList from '@/components/task/TaskList.vue'
-import { useTaskSidebarDrag } from '@/composables'
-import { useListProjectsStore, useTaskLeftMenuStatusStore, useThemeStore } from '@/store'
+import { useListProjectsStore } from '@/store'
 
-const themeStore = useThemeStore()
 const projectsStore = useListProjectsStore()
+const { taskLeftMenuVisible } = useTaskLeftMenu()
 
 onBeforeMount(async () => {
   await projectsStore.init()
 })
 
-const AREA_MIN_WIDTH = 240
+function useLeftDrag(el: Ref<HTMLDivElement | undefined>) {
+  const leftWidth = ref(240)
+  const leftWidthStyle = computed(() => {
+    return `flex: 0 0 ${leftWidth.value}px`
+  })
+
+  onMounted(() => {
+    const offsetLeft = el.value?.offsetLeft || 0
+    useDrag({
+      el: el.value!,
+      moveRange: [offsetLeft - 50, offsetLeft + 150],
+      onMove(moveDistance) {
+        leftWidth.value += moveDistance
+      },
+    })
+  })
+
+  return {
+    leftWidthStyle,
+  }
+}
+
+function useRightDrag(el: Ref<HTMLDivElement | undefined>) {
+  const rightWidth = ref(240)
+  const rightWidthStyle = computed(() => {
+    return `flex: 0 0 ${rightWidth.value}px`
+  })
+
+  onMounted(() => {
+    const offsetLeft = el.value?.offsetLeft || 0
+    useDrag({
+      el: el.value!,
+      moveRange: [
+        offsetLeft - 400,
+        offsetLeft,
+      ],
+      onMove(moveDistance) {
+        rightWidth.value -= moveDistance
+      },
+    })
+  })
+
+  return {
+    rightWidthStyle,
+  }
+}
 
 const leftResizeElement = ref<HTMLDivElement>()
+const { leftWidthStyle } = useLeftDrag(leftResizeElement)
+
 const rightResizeElement = ref<HTMLDivElement>()
-const boxContainerElement = ref<HTMLDivElement>()
-const leftContainerElement = ref<HTMLDivElement>()
-const rightContainerElement = ref<HTMLDivElement>()
-const leftWidthFlex = ref<string>(`flex: 0 0 ${AREA_MIN_WIDTH}px`)
-const rightWidthFlex = ref<string>(`flex: 0 0 ${AREA_MIN_WIDTH}px`)
-const { useDividerLeftDrag, useDividerRightDrag } = useTaskSidebarDrag(
-  AREA_MIN_WIDTH,
-  leftResizeElement,
-  rightResizeElement,
-  boxContainerElement,
-  leftContainerElement,
-  rightContainerElement,
-  leftWidthFlex,
-  rightWidthFlex,
-  themeStore,
-)
-const taskLeftMenuStatusStore = useTaskLeftMenuStatusStore()
+const { rightWidthStyle } = useRightDrag(rightResizeElement)
 </script>
 
 <template>
@@ -41,35 +73,29 @@ const taskLeftMenuStatusStore = useTaskLeftMenuStatusStore()
     ref="boxContainerElement"
     class="!h-[calc(100vh-40px)] flex p-10px pt-0 overflow-hidden base-color"
   >
-    <div
-      v-if="taskLeftMenuStatusStore.visible"
-      ref="leftContainerElement"
-      :style="leftWidthFlex"
-    >
-      <TaskLeftListView />
-    </div>
-    <div
-      v-if="taskLeftMenuStatusStore.visible"
-      ref="leftResizeElement"
-      class="border-solid cursor-w-resize h-screen border-l-2px opacity-60 hover-opacity-100"
-      style="flex: 0 0 6px"
-      title="收缩侧边栏"
-      @mousedown.prevent="useDividerLeftDrag"
-    />
+    <template v-if="taskLeftMenuVisible">
+      <div :style="leftWidthStyle">
+        <TaskLeftListView />
+      </div>
+      <div
+        ref="leftResizeElement"
+        class="border-solid cursor-col-resize h-screen border-l-2px opacity-60 hover-opacity-100"
+        style="flex: 0 0 6px"
+        title="收缩侧边栏"
+      />
+    </template>
     <div class="flex-1 flex w-full h-full p-24px min-w-300px">
       <TaskList class="w-full" />
     </div>
     <div
       ref="rightResizeElement"
-      class="border-solid cursor-w-resize h-screen border-l-2px opacity-60 hover-opacity-100"
+      class="border-solid cursor-col-resize h-screen border-l-2px opacity-60 hover-opacity-100"
       style="flex: 0 0 6px"
       title="收缩侧边栏"
-      @mousedown.prevent="useDividerRightDrag"
     />
     <div
-      ref="rightContainerElement"
       class="flex w-full h-full p-24px"
-      :style="rightWidthFlex"
+      :style="rightWidthStyle"
     >
       <TaskEditor class="w-full h-full" />
     </div>

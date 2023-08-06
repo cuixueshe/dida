@@ -6,16 +6,16 @@ import draggable from 'vuedraggable'
 import TaskItem from './TaskItem.vue'
 import {
   TasksSelectorType,
-  useTaskLeftMenuStatusStore,
   useTasksSelectorStore,
   useTasksStore,
   useThemeStore,
 } from '@/store'
+import { useTaskLeftMenu } from '@/composables'
 
 const tasksStore = useTasksStore()
 const tasksSelectorStore = useTasksSelectorStore()
 const themeStore = useThemeStore()
-const taskLeftMenuStatusStore = useTaskLeftMenuStatusStore()
+const { toggleTaskLeftMenu, taskLeftMenuVisible } = useTaskLeftMenu()
 
 function useInput() {
   const inputRef: Ref<HTMLInputElement | null> = ref(null)
@@ -31,7 +31,7 @@ function useInput() {
 }
 
 const taskTitle = ref('')
-const dragging = ref<boolean>(false)
+const dragging = ref(false)
 
 const placeholderText = computed(() => {
   return `添加任务至“${tasksSelectorStore.currentSelector?.name}”，回车即可保存`
@@ -43,15 +43,9 @@ const isPlaceholder = computed(() => {
 function addTask() {
   if (!taskTitle.value)
     return
-  // if (Reflect.has(tasksStore.currentActiveProject, 'color'))
-  //   tasksStore.addTaskToTag(taskTitle.value)
   else tasksStore.addTask(taskTitle.value)
 
   taskTitle.value = ''
-}
-
-function toggleLeftMenu() {
-  taskLeftMenuStatusStore.toggle()
 }
 
 function handleInputChange(event: any) {
@@ -96,12 +90,12 @@ function handleEndDrag(e: any) {
     <div flex items-center>
       <Icon
         :icon="
-          taskLeftMenuStatusStore.visible
+          taskLeftMenuVisible
             ? 'tabler:layout-sidebar-left-collapse'
             : 'tabler:layout-sidebar-right-collapse'
         "
         width="30"
-        @click="toggleLeftMenu()"
+        @click="toggleTaskLeftMenu"
       />
       <h1 class="text-4xl ml-5px">
         {{ tasksSelectorStore.currentSelector?.name }}

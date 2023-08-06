@@ -1,5 +1,4 @@
 export { useThemeStore, getGlobalThemeStore } from './useTheme'
-export { useTaskLeftMenuStatusStore } from './useTaskLeftMenuStatus'
 export { useSettingsStore } from './useSettingsStore'
 export { TaskStatus, useTasksStore } from './tasks'
 export { TasksSelectorType, useTasksSelectorStore } from './tasksSelector'

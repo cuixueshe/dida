@@ -20,7 +20,7 @@ interface EMoji {
   u: string // without tone
 }
 
-export function useTaskLeftListCreateProject(
+export function useProjectCreatedView(
   inputElement: Ref<HTMLInputElement | undefined>,
 ) {
   const listProjectsStore = useListProjectsStore()
