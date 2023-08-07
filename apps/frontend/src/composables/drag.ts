@@ -24,7 +24,7 @@ export function useDrag(options: DragOptions) {
         moveDistance = e.clientX - startDragX
 
         if (moveRange) {
-          const nextPoint = el.offsetLeft + moveDistance
+          const nextPoint = e.clientX + moveDistance
 
           if (nextPoint <= moveRange[0])
             return

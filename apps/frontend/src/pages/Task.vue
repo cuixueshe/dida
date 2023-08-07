@@ -21,10 +21,11 @@ function useLeftDrag(el: Ref<HTMLDivElement | undefined>) {
   })
 
   onMounted(() => {
-    const offsetLeft = el.value?.offsetLeft || 0
+    const x = el.value?.getBoundingClientRect().x || 0
+
     useDrag({
       el: el.value!,
-      moveRange: [offsetLeft - 50, offsetLeft + 150],
+      moveRange: [x - 50, x + 150],
       onMove(moveDistance) {
         leftWidth.value += moveDistance
       },
@@ -43,13 +44,11 @@ function useRightDrag(el: Ref<HTMLDivElement | undefined>) {
   })
 
   onMounted(() => {
-    const offsetLeft = el.value?.offsetLeft || 0
+    const x = el.value?.getBoundingClientRect().x || 0
+
     useDrag({
       el: el.value!,
-      moveRange: [
-        offsetLeft - 400,
-        offsetLeft,
-      ],
+      moveRange: [x - 400, x],
       onMove(moveDistance) {
         rightWidth.value -= moveDistance
       },
@@ -93,10 +92,7 @@ const { rightWidthStyle } = useRightDrag(rightResizeElement)
       style="flex: 0 0 6px"
       title="收缩侧边栏"
     />
-    <div
-      class="flex w-full h-full p-24px"
-      :style="rightWidthStyle"
-    >
+    <div class="flex w-full h-full p-24px" :style="rightWidthStyle">
       <TaskEditor class="w-full h-full" />
     </div>
   </div>
