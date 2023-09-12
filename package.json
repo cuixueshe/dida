@@ -5,7 +5,7 @@
   "private": true,
   "packageManager": "pnpm@7.17.0",
   "engines": {
-    "node": ">=16.14.0"
+    "node": ">=18.17.1"
   },
   "scripts": {
     "bootstrap": "pnpm i",
